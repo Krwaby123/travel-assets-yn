@@ -1,0 +1,5869 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>3月云南旅行攻略 | 斗南·大理·丽江·香格里拉</title>
+  <script>
+    // Disable scroll restoration before page loads
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --forest: oklch(45% 0.12 145);
+      --forest-light: oklch(92% 0.03 145);
+      --sky: oklch(60% 0.15 235);
+      --sky-light: oklch(95% 0.02 235);
+      --sunset: oklch(65% 0.18 35);
+      --sunset-soft: oklch(85% 0.08 35);
+      --earth: oklch(35% 0.04 60);
+      --earth-light: oklch(96% 0.01 60);
+      --text: oklch(20% 0.02 60);
+      --text-muted: oklch(45% 0.02 60);
+      --bg: oklch(98% 0.005 60);
+      --card: oklch(100% 0 0);
+      --border: oklch(88% 0.01 60);
+      
+      --space-2xs: 0.25rem;
+      --space-xs: 0.5rem;
+      --space-sm: 0.75rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 2.5rem;
+      --space-3xl: 3rem;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.875rem;
+      --text-base: 1rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 2rem;
+      
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --forest: oklch(55% 0.12 145);
+        --forest-light: oklch(18% 0.04 145);
+        --sky: oklch(55% 0.14 235);
+        --sky-light: oklch(12% 0.03 235);
+        --sunset: oklch(70% 0.16 35);
+        --sunset-soft: oklch(25% 0.06 35);
+        --earth: oklch(75% 0.03 60);
+        --earth-light: oklch(15% 0.01 60);
+        --text: oklch(95% 0.01 60);
+        --text-muted: oklch(70% 0.02 60);
+        --bg: oklch(12% 0.01 60);
+        --card: oklch(16% 0.01 60);
+        --border: oklch(25% 0.02 60);
+      }
+    }
+
+    [data-theme="dark"] {
+      --forest: oklch(55% 0.12 145);
+      --forest-light: oklch(18% 0.04 145);
+      --sky: oklch(55% 0.14 235);
+      --sky-light: oklch(12% 0.03 235);
+      --sunset: oklch(70% 0.16 35);
+      --sunset-soft: oklch(25% 0.06 35);
+      --earth: oklch(75% 0.03 60);
+      --earth-light: oklch(15% 0.01 60);
+      --text: oklch(95% 0.01 60);
+      --text-muted: oklch(70% 0.02 60);
+      --bg: oklch(12% 0.01 60);
+      --card: oklch(16% 0.01 60);
+      --border: oklch(25% 0.02 60);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: var(--space-md);
+      z-index: 1000;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--forest);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--space-sm);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      transition: top 0.2s ease;
+    }
+
+    .skip-link:focus {
+      top: var(--space-md);
+      outline: 3px solid var(--sunset);
+      outline-offset: 2px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      height: 100%;
+      scroll-padding-top: 0;
+    }
+
+    body {
+      font-family: 'Noto Serif SC', serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      scroll-padding-top: 0;
+    }
+
+    .hero {
+      min-height: 28vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: var(--space-xl) var(--space-md) var(--space-lg);
+      position: relative;
+      background: linear-gradient(
+        180deg,
+        var(--sky-light) 0%,
+        var(--bg) 100%
+      );
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 50% 20%, var(--sunset-soft) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 30% 60%, var(--forest-light) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 600px;
+      padding: 0 1rem;
+    }
+
+    .hero h1 {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: clamp(1.5rem, 6vw, 2.5rem);
+      font-weight: 400;
+      color: var(--forest);
+      margin-bottom: 0.3rem;
+      letter-spacing: 0.05em;
+      text-wrap: balance;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-tabs {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: var(--space-sm) var(--space-xs);
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-tabs-inner {
+      display: flex;
+      gap: 0.4rem;
+      min-width: max-content;
+      padding: 0 0.5rem;
+      justify-content: flex-start;
+    }
+
+    .nav-tab {
+      padding: 0.5rem 0.9rem;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 1.5rem;
+      white-space: nowrap;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: 0;
+    }
+
+    .nav-tab:hover {
+      background: var(--earth-light);
+    }
+
+    .nav-tab.active {
+      background: var(--forest);
+      color: white;
+    }
+
+    .section {
+      padding: var(--space-lg) var(--space-md);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .slides-container {
+      overflow-x: auto;
+      overflow-y: visible;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      display: flex;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      min-height: calc(100vh - 100px);
+      width: 100%;
+      overscroll-behavior-x: contain;
+    }
+
+    .slides-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .slide {
+      flex: 0 0 100%;
+      width: 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .slide .section {
+      padding: var(--space-md);
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    .slide:not(.active) .section {
+      pointer-events: none;
+    }
+
+    .home-section {
+      display: flex;
+      flex-direction: column;
+      padding-top: var(--space-xs);
+      gap: var(--space-sm);
+      min-height: calc(100vh - 120px);
+      justify-content: flex-start;
+    }
+
+    .home-intro {
+      padding: var(--space-lg);
+      background: linear-gradient(135deg, var(--forest-light) 0%, var(--sky-light) 100%);
+      border-radius: var(--space-md);
+    }
+
+    .home-intro-text {
+      font-size: var(--text-sm);
+      color: var(--text);
+      line-height: 1.8;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .quick-start {
+      margin: var(--space-lg) 0;
+    }
+
+    .quick-start-label {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-bottom: var(--space-sm);
+      text-align: center;
+    }
+
+    .quick-start-cards {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .quick-start-card {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: var(--card);
+      border: 2px solid var(--forest);
+      border-radius: var(--space-md);
+      padding: var(--space-md);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .quick-start-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: var(--sunset);
+    }
+
+    .quick-start-card:active {
+      transform: scale(0.98);
+    }
+
+    .quick-start-emoji {
+      font-size: 1.5rem;
+    }
+
+    .quick-start-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .quick-start-title {
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--forest);
+    }
+
+    .quick-start-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .quick-start-arrow {
+      color: var(--forest);
+      font-size: var(--text-lg);
+      font-weight: 700;
+    }
+
+    @media (max-width: 480px) {
+      .quick-start-cards {
+        flex-direction: column;
+      }
+
+      .quick-start-card {
+        padding: var(--space-sm);
+      }
+
+      .quick-start-emoji {
+        font-size: 1.25rem;
+      }
+
+      .quick-start-title {
+        font-size: var(--text-sm);
+      }
+
+      .theme-toggle {
+        width: 36px;
+        height: 36px;
+        top: var(--space-sm);
+        right: var(--space-sm);
+      }
+
+      .theme-toggle svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    .tab-badge {
+      background: var(--sunset);
+      color: white;
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border-radius: var(--space-xs);
+      margin-left: var(--space-2xs);
+    }
+
+    .home-itinerary {
+      background: var(--card);
+      border: 2px solid var(--forest);
+      border-radius: var(--space-md);
+      padding: var(--space-md);
+      margin-top: var(--space-sm);
+    }
+
+    .home-itinerary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-sm);
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      padding-left: calc(var(--space-md) + 24px);
+    }
+
+    .home-itinerary-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--forest);
+    }
+
+    .itinerary-tabs {
+      display: flex;
+      gap: var(--space-2xs);
+    }
+
+    .itinerary-tab {
+      font-size: 0.7rem;
+      padding: var(--space-sm) var(--space-md);
+      min-height: 44px;
+      border: 1px solid var(--border);
+      background: transparent;
+      border-radius: var(--space-sm);
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .itinerary-tab.active {
+      background: var(--forest);
+      color: white;
+      border-color: var(--forest);
+    }
+
+    .itinerary-content {
+      display: none;
+    }
+
+    .itinerary-content.active {
+      display: block;
+    }
+
+    .itinerary-flow {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      overflow-x: auto;
+      padding: var(--space-xs) 0;
+      scrollbar-width: none;
+    }
+
+    .itinerary-flow::-webkit-scrollbar {
+      display: none;
+    }
+
+    .itinerary-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .itinerary-day-num {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--forest);
+      background: var(--forest-light);
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.2rem;
+      margin-bottom: 2px;
+    }
+
+    .itinerary-day-place {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .itinerary-day-activity {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .itinerary-arrow {
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+
+    .itinerary-budget {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2xs);
+      margin-top: var(--space-sm);
+      padding-top: var(--space-sm);
+      border-top: 1px dashed var(--border);
+      flex-wrap: wrap;
+    }
+
+    .budget-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .budget-value {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--sunset);
+    }
+
+    .budget-note {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    .destinations-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-sm);
+      margin-top: var(--space-xs);
+      align-content: start;
+    }
+
+    .home-travel-tips {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--space-md);
+      padding: var(--space-md);
+      margin-top: var(--space-sm);
+    }
+
+    .home-tips-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--forest);
+      margin-bottom: var(--space-sm);
+      text-align: center;
+    }
+
+    .home-tips-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-sm);
+    }
+
+    .home-tips-item {
+      display: flex;
+      gap: var(--space-xs);
+      align-items: flex-start;
+    }
+
+    .home-tips-item .home-tips-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .home-tips-content {
+      font-size: var(--text-xs);
+      line-height: 1.5;
+    }
+
+    .home-tips-content strong {
+      display: block;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .home-tips-content span {
+      color: var(--text-muted);
+    }
+
+    .home-transport {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--space-md);
+      padding: var(--space-md);
+      margin-top: var(--space-sm);
+    }
+
+    .home-transport-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--forest);
+      margin-bottom: var(--space-sm);
+      text-align: center;
+    }
+
+    .home-transport-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xs);
+    }
+
+    .transport-card {
+      background: var(--forest-light);
+      border-radius: var(--space-sm);
+      padding: var(--space-sm);
+      text-align: center;
+    }
+
+    .transport-route {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2xs);
+      margin-bottom: var(--space-xs);
+    }
+
+    .transport-from,
+    .transport-to {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .transport-arrow {
+      color: var(--forest);
+      font-size: 0.7rem;
+    }
+
+    .transport-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .transport-price {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--sunset);
+    }
+
+    .transport-time {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    .home-transport-note {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: var(--space-xs);
+    }
+
+    @media (max-width: 420px) {
+      .home-transport-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .transport-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .transport-route {
+        margin-bottom: 0;
+      }
+      
+      .transport-info {
+        flex-direction: row;
+        gap: var(--space-xs);
+      }
+    }
+
+    .home-checklist {
+      background: linear-gradient(135deg, var(--forest-light) 0%, var(--sky-light) 100%);
+      border-radius: var(--space-md);
+      padding: var(--space-md);
+      margin-top: var(--space-sm);
+    }
+
+    .home-checklist-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--forest);
+      margin-bottom: var(--space-sm);
+      text-align: center;
+    }
+
+    .home-checklist-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      justify-content: center;
+    }
+
+    .checklist-tag {
+      background: var(--card);
+      color: var(--text);
+      font-size: var(--text-xs);
+      padding: var(--space-2xs) var(--space-sm);
+      border-radius: 1rem;
+      font-weight: 500;
+    }
+
+    @media (min-width: 480px) {
+      .home-tips-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .dest-card {
+      position: relative;
+      border-radius: 1rem;
+      overflow: hidden;
+      cursor: pointer;
+      aspect-ratio: 3 / 4;
+      background: var(--earth-light);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .dest-card:focus-visible {
+      outline: 3px solid var(--forest);
+      outline-offset: 2px;
+    }
+
+    .dest-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -8px rgba(0,0,0,0.15);
+    }
+
+    .dest-card:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+
+    .dest-card-image {
+      position: absolute;
+      inset: 0;
+    }
+
+    .dest-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .dest-card:hover .dest-card-image img {
+      transform: scale(1.08);
+    }
+
+    .dest-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+    }
+
+    .dest-card-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      color: white;
+    }
+
+    .dest-card-hint {
+      position: absolute;
+      bottom: 0.75rem;
+      right: 0.75rem;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      opacity: 0;
+      transform: translateX(8px);
+      transition: all 0.3s ease;
+    }
+
+    .dest-card:hover .dest-card-hint {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .dest-number {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 0.7rem;
+      opacity: 0.7;
+      letter-spacing: 0.1em;
+    }
+
+    .dest-name {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 1.25rem;
+      font-weight: 400;
+      margin: 0.25rem 0;
+      letter-spacing: 0.05em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .dest-location {
+      font-size: 0.75rem;
+      opacity: 0.8;
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .dest-desc {
+      font-size: 0.75rem;
+      opacity: 0.9;
+      line-height: 1.4;
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .dest-desc {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+
+    .home-tips {
+      text-align: center;
+      padding: var(--space-xs) 0;
+    }
+
+    .home-tips-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-md);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .home-tips-icon {
+      color: var(--forest);
+    }
+
+    .home-quote {
+      text-align: center;
+      padding: var(--space-xl) var(--space-lg);
+      margin: var(--space-lg) 0;
+      background: linear-gradient(135deg, var(--forest-light) 0%, var(--sky-light) 100%);
+      border-radius: var(--space-md);
+      position: relative;
+    }
+
+    .home-quote::before,
+    .home-quote::after {
+      content: '"';
+      position: absolute;
+      font-size: 3.5rem;
+      color: var(--sunset);
+      opacity: 0.12;
+      font-family: Georgia, serif;
+      line-height: 1;
+    }
+
+    .home-quote::before {
+      top: var(--space-2xs);
+      left: var(--space-sm);
+    }
+
+    .home-quote::after {
+      content: '"';
+      bottom: var(--space-2xs);
+      right: var(--space-sm);
+    }
+
+    .quote-text {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: clamp(var(--text-base), 4vw, var(--text-lg));
+      color: var(--forest);
+      letter-spacing: 0.15em;
+      margin-bottom: var(--space-xs);
+      position: relative;
+      z-index: 1;
+      font-weight: 400;
+    }
+
+    .quote-author {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      position: relative;
+      z-index: 1;
+      letter-spacing: 0.05em;
+    }
+
+    .home-highlights {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+
+    .highlight-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      padding: var(--space-lg) var(--space-sm);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--space-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .highlight-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .highlight-icon {
+      font-size: var(--text-2xl);
+    }
+
+    .highlight-label {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+
+    .route-simple {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--space-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .route-day {
+      margin-bottom: var(--space-md);
+    }
+
+    .route-day:last-child {
+      margin-bottom: 0;
+    }
+
+    .route-day-label {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--forest);
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-xs);
+    }
+
+    .route-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2xs);
+    }
+
+    .route-point {
+      font-size: var(--text-xs);
+      padding: 0.3rem 0.6rem;
+      background: var(--earth-light);
+      border-radius: var(--space-sm);
+      color: var(--text);
+    }
+
+    .route-point.start {
+      background: var(--forest);
+      color: white;
+    }
+
+    .route-point.end {
+      background: var(--sunset);
+      color: white;
+    }
+
+    .route-arrow {
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+    }
+
+    .route-detail {
+      background: linear-gradient(135deg, var(--forest-light) 0%, var(--sky-light) 100%);
+      border-radius: var(--space-md);
+      padding: var(--space-sm) var(--space-md);
+      margin-bottom: var(--space-lg);
+      overflow: hidden;
+      transition: padding 0.3s ease, background 0.3s ease;
+    }
+
+    .route-detail.collapsed {
+      padding: 0;
+      background: transparent;
+    }
+
+    .route-detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px dashed var(--border);
+      cursor: pointer;
+      user-select: none;
+      gap: var(--space-sm);
+    }
+
+    .route-detail.collapsed .route-detail-header {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      margin-bottom: 0;
+      padding-bottom: var(--space-sm);
+      border-bottom: none;
+    }
+
+    .route-detail-title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--forest);
+    }
+
+    .route-detail-tip {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      flex: 1;
+      text-align: right;
+      margin-right: var(--space-sm);
+    }
+
+    .route-toggle-btn {
+      background: var(--forest);
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s ease;
+    }
+
+    .route-toggle-btn:hover {
+      background: oklch(35% 0.12 145);
+    }
+
+    .toggle-icon {
+      width: 16px;
+      height: 16px;
+      color: white;
+      transition: transform 0.3s ease;
+    }
+
+    .route-detail.collapsed .toggle-icon {
+      transform: rotate(-90deg);
+    }
+
+    .route-detail-content {
+      display: grid;
+      grid-template-rows: 1fr;
+      gap: var(--space-md);
+      opacity: 1;
+      transition: grid-template-rows 0.4s var(--ease-out-quart), opacity 0.3s ease;
+    }
+
+    .route-detail-content > * {
+      overflow: hidden;
+    }
+
+    .route-detail.collapsed .route-detail-content {
+      grid-template-rows: 0fr;
+      opacity: 0;
+    }
+
+    .route-detail.collapsed .route-detail-tip {
+      display: none;
+    }
+
+    .route-overview {
+      background: var(--card);
+      border: 2px solid var(--forest);
+      border-radius: var(--space-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .route-overview-title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--forest);
+      margin-bottom: var(--space-md);
+      text-align: center;
+    }
+
+    .route-overview-days {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .route-overview-day {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+
+    .route-overview-badge {
+      flex-shrink: 0;
+      font-size: var(--text-xs);
+      font-weight: 700;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      color: white;
+    }
+
+    .route-overview-badge.day1 {
+      background: var(--forest);
+    }
+
+    .route-overview-badge.day2 {
+      background: var(--sunset);
+    }
+
+    .route-overview-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2xs);
+      flex: 1;
+    }
+
+    .route-overview-point {
+      font-size: var(--text-xs);
+      padding: 0.25rem 0.5rem;
+      background: var(--earth-light);
+      border-radius: 0.25rem;
+      color: var(--text);
+    }
+
+    .route-overview-point.end {
+      background: var(--forest-light);
+      color: var(--forest);
+      font-weight: 600;
+    }
+
+    .route-overview-arrow {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+
+    @media (min-width: 480px) {
+      .route-overview-flow {
+        flex-wrap: nowrap;
+      }
+
+      .route-overview-point {
+        font-size: var(--text-sm);
+        padding: 0.3rem 0.6rem;
+      }
+    }
+
+    .route-detail-day {
+      margin-bottom: var(--space-md);
+    }
+
+    .route-detail-day:last-child {
+      margin-bottom: 0;
+    }
+
+    .route-detail-day-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-sm);
+    }
+
+    .day-badge {
+      background: var(--forest);
+      color: white;
+      font-size: var(--text-xs);
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+    }
+
+    .day-theme {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .route-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      font-size: var(--text-xs);
+    }
+
+    .timeline-item .time {
+      flex-shrink: 0;
+      width: 3rem;
+      font-weight: 600;
+      color: var(--sunset);
+    }
+
+    .timeline-item .time-optional {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      background: var(--card);
+      padding: 0.1rem 0.3rem;
+      border-radius: 0.2rem;
+      margin-right: var(--space-2xs);
+    }
+
+    .timeline-item .event {
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    @media (min-width: 480px) {
+      .route-flow {
+        flex-wrap: nowrap;
+      }
+
+      .route-point {
+        font-size: var(--text-sm);
+      }
+    }
+
+    .spot-photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xs);
+      margin-top: var(--space-xs);
+      padding: 0 var(--space-xs);
+    }
+
+    .photo-item {
+      position: relative;
+      border-radius: var(--space-sm);
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+    }
+
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .photo-item:active img {
+      transform: scale(1.05);
+    }
+
+    .photo-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: var(--space-2xl) var(--space-xs) var(--space-2xs);
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      color: white;
+      font-size: var(--text-xs);
+      text-align: center;
+    }
+
+    .spot-with-route {
+      position: relative;
+      margin-bottom: var(--space-md);
+    }
+
+    .route-curve {
+      position: absolute;
+      right: -1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3rem;
+      height: 80px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .route-curve svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .route-curve path {
+      fill: none;
+      stroke: var(--forest);
+      stroke-width: 2;
+      stroke-dasharray: 6, 4;
+    }
+
+    .route-curve .arrow-head {
+      fill: var(--forest);
+    }
+
+    .route-label {
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--forest);
+      color: white;
+      font-size: 0.7rem;
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .spot-with-route:nth-child(2) .route-curve path {
+      stroke: var(--forest);
+    }
+
+    .spot-with-route:nth-child(2) .route-curve .arrow-head {
+      fill: var(--forest);
+    }
+
+    .spot-with-route:nth-child(2) .route-label {
+      background: var(--forest);
+    }
+
+    .spot-with-route:nth-child(3) .route-curve path {
+      stroke: var(--sunset);
+    }
+
+    .spot-with-route:nth-child(3) .route-curve .arrow-head {
+      fill: var(--sunset);
+    }
+
+    .spot-with-route:nth-child(3) .route-label {
+      background: var(--sunset);
+      top: auto;
+      bottom: 0;
+      transform: translateY(50%);
+    }
+
+    .spot-with-route:last-child .route-curve {
+      display: none;
+    }
+
+    .spot-with-route:last-child .route-label {
+      display: none;
+    }
+
+    @media (max-width: 420px) {
+      .spot-photo-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-2xs);
+      }
+
+      .route-curve, .route-label {
+        display: none;
+      }
+    }
+
+    @media (min-width: 480px) {
+      .route-curve {
+        width: 3.5rem;
+        height: 100px;
+        right: -1.8rem;
+      }
+
+      .route-label {
+        right: 0.8rem;
+        font-size: 0.75rem;
+        padding: 0.35rem 0.7rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .spot-photo-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space-sm);
+      }
+
+      .route-curve {
+        width: 4rem;
+        height: 120px;
+        right: -2.2rem;
+      }
+
+      .route-label {
+        right: 1rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .home-highlights {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .home-decor {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-xl);
+      padding: var(--space-md) 0 var(--space-sm);
+      opacity: 0.45;
+    }
+
+    .decor-flower {
+      font-size: 1rem;
+      color: var(--sunset);
+      animation: flowerFloat 3s ease-in-out infinite;
+    }
+
+    .decor-flower:nth-child(2) {
+      animation-delay: 0.5s;
+      font-size: 1.25rem;
+    }
+
+    .decor-flower:nth-child(3) {
+      animation-delay: 1s;
+      font-size: 1rem;
+    }
+
+    @keyframes flowerFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(5deg); }
+    }
+
+    .section-header {
+      margin-bottom: var(--space-lg);
+    }
+
+    .section-number {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: var(--text-xs);
+      color: var(--sunset);
+      letter-spacing: 0.25em;
+      margin-bottom: var(--space-2xs);
+      font-weight: 400;
+    }
+
+    .quick-tips {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xs);
+      margin: var(--space-md) 0;
+    }
+
+    .quick-tip {
+      background: linear-gradient(135deg, var(--forest) 0%, oklch(40% 0.10 160) 100%);
+      color: white;
+      padding: var(--space-sm) var(--space-xs);
+      border-radius: var(--space-sm);
+      text-align: center;
+    }
+
+    .quick-tip-icon {
+      font-size: var(--text-xl);
+      margin-bottom: var(--space-2xs);
+    }
+
+    .quick-tip-label {
+      font-size: var(--text-xs);
+      opacity: 0.9;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+    }
+
+    .quick-tip-value {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      margin-top: var(--space-2xs);
+      letter-spacing: 0.01em;
+    }
+
+    .spot-highlight-tag {
+      display: inline-block;
+      background: var(--sunset);
+      color: white;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.3rem;
+      margin-left: var(--space-xs);
+      vertical-align: middle;
+      letter-spacing: 0.02em;
+    }
+
+    .key-info {
+      background: var(--card);
+      border: 2px solid var(--forest);
+      border-radius: var(--space-md);
+      padding: var(--space-md);
+      margin: var(--space-lg) 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .key-info-title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--forest);
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      letter-spacing: 0.02em;
+    }
+
+    .key-info-grid {
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    .key-info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      font-size: var(--text-sm);
+      line-height: 1.6;
+    }
+
+    .key-info-row-icon {
+      color: var(--sunset);
+      flex-shrink: 0;
+      width: 1rem;
+      margin-top: 0.1rem;
+    }
+
+    .key-info-row-text {
+      color: var(--text);
+    }
+
+    .key-info-row-text strong {
+      color: var(--forest);
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: clamp(var(--text-xl), 5vw, var(--text-3xl));
+      color: var(--forest);
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      text-wrap: balance;
+      position: relative;
+      display: inline-block;
+      line-height: 1.3;
+    }
+
+    /* ============ 四种签名效果 ============ */
+
+    /* 斗南 - 花瓣飘散渐显效果 */
+    .title-style-petal {
+      background: linear-gradient(90deg, 
+        var(--forest) 0%, 
+        var(--sunset) 50%, 
+        var(--forest) 100%);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: petalReveal 1.5s var(--ease-out-quart) forwards,
+                 gradientFlow 3s ease-in-out infinite;
+      opacity: 0;
+      margin-left: 1.5rem;
+    }
+
+    .title-style-petal::before {
+      content: '✿';
+      position: absolute;
+      left: -1.5rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(0deg);
+      font-size: 0.8em;
+      opacity: 0;
+      animation: petalFloat 2s var(--ease-out-quart) 0.3s forwards;
+      color: var(--sunset);
+    }
+
+    @keyframes petalReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+        filter: blur(4px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes gradientFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes petalFloat {
+      0% {
+        opacity: 0;
+        transform: translateY(-50%) translateX(-20px) rotate(-30deg);
+      }
+      100% {
+        opacity: 0.7;
+        transform: translateY(-50%) translateX(0) rotate(0deg);
+      }
+    }
+
+    /* 移动端花瓣位置调整 */
+    @media (max-width: 479px) {
+      .title-style-petal {
+        margin-left: 0;
+        margin-right: 1.5rem;
+      }
+
+      .title-style-petal::before {
+        left: auto;
+        right: -1.5rem;
+      }
+
+      @keyframes petalFloat {
+        0% {
+          opacity: 0;
+          transform: translateY(-50%) translateX(20px) rotate(30deg);
+        }
+        100% {
+          opacity: 0.7;
+          transform: translateY(-50%) translateX(0) rotate(0deg);
+        }
+      }
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      .title-style-petal {
+        animation: none !important;
+        opacity: 1 !important;
+        color: var(--forest) !important;
+        background: none !important;
+        -webkit-background-clip: unset !important;
+        background-clip: unset !important;
+        filter: none !important;
+        transform: none !important;
+        margin-left: 0 !important;
+      }
+
+      .title-style-petal::before {
+        display: none !important;
+      }
+
+      .fade-in {
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+
+      .hero-content,
+      .hero h1,
+      .hero-subtitle {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+
+      .dest-card,
+      .nav-tab,
+      .slide-dot,
+      .back-top,
+      .info-item,
+      .section-cover img {
+        transition: none !important;
+      }
+
+      .decor-flower {
+        animation: none !important;
+      }
+    }
+
+    /* Mobile landscape optimization */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .hero {
+        min-height: auto;
+        padding: var(--space-sm) var(--space-md);
+      }
+
+      .hero h1 {
+        font-size: 1.2rem;
+      }
+
+      .hero-subtitle {
+        font-size: 0.7rem;
+      }
+
+      .destinations-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .dest-card {
+        aspect-ratio: 1 / 1;
+      }
+
+      .home-quote {
+        padding: var(--space-md);
+      }
+
+      .quote-text {
+        font-size: 0.95rem;
+      }
+
+      .slide-indicator {
+        display: none;
+      }
+
+      .back-top {
+        bottom: var(--space-sm);
+      }
+    }
+
+    .section-desc {
+      margin-top: var(--space-sm);
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+      padding-left: var(--space-md);
+      border-left: 3px solid var(--sunset);
+      line-height: 1.75;
+    }
+
+    .section-cover {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--space-md);
+      overflow: hidden;
+      margin: var(--space-lg) 0;
+      position: relative;
+      background: var(--earth-light);
+    }
+
+    .section-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .section-cover:hover img {
+      transform: scale(1.03);
+    }
+
+    .section-cover-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: var(--space-2xl) var(--space-md) var(--space-sm);
+      background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+      color: white;
+      font-size: 0.8rem;
+      text-align: right;
+    }
+
+    .logic-card {
+      background: linear-gradient(135deg, var(--forest-light) 0%, var(--sky-light) 100%);
+      padding: var(--space-md) var(--space-lg);
+      border-radius: var(--space-md);
+      margin: var(--space-lg) 0;
+      font-size: var(--text-sm);
+      color: var(--text);
+      position: relative;
+      overflow: hidden;
+      line-height: 1.75;
+      font-weight: 500;
+    }
+
+    .logic-card::before {
+      content: '核心思路';
+      position: absolute;
+      top: var(--space-sm);
+      right: var(--space-md);
+      font-size: var(--text-xs);
+      color: var(--forest);
+      opacity: 0.5;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+
+    .spot-group {
+      margin: var(--space-lg) 0;
+    }
+
+    .spot {
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .spot:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .spot-name {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: var(--space-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      letter-spacing: 0.01em;
+    }
+
+    .spot-name::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--sunset);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .spot-highlight {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-bottom: var(--space-xs);
+      line-height: 1.75;
+    }
+
+    .spot-tip {
+      font-size: var(--text-xs);
+      color: var(--sky);
+      background: var(--sky-light);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--space-xs);
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-sm);
+      margin: var(--space-lg) 0;
+    }
+
+    .info-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: var(--space-md);
+      border-radius: var(--space-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .info-label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--sunset);
+      letter-spacing: 0.12em;
+      margin-bottom: var(--space-xs);
+      text-transform: uppercase;
+    }
+
+    .info-content {
+      font-size: var(--text-sm);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    .info-content ul {
+      list-style: none;
+      margin-top: var(--space-xs);
+    }
+
+    .info-content li {
+      padding-left: var(--space-md);
+      position: relative;
+      margin-bottom: var(--space-2xs);
+    }
+
+    .info-content li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.65em;
+      width: 4px;
+      height: 4px;
+      background: var(--forest);
+      border-radius: 50%;
+    }
+
+    .price-tag {
+      display: inline-block;
+      background: var(--sunset-soft);
+      color: var(--sunset);
+      padding: 0.2rem 0.6rem;
+      border-radius: 0.35rem;
+      font-size: var(--text-sm);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .warning-box {
+      background: var(--sunset-soft);
+      border-left: 4px solid var(--sunset);
+      padding: var(--space-md);
+      border-radius: 0 var(--space-sm) var(--space-sm) 0;
+      margin: var(--space-lg) 0;
+      font-size: var(--text-sm);
+      line-height: 1.75;
+    }
+
+    .warning-box strong {
+      color: var(--sunset);
+      font-weight: 600;
+    }
+
+    .footer {
+      text-align: center;
+      padding: var(--space-2xl) var(--space-md);
+      background: linear-gradient(180deg, var(--bg) 0%, var(--forest-light) 100%);
+      font-family: 'ZCOOL XiaoWei', serif;
+    }
+
+    .footer-text {
+      font-size: 1rem;
+      color: var(--forest);
+      letter-spacing: 0.1em;
+    }
+
+    .closable-card {
+      position: relative;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .closable-card.hiding {
+      opacity: 0;
+      transform: scale(0.95);
+      pointer-events: none;
+    }
+
+    .closable-card.card-hidden {
+      display: none !important;
+    }
+
+    .card-close-btn {
+      position: absolute;
+      top: var(--space-sm);
+      right: var(--space-sm);
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.8) rotate(-90deg);
+      transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .card-close-btn::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+    }
+
+    .route-detail .card-close-btn {
+      left: var(--space-sm);
+      right: auto;
+    }
+
+    .route-detail .route-detail-header {
+      padding-left: calc(var(--space-md) + 24px);
+    }
+
+    .home-itinerary .card-close-btn {
+      left: var(--space-sm);
+      right: auto;
+      top: calc(var(--space-md) + 4px);
+    }
+
+    .info-grid.closable-card .card-close-btn {
+      left: var(--space-sm);
+      right: auto;
+    }
+
+    .closable-card:hover .card-close-btn,
+    .closable-card:focus-within .card-close-btn {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+
+    .card-close-btn:hover {
+      background: var(--sunset);
+      border-color: var(--sunset);
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .card-close-btn:active {
+      transform: scale(0.9) rotate(90deg);
+    }
+
+    .card-close-btn svg {
+      width: 12px;
+      height: 12px;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+
+    .card-close-btn:hover svg {
+      color: white;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: var(--space-md);
+      right: var(--space-md);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 110;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .theme-toggle:hover {
+      background: var(--forest-light);
+      border-color: var(--forest);
+      transform: scale(1.05);
+    }
+
+    .theme-toggle svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text);
+    }
+
+    .theme-toggle .icon-sun {
+      display: block;
+    }
+
+    .theme-toggle .icon-moon {
+      display: none;
+    }
+
+    [data-theme="dark"] .theme-toggle .icon-sun {
+      display: none;
+    }
+
+    [data-theme="dark"] .theme-toggle .icon-moon {
+      display: block;
+    }
+
+    .music-player {
+      position: fixed;
+      bottom: 140px;
+      right: var(--space-md);
+      z-index: 85;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .music-toggle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--sunset-soft);
+      border: 2px solid var(--sunset);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .music-toggle:hover {
+      background: var(--sunset);
+      transform: scale(1.05);
+    }
+
+    .music-toggle.playing {
+      background: var(--sunset);
+      animation: musicPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes musicPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(204, 85, 51, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(204, 85, 51, 0); }
+    }
+
+    .music-toggle svg {
+      width: 20px;
+      height: 20px;
+      color: var(--sunset);
+      transition: color 0.2s ease;
+    }
+
+    .music-toggle.playing svg,
+    .music-toggle:hover svg {
+      color: white;
+    }
+
+    .music-info {
+      background: var(--text);
+      color: var(--card);
+      padding: var(--space-2xs) var(--space-sm);
+      border-radius: var(--space-sm);
+      font-size: 0.7rem;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateX(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .music-player.show-info .music-info {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .music-prompt {
+      position: fixed;
+      bottom: 50%;
+      left: 50%;
+      transform: translate(-50%, 50%);
+      background: var(--card);
+      border: 2px solid var(--forest);
+      padding: var(--space-md) var(--space-lg);
+      border-radius: var(--space-md);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      z-index: 200;
+      text-align: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .music-prompt.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .music-prompt-icon {
+      font-size: 2rem;
+      margin-bottom: var(--space-xs);
+    }
+
+    .music-prompt-text {
+      font-size: var(--text-sm);
+      color: var(--text);
+      margin-bottom: var(--space-sm);
+    }
+
+    .music-prompt-btn {
+      background: var(--forest);
+      color: white;
+      border: none;
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--space-sm);
+      font-size: var(--text-sm);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s ease;
+    }
+
+    .music-prompt-btn:hover {
+      background: oklch(38% 0.12 145);
+    }
+
+    .music-prompt-close {
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      padding: var(--space-xs);
+      font-size: var(--text-xs);
+      cursor: pointer;
+      margin-top: var(--space-xs);
+      font-family: inherit;
+    }
+
+    .sidebar-toggle {
+      position: fixed;
+      bottom: 80px;
+      right: var(--space-md);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--forest);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 90;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .sidebar-toggle:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      background: oklch(38% 0.12 145);
+    }
+
+    .sidebar-toggle:active {
+      transform: scale(0.95);
+    }
+
+    .sidebar-toggle svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-toggle:hover svg {
+      transform: rotate(90deg);
+    }
+
+    .sidebar-toggle .badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 18px;
+      height: 18px;
+      background: var(--sunset);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      border-radius: 9px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      transform: scale(0);
+      transition: transform 0.25s var(--ease-out-quart);
+    }
+
+    .sidebar-toggle.has-hidden .badge {
+      display: flex;
+      transform: scale(1);
+    }
+
+    .sidebar-toggle.pulse .badge {
+      animation: badgePulse 0.3s var(--ease-out-quart);
+    }
+
+    @keyframes badgePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .first-visit-tip {
+      position: fixed;
+      bottom: 190px;
+      right: var(--space-md);
+      background: var(--text);
+      color: var(--card);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--space-md);
+      font-size: 0.75rem;
+      z-index: 95;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .first-visit-tip.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .first-visit-tip::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      right: 20px;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid var(--text);
+    }
+
+    .first-visit-close {
+      background: transparent;
+      border: none;
+      color: var(--sunset-soft);
+      margin-left: var(--space-xs);
+      cursor: pointer;
+      font-size: 0.7rem;
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      visibility: hidden;
+      transition: background 0.3s ease, visibility 0.3s ease;
+      z-index: 95;
+      backdrop-filter: blur(0);
+    }
+
+    .sidebar-overlay.active {
+      background: rgba(0,0,0,0.4);
+      visibility: visible;
+      backdrop-filter: blur(4px);
+    }
+
+    .sidebar-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(300px, 85vw);
+      background: var(--card);
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -4px 0 20px rgba(0,0,0,0);
+    }
+
+    .sidebar-panel.active {
+      transform: translateX(0);
+      box-shadow: -8px 0 32px rgba(0,0,0,0.15);
+    }
+
+    .sidebar-header {
+      padding: var(--space-md);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+    }
+
+    .sidebar-panel.active .sidebar-header {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sidebar-title {
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--forest);
+    }
+
+    .sidebar-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--earth-light);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .sidebar-close:hover {
+      background: var(--sunset-soft);
+      transform: rotate(90deg);
+    }
+
+    .sidebar-close:active {
+      transform: rotate(90deg) scale(0.9);
+    }
+
+    .sidebar-close svg {
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+
+    .sidebar-close:hover svg {
+      color: var(--sunset);
+    }
+
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-md);
+    }
+
+    .sidebar-empty {
+      text-align: center;
+      padding: var(--space-xl) var(--space-md);
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s;
+    }
+
+    .sidebar-panel.active .sidebar-empty {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sidebar-empty-icon {
+      font-size: 2rem;
+      margin-bottom: var(--space-sm);
+      opacity: 0.5;
+    }
+
+    .sidebar-empty-hint {
+      font-size: 0.75rem;
+      margin-top: var(--space-xs);
+    }
+
+    .sidebar-item {
+      background: var(--earth-light);
+      border-radius: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      margin-bottom: var(--space-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      opacity: 0;
+      transform: translateX(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+    }
+
+    .sidebar-panel.active .sidebar-item {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .sidebar-panel.active .sidebar-item:nth-child(1) { transition-delay: 0.1s; }
+    .sidebar-panel.active .sidebar-item:nth-child(2) { transition-delay: 0.15s; }
+    .sidebar-panel.active .sidebar-item:nth-child(3) { transition-delay: 0.2s; }
+    .sidebar-panel.active .sidebar-item:nth-child(4) { transition-delay: 0.25s; }
+    .sidebar-panel.active .sidebar-item:nth-child(5) { transition-delay: 0.3s; }
+    .sidebar-panel.active .sidebar-item:nth-child(6) { transition-delay: 0.35s; }
+    .sidebar-panel.active .sidebar-item:nth-child(7) { transition-delay: 0.4s; }
+    .sidebar-panel.active .sidebar-item:nth-child(8) { transition-delay: 0.45s; }
+
+    .sidebar-item:hover {
+      background: var(--forest-light);
+    }
+
+    .sidebar-item-name {
+      font-size: var(--text-sm);
+      color: var(--text);
+      flex: 1;
+    }
+
+    .sidebar-item-restore {
+      background: var(--forest);
+      color: white;
+      border: none;
+      padding: var(--space-xs) var(--space-md);
+      min-height: 44px;
+      min-width: 60px;
+      border-radius: var(--space-xs);
+      font-size: var(--text-xs);
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .sidebar-item-restore:hover {
+      background: oklch(35% 0.12 145);
+      transform: translateX(-2px);
+    }
+
+    .sidebar-item-restore:active {
+      transform: translateX(-2px) scale(0.95);
+    }
+
+    .sidebar-footer {
+      padding: var(--space-md);
+      border-top: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease 0.2s, transform 0.3s ease 0.2s;
+    }
+
+    .sidebar-panel.active .sidebar-footer {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sidebar-reset-btn {
+      width: 100%;
+      padding: var(--space-sm);
+      background: var(--earth-light);
+      border: 1px solid var(--border);
+      border-radius: var(--space-sm);
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .sidebar-reset-btn:hover {
+      background: var(--sunset-soft);
+      color: var(--sunset);
+      border-color: var(--sunset);
+    }
+
+    .sidebar-toggle-label {
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      margin-right: var(--space-xs);
+      background: var(--text);
+      color: var(--card);
+      font-size: 0.7rem;
+      padding: var(--space-2xs) var(--space-xs);
+      border-radius: var(--space-xs);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .sidebar-toggle:hover .sidebar-toggle-label {
+      opacity: 1;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 140px;
+      right: var(--space-md);
+      background: var(--text);
+      color: var(--card);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--space-sm);
+      font-size: var(--text-sm);
+      z-index: 200;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast-action {
+      color: var(--sunset);
+      text-decoration: underline;
+      cursor: pointer;
+      margin-left: var(--space-xs);
+    }
+
+    .sidebar-reset-btn:active {
+      transform: scale(0.98);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sidebar-panel,
+      .sidebar-overlay,
+      .card-close-btn,
+      .closable-card,
+      .sidebar-toggle,
+      .sidebar-toggle svg,
+      .sidebar-toggle .badge,
+      .sidebar-header,
+      .sidebar-empty,
+      .sidebar-item,
+      .sidebar-footer,
+      .sidebar-close,
+      .music-toggle,
+      .music-info,
+      .music-player {
+        transition: none !important;
+        transform: none !important;
+        animation: none !important;
+        opacity: 1 !important;
+      }
+      
+      .sidebar-toggle .badge {
+        transform: scale(1) !important;
+      }
+    }
+
+    .tips-decor {
+      text-align: center;
+      padding: var(--space-lg) 0;
+      opacity: 0.4;
+    }
+
+    .decor-pattern {
+      font-size: 1.2rem;
+      color: var(--sunset);
+      letter-spacing: var(--space-md);
+    }
+
+    .tips-checklist {
+      background: var(--card);
+      border: 2px solid var(--forest);
+      border-radius: var(--space-md);
+      padding: var(--space-lg);
+      margin: var(--space-md) 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .checklist-title {
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--forest);
+      margin-bottom: var(--space-md);
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-sm);
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm);
+      background: var(--earth-light);
+      border-radius: var(--space-xs);
+      font-size: var(--text-sm);
+      font-weight: 500;
+    }
+
+    .check-icon {
+      color: var(--forest);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 359px) {
+      .checklist-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .time-table {
+      background: var(--card);
+      border: 2px solid var(--forest);
+      border-radius: var(--space-md);
+      overflow: hidden;
+      margin: var(--space-lg) 0;
+    }
+
+    .time-table-title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--forest);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--forest-light);
+      text-align: center;
+    }
+
+    .time-table-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .time-table-row + .time-table-row {
+      border-top: 1px solid var(--border);
+    }
+
+    .time-table-cell {
+      background: var(--card);
+      padding: var(--space-xs) var(--space-xs);
+      font-size: var(--text-xs);
+      line-height: 1.5;
+    }
+
+    .time-table-header .time-table-cell {
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--earth-light);
+    }
+
+    .time-table-cell.area {
+      font-weight: 500;
+      color: var(--forest);
+    }
+
+    .time-table-cell.highlight {
+      background: var(--sunset-soft);
+      color: var(--sunset);
+      font-weight: 600;
+    }
+
+    .time-table-cell.tip {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    @media (min-width: 480px) {
+      .time-table-cell {
+        padding: var(--space-sm) var(--space-sm);
+        font-size: var(--text-sm);
+      }
+    }
+
+    .route-card {
+      background: linear-gradient(135deg, var(--forest-light) 0%, var(--sky-light) 100%);
+      border-radius: var(--space-md);
+      padding: var(--space-md);
+      margin: var(--space-md) 0;
+    }
+
+    .route-card-title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--forest);
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .route-card-time {
+      font-size: var(--text-xs);
+      background: var(--forest);
+      color: white;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.25rem;
+      font-weight: 600;
+    }
+
+    .route-card-flow {
+      font-size: var(--text-xs);
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    .route-card-flow strong {
+      color: var(--forest);
+    }
+
+    .venue-section {
+      margin: var(--space-md) 0;
+    }
+
+    .venue-item {
+      padding: var(--space-sm) 0;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .venue-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .venue-name {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: var(--space-2xs);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .venue-tag {
+      font-size: 0.65rem;
+      background: var(--sunset);
+      color: white;
+      padding: 0.1rem 0.35rem;
+      border-radius: 0.2rem;
+      font-weight: 600;
+    }
+
+    .venue-tag.optional {
+      background: var(--text-muted);
+    }
+
+    .venue-desc {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .venue-tips {
+      margin-top: var(--space-2xs);
+      font-size: var(--text-xs);
+      color: var(--sunset);
+    }
+
+    .venue-detail-toggle {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .venue-detail-toggle .venue-name::after {
+      content: '展开';
+      font-size: 0.7rem;
+      color: var(--forest);
+      margin-left: auto;
+      font-weight: 500;
+    }
+
+    .venue-detail-toggle.collapsed .venue-name::after {
+      content: '展开';
+    }
+
+    .venue-detail-toggle.expanded .venue-name::after {
+      content: '收起';
+    }
+
+    .venue-detail-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .venue-detail-toggle.expanded + .venue-detail-content {
+      max-height: 500px;
+    }
+
+    .dounan-photos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xs);
+      margin: var(--space-md) 0;
+    }
+
+    .dounan-photo {
+      aspect-ratio: 1;
+      border-radius: var(--space-sm);
+      overflow: hidden;
+    }
+
+    .dounan-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .dounan-photo-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: var(--space-xl) var(--space-2xs) var(--space-2xs);
+      background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+      color: white;
+      font-size: 0.7rem;
+      text-align: center;
+    }
+
+    .simple-info {
+      margin: var(--space-sm) 0;
+      padding: var(--space-sm);
+      background: var(--forest-light);
+      border-radius: var(--space-sm);
+    }
+
+    .simple-info-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--forest);
+      margin-bottom: var(--space-xs);
+    }
+
+    .simple-info-content {
+      font-size: var(--text-sm);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .simple-info-content strong {
+      color: var(--forest);
+    }
+
+    .spot-transport {
+      font-size: var(--text-xs);
+      color: var(--sky);
+      background: var(--sky-light);
+      padding: var(--space-2xs) var(--space-xs);
+      border-radius: var(--space-2xs);
+      display: inline-block;
+      margin-top: var(--space-2xs);
+    }
+
+    .flower-tips {
+      display: grid;
+      gap: var(--space-sm);
+      margin: var(--space-md) 0;
+    }
+
+    .flower-tip-item {
+      display: flex;
+      gap: var(--space-sm);
+      font-size: var(--text-sm);
+      line-height: 1.6;
+    }
+
+    .flower-tip-num {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--forest);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .flower-tip-text {
+      flex: 1;
+    }
+
+    .flower-tip-text strong {
+      color: var(--forest);
+    }
+
+    .alert-box {
+      background: var(--sunset-soft);
+      border-left: 4px solid var(--sunset);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 0 var(--space-sm) var(--space-sm) 0;
+      margin: var(--space-md) 0;
+      font-size: var(--text-sm);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+
+    .alert-box-icon {
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+
+    .alert-box-text {
+      flex: 1;
+    }
+
+    .alert-box-text strong {
+      color: var(--sunset);
+    }
+
+    .tips-footer {
+      text-align: center;
+      padding: var(--space-lg) 0;
+    }
+
+    .tips-footer-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .tips-footer-icon {
+      color: var(--sunset);
+      opacity: 0.6;
+    }
+
+    .tips-footer-text {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+
+    .back-top {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 1rem;
+      width: 2.75rem;
+      height: 2.75rem;
+      background: var(--forest);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateX(-1rem);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 99;
+    }
+
+    .back-top.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .back-top svg {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+
+    .slide-indicator {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.5rem;
+      z-index: 99;
+      padding: 0.5rem;
+    }
+
+    .slide-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .slide-dot::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+    }
+
+    .slide-dot:hover {
+      background: var(--text-muted);
+    }
+
+    .slide-dot.active {
+      background: var(--forest);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    .nav-arrow {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3rem;
+      height: 3rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .nav-arrow:hover {
+      background: var(--forest);
+      color: white;
+      border-color: var(--forest);
+    }
+
+    .nav-arrow svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    .nav-arrow.prev {
+      left: 1rem;
+    }
+
+    .nav-arrow.next {
+      right: 1rem;
+    }
+
+    @media (min-width: 480px) {
+      .nav-tabs {
+        padding: var(--space-sm) var(--space-md);
+      }
+
+      .nav-tab {
+        padding: var(--space-xs) var(--space-lg);
+        font-size: 0.9rem;
+      }
+
+      .section {
+        padding: var(--space-xl) var(--space-lg);
+      }
+
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-md);
+      }
+
+      .section-cover {
+        aspect-ratio: 2 / 1;
+        border-radius: var(--space-lg);
+      }
+
+      .home-section {
+        gap: var(--space-md);
+      }
+    }
+
+    @media (min-width: 768px) {
+      .hero {
+        min-height: 32vh;
+        padding: var(--space-2xl) var(--space-2xl) var(--space-xl);
+      }
+
+      .hero h1 {
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+      }
+
+      .hero-subtitle {
+        font-size: clamp(0.85rem, 2vw, 1rem);
+      }
+
+      .slides-container {
+        min-height: calc(100vh - 120px);
+      }
+
+      .section {
+        padding: var(--space-xl);
+      }
+
+      .nav-tabs-inner {
+        justify-content: center;
+      }
+
+      .section-cover {
+        aspect-ratio: 21 / 9;
+      }
+
+      .nav-arrow {
+        display: flex;
+      }
+
+      .slide-indicator {
+        display: none;
+      }
+
+      .back-top {
+        bottom: var(--space-xl);
+        left: auto;
+        right: var(--space-lg);
+        width: 3rem;
+        height: 3rem;
+      }
+
+      .back-top svg {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+
+      .destinations-grid {
+        gap: var(--space-md);
+      }
+
+      .dest-card {
+        aspect-ratio: 4 / 5;
+      }
+
+      .dest-name {
+        font-size: 1.5rem;
+      }
+
+      .dest-desc {
+        display: block;
+      }
+
+      .home-tips {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Hero Entrance Animation */
+    .hero-content {
+      animation: heroFadeIn 1.2s var(--ease-out-expo) forwards;
+    }
+
+    .hero h1 {
+      animation: titleReveal 1s var(--ease-out-quart) 0.15s forwards;
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+
+    .hero-subtitle {
+      animation: subtitleReveal 0.8s var(--ease-out-quart) 0.35s forwards;
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+
+    @keyframes heroFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes titleReveal {
+      from { opacity: 0; transform: translateY(1.5rem); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes subtitleReveal {
+      from { opacity: 0; transform: translateY(1rem); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Content Fade-in */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(1.2rem);
+      transition: opacity 0.6s var(--ease-out-quart), 
+                  transform 0.6s var(--ease-out-quart);
+      will-change: opacity, transform;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .dest-card.fade-in:nth-child(1) { transition-delay: 0ms; }
+    .dest-card.fade-in:nth-child(2) { transition-delay: 70ms; }
+    .dest-card.fade-in:nth-child(3) { transition-delay: 140ms; }
+    .dest-card.fade-in:nth-child(4) { transition-delay: 210ms; }
+
+    .spot.fade-in:nth-child(1) { transition-delay: 0ms; }
+    .spot.fade-in:nth-child(2) { transition-delay: 50ms; }
+    .spot.fade-in:nth-child(3) { transition-delay: 100ms; }
+    .spot.fade-in:nth-child(4) { transition-delay: 150ms; }
+
+    .info-item.fade-in:nth-child(1) { transition-delay: 0ms; }
+    .info-item.fade-in:nth-child(2) { transition-delay: 40ms; }
+    .info-item.fade-in:nth-child(3) { transition-delay: 80ms; }
+    .info-item.fade-in:nth-child(4) { transition-delay: 120ms; }
+
+    .section-cover.fade-in { transition-duration: 0.8s; }
+    .logic-card.fade-in { transition-duration: 0.5s; }
+
+    /* Navigation Tab Animation */
+    .nav-tab {
+      position: relative;
+      transition: background 0.2s var(--ease-out-quart), 
+                  color 0.2s var(--ease-out-quart),
+                  transform 0.15s var(--ease-out-quart);
+      overflow: hidden;
+    }
+
+    .nav-tab::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--forest);
+      transition: width 0.25s var(--ease-out-quart), 
+                  left 0.25s var(--ease-out-quart);
+    }
+
+    .nav-tab:hover::after {
+      width: 60%;
+      left: 20%;
+    }
+
+    .nav-tab.active::after {
+      width: 0;
+    }
+
+    .nav-tab:active {
+      transform: scale(0.94);
+    }
+
+    /* Destination Card Animation */
+    .dest-card {
+      transition: transform 0.25s var(--ease-out-quart);
+    }
+
+    .dest-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.3s var(--ease-out-quart);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .dest-card:active {
+      transform: scale(0.97);
+    }
+
+    .dest-card:active::before {
+      opacity: 1;
+    }
+
+    .dest-card-image img {
+      transition: transform 0.5s var(--ease-out-quart);
+      will-change: transform;
+    }
+
+    .dest-card:active .dest-card-image img {
+      transform: scale(1.05);
+    }
+
+    .dest-card-content {
+      transition: transform 0.3s var(--ease-out-quart);
+    }
+
+    .dest-card:active .dest-card-content {
+      transform: scale(0.98);
+    }
+
+    /* Section Cover Animation */
+    .section-cover {
+      position: relative;
+    }
+
+    .section-cover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.15) 100%);
+      opacity: 0;
+      transition: opacity 0.4s var(--ease-out-quart);
+      pointer-events: none;
+    }
+
+    .section-cover:active::after {
+      opacity: 1;
+    }
+
+    .section-cover img {
+      transition: transform 0.5s var(--ease-out-quart);
+      will-change: transform;
+    }
+
+    .section-cover:active img {
+      transform: scale(1.02);
+    }
+
+    /* Slide Dot Animation */
+    .slide-dot {
+      transition: width 0.2s var(--ease-out-quart),
+                  background 0.2s var(--ease-out-quart),
+                  transform 0.15s var(--ease-out-quart);
+    }
+
+    .slide-dot:active {
+      transform: scale(0.85);
+    }
+
+    .slide-dot.active {
+      animation: dotPulse 0.3s var(--ease-out-quart);
+    }
+
+    @keyframes dotPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Back to Top Button Animation */
+    .back-top {
+      transition: opacity 0.25s var(--ease-out-quart),
+                  transform 0.25s var(--ease-out-quart),
+                  box-shadow 0.2s var(--ease-out-quart);
+    }
+
+    .back-top:active {
+      transform: scale(0.9) !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Navigation Arrow Animation */
+    .nav-arrow {
+      transition: background 0.2s var(--ease-out-quart),
+                  color 0.2s var(--ease-out-quart),
+                  border-color 0.2s var(--ease-out-quart),
+                  transform 0.15s var(--ease-out-quart),
+                  box-shadow 0.2s var(--ease-out-quart);
+    }
+
+    .nav-arrow:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    .nav-arrow:active {
+      transform: translateY(-50%) scale(0.92);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Info Item Hover */
+    .info-item {
+      transition: transform 0.2s var(--ease-out-quart),
+                  box-shadow 0.2s var(--ease-out-quart);
+    }
+
+    /* Price Tag Animation */
+    .price-tag {
+      transition: transform 0.2s var(--ease-out-quart),
+                  background 0.2s var(--ease-out-quart);
+    }
+
+    /* Logic Card Animation */
+    .logic-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logic-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+      transform: translateX(-100%);
+      transition: transform 0.6s var(--ease-out-quart);
+    }
+
+    .logic-card:active::after {
+      transform: translateX(100%);
+    }
+
+    /* Warning Box Animation */
+    .warning-box {
+      transition: transform 0.2s var(--ease-out-quart);
+    }
+
+    /* Slide Transition */
+    .slide {
+      transition: opacity 0.3s var(--ease-out-quart);
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .slide:not(.active) {
+      opacity: 0.95;
+    }
+
+    /* Touch Ripple Effect */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      transform: scale(0);
+      animation: rippleEffect 0.5s var(--ease-out-quart);
+      pointer-events: none;
+    }
+
+    @keyframes rippleEffect {
+      to {
+        transform: scale(2.5);
+        opacity: 0;
+      }
+    }
+
+    /* PC Hover Effects */
+    @media (hover: hover) and (pointer: fine) {
+      .dest-card:hover {
+        transform: translateY(-4px);
+      }
+
+      .dest-card:hover .dest-card-image img {
+        transform: scale(1.08);
+      }
+
+      .dest-card:hover .dest-card-content {
+        transform: translateY(-2px);
+      }
+
+      .dest-card::before {
+        opacity: 0;
+      }
+
+      .dest-card:hover::before {
+        opacity: 1;
+      }
+
+      .section-cover:hover img {
+        transform: scale(1.03);
+      }
+
+      .section-cover:hover::after {
+        opacity: 1;
+      }
+
+      .nav-arrow:hover {
+        transform: translateY(-50%) scale(1.05);
+      }
+
+      .back-top:hover {
+        transform: scale(1.08);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      }
+
+      .info-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }
+
+      .price-tag:hover {
+        transform: scale(1.05);
+        background: var(--sunset-soft);
+      }
+
+      .logic-card:hover::after {
+        transform: translateX(100%);
+      }
+
+      .spot:hover .spot-name::before {
+        animation: spotDotPulse 0.4s var(--ease-out-quart);
+      }
+
+      @keyframes spotDotPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.5); }
+      }
+    }
+
+    /* Mobile Touch Optimization */
+    @media (hover: none) and (pointer: coarse) {
+      .dest-card {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .dest-card:active {
+        transform: scale(0.97);
+        transition: transform 0.1s ease;
+      }
+
+      .nav-tab {
+        -webkit-tap-highlight-color: transparent;
+        min-height: 44px;
+        min-width: 44px;
+      }
+
+      .nav-tab:active {
+        transform: scale(0.94);
+        background: var(--earth-light);
+      }
+
+      .slide-dot {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .slide-dot:active {
+        transform: scale(0.85);
+      }
+
+      .back-top {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .back-top:active {
+        transform: scale(0.88);
+      }
+
+      .info-item {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .info-item:active {
+        background: var(--earth-light);
+        transform: scale(0.98);
+      }
+
+      .spot {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .spot:active {
+        background: var(--forest-light);
+        border-radius: 0.5rem;
+        margin-left: -0.5rem;
+        margin-right: -0.5rem;
+        padding: 0.5rem;
+      }
+
+      .logic-card {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .logic-card:active {
+        transform: scale(0.98);
+      }
+
+      .highlight-item {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .highlight-item:active {
+        transform: scale(0.95);
+        background: var(--earth-light);
+      }
+
+      .quick-tip {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .quick-tip:active {
+        transform: scale(0.97);
+      }
+
+      .checklist-item {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .checklist-item:active {
+        background: var(--border);
+      }
+
+      .key-info {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .home-quote {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .warning-box {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .section-cover {
+        -webkit-tap-highlight-color: transparent;
+      }
+    }
+
+    /* Page Slide Animation */
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .slide.slide-in-right .section-header {
+      animation: slideInRight 0.4s var(--ease-out-quart) forwards;
+    }
+
+    .slide.slide-in-left .section-header {
+      animation: slideInLeft 0.4s var(--ease-out-quart) forwards;
+    }
+
+    /* Touch friendly tap targets */
+    @media (pointer: coarse) {
+      .nav-tab {
+        min-height: 44px;
+        min-width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .back-top {
+        width: 3rem;
+        height: 3rem;
+      }
+    }
+
+    /* Safe area padding for notched devices */
+    @supports (padding: max(0px)) {
+      .nav-tabs {
+        padding-left: max(var(--space-sm), env(safe-area-inset-left));
+        padding-right: max(var(--space-sm), env(safe-area-inset-right));
+      }
+
+      .section {
+        padding-left: max(var(--space-md), env(safe-area-inset-left));
+        padding-right: max(var(--space-md), env(safe-area-inset-right));
+      }
+
+      .back-top {
+        left: max(var(--space-md), env(safe-area-inset-left));
+        bottom: max(var(--space-lg), env(safe-area-inset-bottom));
+      }
+
+      .slide-indicator {
+        bottom: max(var(--space-lg), env(safe-area-inset-bottom));
+      }
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--forest);
+      outline-offset: 2px;
+    }
+
+    .nav-tab:focus-visible {
+      outline: 2px solid var(--forest);
+      outline-offset: 2px;
+    }
+
+    .slide-dot:focus-visible {
+      outline: 2px solid var(--forest);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 479px) {
+      .hero {
+        min-height: 20vh;
+        padding: var(--space-md) var(--space-md) var(--space-sm);
+      }
+
+      .hero h1 {
+        font-size: clamp(1.25rem, 6vw, 1.8rem);
+        margin-bottom: var(--space-2xs);
+      }
+
+      .hero-subtitle {
+        font-size: 0.75rem;
+        margin-bottom: var(--space-2xs);
+      }
+
+      .nav-tabs {
+        padding: var(--space-sm) var(--space-xs);
+      }
+
+      .nav-tab {
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.85rem;
+        min-height: 44px;
+      }
+
+      .dest-card {
+        aspect-ratio: 3 / 4;
+      }
+
+      .dest-name {
+        font-size: 1.05rem;
+      }
+
+      .dest-location {
+        font-size: 0.75rem;
+      }
+
+      .home-intro {
+        padding: var(--space-md);
+      }
+
+      .home-intro-text {
+        font-size: 0.85rem;
+        line-height: 1.7;
+      }
+
+      .section {
+        padding: var(--space-md);
+      }
+
+      .section-title {
+        font-size: clamp(1.15rem, 5vw, 1.5rem);
+      }
+
+      .section-desc {
+        font-size: 0.85rem;
+        margin-top: var(--space-sm);
+        line-height: 1.7;
+      }
+
+      .logic-card {
+        padding: var(--space-md);
+        font-size: 0.85rem;
+        margin: var(--space-md) 0;
+        line-height: 1.7;
+      }
+
+      .spot-group {
+        margin: var(--space-md) 0;
+      }
+
+      .spot {
+        margin-bottom: var(--space-md);
+        padding-bottom: var(--space-md);
+      }
+
+      .spot-name {
+        font-size: 1rem;
+        margin-bottom: var(--space-xs);
+      }
+
+      .spot-highlight {
+        font-size: 0.85rem;
+        line-height: 1.7;
+      }
+
+      .info-grid {
+        gap: var(--space-sm);
+        margin: var(--space-md) 0;
+      }
+
+      .info-item {
+        padding: var(--space-md);
+      }
+
+      .info-label {
+        font-size: 0.72rem;
+        margin-bottom: var(--space-xs);
+      }
+
+      .info-content {
+        font-size: 0.88rem;
+        line-height: 1.7;
+      }
+
+      .quick-tips {
+        gap: var(--space-sm);
+      }
+
+      .quick-tip {
+        padding: var(--space-md) var(--space-sm);
+        min-height: 44px;
+      }
+
+      .quick-tip-icon {
+        font-size: 1.1rem;
+      }
+
+      .quick-tip-label {
+        font-size: 0.72rem;
+      }
+
+      .quick-tip-value {
+        font-size: 0.88rem;
+      }
+
+      .key-info {
+        padding: var(--space-md);
+      }
+
+      .key-info-title {
+        font-size: 0.8rem;
+        margin-bottom: var(--space-sm);
+      }
+
+      .key-info-row {
+        font-size: 0.85rem;
+        line-height: 1.6;
+      }
+
+      .spot-highlight-tag {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.4rem;
+      }
+
+      .section-cover {
+        margin: var(--space-md) 0;
+        border-radius: var(--space-sm);
+        aspect-ratio: 16 / 10;
+      }
+
+      .slide-indicator {
+        bottom: max(var(--space-md), env(safe-area-inset-bottom));
+      }
+
+      .back-top {
+        width: 3rem;
+        height: 3rem;
+        bottom: max(var(--space-md), env(safe-area-inset-bottom));
+        left: max(var(--space-md), env(safe-area-inset-left));
+      }
+
+      .footer {
+        padding: var(--space-xl) var(--space-md);
+      }
+
+      .footer-text {
+        font-size: 0.9rem;
+      }
+
+      .home-quote {
+        padding: var(--space-xl) var(--space-md);
+        margin: var(--space-lg) 0;
+      }
+
+      .quote-text {
+        font-size: 1.05rem;
+        line-height: 1.6;
+      }
+
+      .quote-author {
+        font-size: 0.78rem;
+      }
+
+      .home-highlights {
+        gap: var(--space-sm);
+        margin-top: var(--space-md);
+      }
+
+      .highlight-item {
+        padding: var(--space-md) var(--space-sm);
+        min-height: 44px;
+      }
+
+      .highlight-icon {
+        font-size: 1.7rem;
+      }
+
+      .highlight-label {
+        font-size: 0.8rem;
+      }
+
+      .home-decor {
+        padding: var(--space-md) 0 var(--space-sm);
+      }
+
+      .destinations-grid {
+        gap: var(--space-sm);
+      }
+
+      .warning-box {
+        padding: var(--space-md);
+        margin: var(--space-md) 0;
+      }
+
+      .tips-checklist {
+        padding: var(--space-md);
+        margin: var(--space-md) 0;
+      }
+
+      .checklist-item {
+        padding: var(--space-sm);
+        min-height: 44px;
+      }
+    }
+
+    .text-forest {
+      color: var(--forest);
+    }
+
+    .text-muted {
+      color: var(--text-muted);
+    }
+
+    .text-sm {
+      font-size: var(--text-sm);
+    }
+
+    .text-xs {
+      font-size: var(--text-xs);
+    }
+
+    .mt-1 {
+      margin-top: var(--space-xs);
+    }
+
+    .mt-2 {
+      margin-top: var(--space-sm);
+    }
+
+    .mt-3 {
+      margin-top: var(--space-md);
+    }
+
+    .info-note {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: var(--space-sm);
+    }
+
+    .info-note-xs {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: var(--space-sm);
+    }
+
+    .ul-indent {
+      margin-top: var(--space-sm);
+      padding-left: 1rem;
+    }
+
+    .img-placeholder {
+      background: var(--earth-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .img-placeholder::before {
+      content: '🖼️';
+      font-size: 1.5rem;
+      opacity: 0.5;
+    }
+
+    img.img-error {
+      display: none;
+    }
+
+    img.img-error + .img-fallback {
+      display: flex !important;
+    }
+
+    .img-fallback {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: var(--earth-light);
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 359px) {
+      .nav-tab {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.78rem;
+        min-height: 44px;
+      }
+
+      .dest-name {
+        font-size: 1rem;
+      }
+
+      .dest-location {
+        font-size: 0.72rem;
+      }
+
+      .home-highlights {
+        gap: var(--space-sm);
+      }
+
+      .highlight-item {
+        padding: var(--space-sm) var(--space-xs);
+        min-height: 44px;
+      }
+
+      .highlight-icon {
+        font-size: 1.5rem;
+      }
+
+      .highlight-label {
+        font-size: 0.75rem;
+      }
+
+      .home-quote {
+        padding: var(--space-md);
+      }
+
+      .quote-text {
+        font-size: 0.95rem;
+      }
+
+      .quick-tips {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-tip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-sm);
+        padding: var(--space-sm) var(--space-md);
+      }
+
+      .quick-tip-icon,
+      .quick-tip-label,
+      .quick-tip-value {
+        margin: 0;
+      }
+
+      .checklist-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">跳转到主要内容</a>
+  <header class="hero">
+    <div class="hero-content">
+      <h1>云南旅行攻略</h1>
+      <p class="hero-subtitle">斗南花市 · 大理洱海（附丽江香格里拉）</p>
+    </div>
+  </header>
+
+  <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5"/>
+      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+    </svg>
+  </button>
+
+  <nav class="nav-tabs" role="navigation" aria-label="目的地导航">
+    <div class="nav-tabs-inner">
+      <button class="nav-tab active" data-target="home">首页</button>
+      <button class="nav-tab" data-target="dounan">斗南</button>
+      <button class="nav-tab" data-target="dali">大理</button>
+      <button class="nav-tab" data-target="lijiang">丽江</button>
+      <button class="nav-tab" data-target="shangri">香格里拉</button>
+    </div>
+  </nav>
+
+  <main class="slides-container" role="main" aria-label="攻略内容" id="main-content">
+    <div class="slide" data-index="0"><section id="home" class="section home-section">
+      <div class="home-intro fade-in">
+        <p class="home-intro-text">3月云南，晴天为主，气温舒适。<br>昆明斗南→大理洱海，核心两地深度游，慢玩不赶路。</p>
+      </div>
+
+      <div class="quick-start fade-in">
+        <div class="quick-start-label">第一次来？推荐路线</div>
+        <div class="quick-start-cards">
+          <div class="quick-start-card" onclick="goToSlide(1, 'right')">
+            <span class="quick-start-emoji">🌸</span>
+            <div class="quick-start-info">
+              <span class="quick-start-title">斗南花市</span>
+              <span class="quick-start-desc">半天 · 人均30-100元</span>
+            </div>
+            <span class="quick-start-arrow">→</span>
+          </div>
+          <div class="quick-start-card" onclick="goToSlide(2, 'right')">
+            <span class="quick-start-emoji">🌊</span>
+            <div class="quick-start-info">
+              <span class="quick-start-title">大理洱海</span>
+              <span class="quick-start-desc">2天 · 人均250-600元</span>
+            </div>
+            <span class="quick-start-arrow">→</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-itinerary fade-in closable-card" data-card-id="home-itinerary" data-card-name="推荐行程">
+        <div class="home-itinerary-header">
+          <span class="home-itinerary-title">📍 推荐行程（斗南+大理）</span>
+          <div class="itinerary-tabs" role="tablist" aria-label="行程选择">
+            <button class="itinerary-tab active" data-itinerary="core4" role="tab" aria-selected="true" aria-controls="itinerary-core4">4天3晚舒适版 <span class="tab-badge">推荐</span></button>
+            <button class="itinerary-tab" data-itinerary="core3" role="tab" aria-selected="false" aria-controls="itinerary-core3">3天2晚紧凑版</button>
+            <button class="itinerary-tab" data-itinerary="full" role="tab" aria-selected="false" aria-controls="itinerary-full">全路线</button>
+          </div>
+        </div>
+        
+        <div class="itinerary-content active" id="itinerary-core4" role="tabpanel" aria-labelledby="tab-core4">
+          <div class="itinerary-flow">
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D1</span>
+              <span class="itinerary-day-place">昆明</span>
+              <span class="itinerary-day-activity">斗南花市</span>
+            </div>
+            <span class="itinerary-arrow">→</span>
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D2</span>
+              <span class="itinerary-day-place">大理</span>
+              <span class="itinerary-day-activity">古城逛吃</span>
+            </div>
+            <span class="itinerary-arrow">→</span>
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D3</span>
+              <span class="itinerary-day-place">大理</span>
+              <span class="itinerary-day-activity">喜洲+洱海</span>
+            </div>
+            <span class="itinerary-arrow">→</span>
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D4</span>
+              <span class="itinerary-day-place">大理</span>
+              <span class="itinerary-day-activity">深度游→返程</span>
+            </div>
+          </div>
+          <div class="itinerary-budget">
+            <span class="budget-label">人均预算：</span>
+            <span class="budget-value">约980元</span>
+            <span class="budget-note">（常规版，含高铁往返290元）</span>
+          </div>
+        </div>
+
+        <div class="itinerary-content" id="itinerary-core3" role="tabpanel" aria-labelledby="tab-core3">
+          <div class="itinerary-flow">
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D1</span>
+              <span class="itinerary-day-place">昆明</span>
+              <span class="itinerary-day-activity">斗南→大理</span>
+            </div>
+            <span class="itinerary-arrow">→</span>
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D2</span>
+              <span class="itinerary-day-place">大理</span>
+              <span class="itinerary-day-activity">洱海环湖</span>
+            </div>
+            <span class="itinerary-arrow">→</span>
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D3</span>
+              <span class="itinerary-day-place">大理</span>
+              <span class="itinerary-day-activity">古城→返程</span>
+            </div>
+          </div>
+          <div class="itinerary-budget">
+            <span class="budget-label">人均预算：</span>
+            <span class="budget-value">约780元</span>
+            <span class="budget-note">（常规版，含高铁往返290元）</span>
+          </div>
+        </div>
+
+        <div class="itinerary-content" id="itinerary-full" role="tabpanel" aria-labelledby="tab-full">
+          <div class="itinerary-flow">
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D1</span>
+              <span class="itinerary-day-place">昆明</span>
+              <span class="itinerary-day-activity">斗南花市</span>
+            </div>
+            <span class="itinerary-arrow">→</span>
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D2</span>
+              <span class="itinerary-day-place">大理</span>
+              <span class="itinerary-day-activity">古城+洱海</span>
+            </div>
+            <span class="itinerary-arrow">→</span>
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D3</span>
+              <span class="itinerary-day-place">大理</span>
+              <span class="itinerary-day-activity">喜洲+廊道</span>
+            </div>
+            <span class="itinerary-arrow">→</span>
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D4</span>
+              <span class="itinerary-day-place">丽江</span>
+              <span class="itinerary-day-activity">古城+雪山</span>
+            </div>
+            <span class="itinerary-arrow">→</span>
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D5</span>
+              <span class="itinerary-day-place">香格里拉</span>
+              <span class="itinerary-day-activity">古城+寺庙</span>
+            </div>
+            <span class="itinerary-arrow">→</span>
+            <div class="itinerary-day">
+              <span class="itinerary-day-num">D6</span>
+              <span class="itinerary-day-place">返程</span>
+              <span class="itinerary-day-activity">纳帕海→回家</span>
+            </div>
+          </div>
+          <div class="itinerary-budget">
+            <span class="budget-label">人均预算：</span>
+            <span class="budget-value">约1800元</span>
+            <span class="budget-note">（含省内高铁约500元）</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="destinations-grid" role="list">
+        <div class="dest-card fade-in" data-goto="1" role="listitem" tabindex="0" aria-label="查看斗南花市攻略">
+          <div class="dest-card-image">
+            <img src="https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=600&q=80" alt="斗南花市鲜花批发市场，摊位上摆满各色鲜花">
+            <div class="dest-card-overlay"></div>
+          </div>
+          <div class="dest-card-content">
+            <span class="dest-number">壹</span>
+            <h3 class="dest-name">斗南花市</h3>
+            <p class="dest-location">昆明 · 亚洲最大花市</p>
+            <p class="dest-desc">5元实现鲜花自由，直接寄回家</p>
+          </div>
+          <span class="dest-card-hint">查看攻略 →</span>
+        </div>
+
+        <div class="dest-card fade-in" data-goto="2" role="listitem" tabindex="0" aria-label="查看大理攻略">
+          <div class="dest-card-image">
+            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="大理洱海风光，蓝天白云倒映在湖面">
+            <div class="dest-card-overlay"></div>
+          </div>
+          <div class="dest-card-content">
+            <span class="dest-number">贰</span>
+            <h3 class="dest-name">大理</h3>
+            <p class="dest-location">苍山洱海 · 古城樱花</p>
+            <p class="dest-desc">喜洲油菜花、洱海骑行、古城樱花</p>
+          </div>
+          <span class="dest-card-hint">查看攻略 →</span>
+        </div>
+
+        <div class="dest-card fade-in" data-goto="3" role="listitem" tabindex="0" aria-label="查看丽江攻略">
+          <div class="dest-card-image">
+            <img src="https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=600&q=80" alt="丽江古城夜景，灯火辉煌的传统建筑">
+            <div class="dest-card-overlay"></div>
+          </div>
+          <div class="dest-card-content">
+            <span class="dest-number">叁</span>
+            <h3 class="dest-name">丽江</h3>
+            <p class="dest-location">古城 · 玉龙雪山</p>
+            <p class="dest-desc">雪山积雪完整，蓝月谷澄澈</p>
+          </div>
+          <span class="dest-card-hint">查看攻略 →</span>
+        </div>
+
+        <div class="dest-card fade-in" data-goto="4" role="listitem" tabindex="0" aria-label="查看香格里拉攻略">
+          <div class="dest-card-image">
+            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80" alt="香格里拉雪山草甸，高原风光">
+            <div class="dest-card-overlay"></div>
+          </div>
+          <div class="dest-card-content">
+            <span class="dest-number">肆</span>
+            <h3 class="dest-name">香格里拉</h3>
+            <p class="dest-location">藏地 · 古城转经筒</p>
+            <p class="dest-desc">高原藏地人文，雪山湖泊草甸</p>
+          </div>
+          <span class="dest-card-hint">查看攻略 →</span>
+        </div>
+      </div>
+
+      <div class="home-travel-tips fade-in closable-card" data-card-id="home-travel-tips" data-card-name="出行防护">
+        <div class="home-tips-title">出行防护</div>
+        <div class="home-tips-grid">
+          <div class="home-tips-item">
+            <span class="home-tips-icon">🧥</span>
+            <div class="home-tips-content">
+              <strong>保暖</strong>
+              <span>丽江香格里拉带羽绒服，昼夜温差大</span>
+            </div>
+          </div>
+          <div class="home-tips-item">
+            <span class="home-tips-icon">☀️</span>
+            <div class="home-tips-content">
+              <strong>防晒</strong>
+              <span>SPF50+防晒霜、墨镜、遮阳帽必备</span>
+            </div>
+          </div>
+          <div class="home-tips-item">
+            <span class="home-tips-icon">🏔️</span>
+            <div class="home-tips-content">
+              <strong>高原</strong>
+              <span>放慢动作不跑跳，氧气瓶市区药店买</span>
+            </div>
+          </div>
+          <div class="home-tips-item">
+            <span class="home-tips-icon">🚗</span>
+            <div class="home-tips-content">
+              <strong>交通</strong>
+              <span>选正规平台，不坐黑车不参低价团</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-transport fade-in closable-card" data-card-id="home-transport" data-card-name="省内高铁交通">
+        <div class="home-transport-title">🚄 省内高铁交通</div>
+        <div class="home-transport-grid">
+          <div class="transport-card">
+            <div class="transport-route">
+              <span class="transport-from">昆明</span>
+              <span class="transport-arrow">→</span>
+              <span class="transport-to">大理</span>
+            </div>
+            <div class="transport-info">
+              <span class="transport-price">145元起</span>
+              <span class="transport-time">1.5-2h</span>
+            </div>
+          </div>
+          <div class="transport-card">
+            <div class="transport-route">
+              <span class="transport-from">大理</span>
+              <span class="transport-arrow">→</span>
+              <span class="transport-to">丽江</span>
+            </div>
+            <div class="transport-info">
+              <span class="transport-price">74-80元</span>
+              <span class="transport-time">1.2-1.5h</span>
+            </div>
+          </div>
+          <div class="transport-card">
+            <div class="transport-route">
+              <span class="transport-from">丽江</span>
+              <span class="transport-arrow">→</span>
+              <span class="transport-to">香格里拉</span>
+            </div>
+            <div class="transport-info">
+              <span class="transport-price">70元</span>
+              <span class="transport-time">1.3h</span>
+            </div>
+          </div>
+        </div>
+        <div class="home-transport-note">数据来源：12306官方 | 早班/晚班车次有更低折扣</div>
+      </div>
+
+      <div class="home-checklist fade-in closable-card" data-card-id="home-checklist" data-card-name="出行必备">
+        <div class="home-checklist-title">📋 出行必备</div>
+        <div class="home-checklist-items">
+          <span class="checklist-tag">身份证</span>
+          <span class="checklist-tag">充电宝</span>
+          <span class="checklist-tag">防晒霜</span>
+          <span class="checklist-tag">墨镜</span>
+          <span class="checklist-tag">保暖衣</span>
+          <span class="checklist-tag">舒适鞋</span>
+        </div>
+      </div>
+    </section></div>
+
+    <div class="slide" data-index="1"><section id="dounan" class="section">
+      <div class="section-header">
+        <div class="section-number">壹</div>
+        <h2 class="section-title title-style-petal">斗南花市 · 昆明</h2>
+        <p class="section-desc">亚洲最大鲜花交易市场，全国80%鲜切花来自这里。5元一把玫瑰，10块钱实现鲜花自由。</p>
+      </div>
+
+      <div class="quick-tips fade-in">
+        <div class="quick-tip">
+          <div class="quick-tip-icon">🚇</div>
+          <div class="quick-tip-label">交通</div>
+          <div class="quick-tip-value">地铁4号线金桂街B口</div>
+        </div>
+        <div class="quick-tip">
+          <div class="quick-tip-icon">💰</div>
+          <div class="quick-tip-label">捡漏最低价</div>
+          <div class="quick-tip-value">20:30后</div>
+        </div>
+        <div class="quick-tip">
+          <div class="quick-tip-icon">📷</div>
+          <div class="quick-tip-label">拍照+慢慢选</div>
+          <div class="quick-tip-value">14:00-18:00</div>
+        </div>
+      </div>
+
+      <div class="dounan-photos fade-in">
+        <div class="photo-item">
+          <img src="https://p3-sign.toutiaoimg.com/tos-cn-i-6w9my0ksvp/e134c8cb36044bca80aeef0c3695e132~tplv-tt-origin-web:gif.jpeg?_iz=58558&from=article.pc_detail&lk3s=953192f4&x-expires=1774510352&x-signature=FxT1kzwaKbqDWjs1CVldjnh7QSU%3D" alt="斗南花市鲜花海洋，五颜六色的玫瑰满天星堆成山" loading="lazy" referrerpolicy="no-referrer">
+          <span class="photo-label">花海</span>
+        </div>
+        <div class="photo-item">
+          <img src="https://p3-sign.toutiaoimg.com/tos-cn-i-6w9my0ksvp/9f096c07a3194d409fea78f88097177d~tplv-tt-origin-web:gif.jpeg?_iz=58558&from=article.pc_detail&lk3s=953192f4&x-expires=1774510352&x-signature=s5kwcoHAbGXmFI04H9o9MbTikco%3D" alt="斗南花卉拍卖大厅，电子屏显示拍卖价格" loading="lazy" referrerpolicy="no-referrer">
+          <span class="photo-label">批发盛况</span>
+        </div>
+        <div class="photo-item">
+          <img src="https://p3-sign.toutiaoimg.com/tos-cn-i-6w9my0ksvp/4b692832c93a4f16ab20b3e05140f027~tplv-tt-origin-web:gif.jpeg?_iz=58558&from=article.pc_detail&lk3s=953192f4&x-expires=1774510352&x-signature=toFtzEOJ4k8divVxj5eovNPDf%2Fo%3D" alt="斗南多肉植物区，各种可爱的多肉盆栽" loading="lazy" referrerpolicy="no-referrer">
+          <span class="photo-label">多肉天堂</span>
+        </div>
+      </div>
+
+      <div class="time-table fade-in closable-card" data-card-id="dounan-time-table" data-card-name="斗南营业时间表">
+        <div class="time-table-title">⏰ 营业时间（别跑空）</div>
+        <div class="time-table-row time-table-header">
+          <div class="time-table-cell">区域</div>
+          <div class="time-table-cell">时间</div>
+          <div class="time-table-cell">特点</div>
+        </div>
+        <div class="time-table-row">
+          <div class="time-table-cell area">主场馆零售</div>
+          <div class="time-table-cell">09:00-18:00</div>
+          <div class="time-table-cell tip">游客友好，慢慢挑</div>
+        </div>
+        <div class="time-table-row">
+          <div class="time-table-cell area">主场馆夜间</div>
+          <div class="time-table-cell highlight">20:30-凌晨2点</div>
+          <div class="time-table-cell tip">价格腰斩，捡漏最佳</div>
+        </div>
+        <div class="time-table-row">
+          <div class="time-table-cell area">1/2/3号馆</div>
+          <div class="time-table-cell">09:00-18:00</div>
+          <div class="time-table-cell tip">干花、伴手礼，18点后闭馆</div>
+        </div>
+      </div>
+
+      <div class="alert-box fade-in">
+        <span class="alert-box-icon">⚠️</span>
+        <span class="alert-box-text"><strong>别跑空：</strong>18:00-20:30主场馆闭馆转场，这个时间段只能逛场馆外。</span>
+      </div>
+
+      <div class="simple-info fade-in closable-card" data-card-id="dounan-routes" data-card-name="斗南逛买路线">
+        <div class="simple-info-title">📍 两条逛买路线</div>
+        <div class="simple-info-content">
+          <strong>白天版（14:00-18:00）：</strong>主场馆1楼鲜花→2楼拍卖参观→3楼多肉→1/2号馆伴手礼<br>
+          <strong>夜间版（20:30后）：</strong>场外夜市→主场馆捡漏→快递点寄花回家
+        </div>
+      </div>
+
+      <div class="venue-section fade-in closable-card" data-card-id="dounan-venue" data-card-name="斗南场馆详解">
+        <div class="venue-item">
+          <div class="venue-name">主场馆1楼 <span class="venue-tag">核心</span></div>
+          <div class="venue-desc">鲜切花核心区，玫瑰/向日葵/洋桔梗/满天星全品类。单头玫瑰10-15元/20支，满天星按斤卖。</div>
+        </div>
+        <div class="venue-item">
+          <div class="venue-name">主场馆2楼 <span class="venue-tag">必看</span></div>
+          <div class="venue-desc">亚洲最大花卉拍卖大厅，15:00开始拍卖，免费围观，堪比竞技场。</div>
+        </div>
+        <div class="venue-item">
+          <div class="venue-name">主场馆3楼 + 1/2号馆 <span class="venue-tag">推荐</span></div>
+          <div class="venue-desc">3楼多肉5-10元/盆；1号馆干花永生花；2号馆伴手礼鲜花饼。避坑：银器红木别碰。</div>
+        </div>
+      </div>
+
+      <div class="simple-info fade-in closable-card" data-card-id="dounan-shipping" data-card-name="斗南寄花指南">
+        <div class="simple-info-title">📦 寄花回家</div>
+        <div class="simple-info-content">
+          优先<strong>顺丰冷链</strong>，省内次日达。包装保水棉+冰袋+硬壳，运费10-20元/束。技巧：买花苞半开的寄回家花期更长。
+        </div>
+      </div>
+
+      <div class="simple-info fade-in closable-card" data-card-id="dounan-tips" data-card-name="斗南选花技巧">
+        <div class="simple-info-title">🌿 选花技巧</div>
+        <div class="simple-info-content">
+          <strong>1.</strong> 选花苞半开的，别买完全盛开的<br>
+          <strong>2.</strong> 看花瓣无烂瓣霉点，花茎粗壮不发软<br>
+          <strong>3.</strong> 配花（勿忘我/满天星/尤加利叶）让老板送
+        </div>
+      </div>
+
+      <div class="warning-box fade-in">
+        <strong>避坑：</strong>别买流动摊贩的隔夜花、染色喷漆花（蓝色妖姬）；晚上大胆砍价，嘴甜喊"嬢嬢"；按斤卖的花让老板去包装再称。
+      </div>
+
+      <div class="simple-info fade-in closable-card" data-card-id="dounan-budget" data-card-name="斗南预算参考">
+        <div class="simple-info-title">💰 预算参考（半天）</div>
+        <div class="simple-info-content">
+          <strong>常规版约100元：</strong>买花50元+寄花运费20元+小吃20元+地铁往返4-14元<br>
+          <strong>经济版约30元：</strong>只逛不买+地铁往返
+        </div>
+      </div>
+
+      <div class="info-grid closable-card" data-card-id="dounan-info" data-card-name="斗南交通美食">
+        <div class="info-item fade-in">
+          <div class="info-label">交通</div>
+          <div class="info-content">地铁4号线<strong class="text-forest">金桂街站B口</strong>出站就是，票价按里程2-7元。别坐到斗南站（多走1公里）</div>
+        </div>
+        <div class="info-item fade-in">
+          <div class="info-label">美食</div>
+          <div class="info-content">场内炸洋芋、木瓜水5-15元；无名豆花米线8元；嘉华/潘祥记鲜花饼市场里有门店</div>
+        </div>
+      </div>
+    </section></div>
+
+    <div class="slide" data-index="2"><section id="dali" class="section">
+      <div class="section-header">
+        <div class="section-number">贰</div>
+        <h2 class="section-title title-style-petal">大理 · 苍山洱海</h2>
+        <p class="section-desc">3月底日均气温5-24℃，昼夜温差大。白天薄针织+防晒衣，晚上加风衣。紫外线极强，必带SPF50+防晒霜、墨镜、草帽。</p>
+      </div>
+
+      <div class="route-overview fade-in closable-card" data-card-id="dali-route-overview" data-card-name="大理路线总览">
+        <div class="route-overview-title">📍 2天路线总览</div>
+        <div class="route-overview-days">
+          <div class="route-overview-day">
+            <span class="route-overview-badge day1">Day1</span>
+            <div class="route-overview-flow">
+              <span class="route-overview-point">大理古城</span>
+              <span class="route-overview-arrow">→</span>
+              <span class="route-overview-point">喜洲古镇</span>
+              <span class="route-overview-arrow">→</span>
+              <span class="route-overview-point">洱海生态廊道</span>
+              <span class="route-overview-arrow">→</span>
+              <span class="route-overview-point end">古城夜景</span>
+            </div>
+          </div>
+          <div class="route-overview-day">
+            <span class="route-overview-badge day2">Day2</span>
+            <div class="route-overview-flow">
+              <span class="route-overview-point">大理古城</span>
+              <span class="route-overview-arrow">→</span>
+              <span class="route-overview-point">双廊古镇</span>
+              <span class="route-overview-arrow">→</span>
+              <span class="route-overview-point">海东日落</span>
+              <span class="route-overview-arrow">→</span>
+              <span class="route-overview-point end">返回古城</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spot-group">
+        <div class="spot-with-route fade-in">
+          <div class="spot">
+            <h3 class="spot-name">大理古城 <span class="spot-highlight-tag">免费</span></h3>
+            <p class="spot-highlight">人民路、红龙井樱花大道盛开，粉樱配青瓦白墙。清晨逛石板路，夜间逛人民路、洋人街。住宿大本营。</p>
+            <span class="spot-transport">🚌 火车站乘4路/8路公交直达，约30分钟</span>
+          </div>
+          <div class="spot-photo-grid">
+            <div class="photo-item">
+              <img src="https://q5.itc.cn/q_70/images03/20251226/33c845ac097646e7a951b67fce25e55d.jpeg" alt="北门樱花巷" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">北门樱花巷</span>
+            </div>
+            <div class="photo-item">
+              <img src="https://vcg05.cfp.cn/creative/vcg/nowater800/new/VCG211362918532.jpg?x-oss-process=image/format,webp" alt="五华楼夜景" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">五华楼夜景</span>
+            </div>
+            <div class="photo-item">
+              <img src="https://5b0988e595225.cdn.sohucs.com/images/20180504/09e7328cefda45b69239f032a25b283f.jpeg" alt="洋人街" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">洋人街</span>
+            </div>
+          </div>
+          <div class="route-curve">
+            <svg viewBox="0 0 60 100" preserveAspectRatio="none">
+              <path d="M10,10 Q50,50 10,90" />
+              <polygon class="arrow-head" points="5,85 15,85 10,95" />
+            </svg>
+          </div>
+          <span class="route-label">→ 喜洲古镇</span>
+        </div>
+
+        <div class="spot-with-route fade-in">
+          <div class="spot">
+            <h3 class="spot-name">喜洲古镇 <span class="spot-highlight-tag">免费</span></h3>
+            <p class="spot-highlight">金黄油菜花田正盛，白族黄墙+苍山雪峰同框，电影感拉满。可体验白族扎染，吃喜洲粑粑。</p>
+            <span class="spot-transport">🚌 古城乘中巴5元/人，约40分钟；滴滴约25元</span>
+          </div>
+          <div class="spot-photo-grid">
+            <div class="photo-item">
+              <img src="https://dimg04.c-ctrip.com/images/1mh3g12000gdy2lplFBA1_D_180_180.jpg?proc=autoorient" alt="转角楼" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">转角楼</span>
+            </div>
+            <div class="photo-item">
+              <img src="https://pic3.zhimg.com/v2-2051200624b9b6ec7e4164ad753be8f2_1440w.jpg" alt="杨家登油菜花" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">杨家登油菜花</span>
+            </div>
+            <div class="photo-item">
+              <img src="https://pic2.zhimg.com/v2-3c818ca76e6df13ac0eb9660116d6285_1440w.jpg" alt="喜林苑黄墙" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">喜林苑黄墙</span>
+            </div>
+          </div>
+          <div class="route-curve">
+            <svg viewBox="0 0 60 100" preserveAspectRatio="none">
+              <path d="M10,10 Q50,50 10,90" />
+              <polygon class="arrow-head" points="5,85 15,85 10,95" />
+            </svg>
+          </div>
+          <span class="route-label">→ 洱海廊道</span>
+        </div>
+
+        <div class="spot-with-route fade-in">
+          <div class="spot">
+            <h3 class="spot-name">洱海生态廊道 <span class="spot-highlight-tag">免费</span></h3>
+            <p class="spot-highlight">洱海精华段，骑行随停随拍。龙龛码头→磻溪S弯→才村段，3月晴天能见度拉满。</p>
+            <span class="spot-transport">🚴 古城骑行或打车至龙龛码头约10分钟</span>
+          </div>
+          <div class="spot-photo-grid">
+            <div class="photo-item">
+              <img src="https://pic2.zhimg.com/v2-bdef4c45c6015141002b101c1038898d_1440w.jpg" alt="龙龛码头" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">龙龛码头</span>
+            </div>
+            <div class="photo-item">
+              <img src="https://p2.itc.cn/images01/20220626/bf818c98450b4297b94771f353825132.jpeg" alt="磻溪S湾" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">磻溪S湾</span>
+            </div>
+            <div class="photo-item">
+              <img src="https://bkimg.cdn.bcebos.com/pic/d009b3de9c82d158808736d3820a19d8bc3e424e?x-bce-process=image/format,f_auto/watermark,image_d2F0ZXIvYmFpa2UyNzI,g_7,xp_5,yp_5,P_20/resize,m_lfit,limit_1,h_1080" alt="才村码头" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">才村码头</span>
+            </div>
+          </div>
+          <div class="route-curve">
+            <svg viewBox="0 0 60 100" preserveAspectRatio="none">
+              <path d="M10,10 Q50,50 10,90" />
+              <polygon class="arrow-head" points="5,85 15,85 10,95" />
+            </svg>
+          </div>
+          <span class="route-label">Day2→双廊</span>
+        </div>
+
+        <div class="spot-with-route fade-in">
+          <div class="spot">
+            <h3 class="spot-name">双廊古镇 <span class="spot-highlight-tag">免费</span></h3>
+            <p class="spot-highlight">洱海东岸，直面苍山日落，"苍洱第一镇"。适合发呆看海，找咖啡馆坐一下午。</p>
+            <span class="spot-transport">🚌 景区直通车25元/拼车30元，约1小时</span>
+          </div>
+          <div class="spot-photo-grid">
+            <div class="photo-item">
+              <img src="https://bkimg.cdn.bcebos.com/pic/574e9258d109b3de9c82a8f9d8e37b81800a19d8e654?x-bce-process=image/format,f_auto/watermark,image_d2F0ZXIvYmFpa2UyNzI,g_7,xp_5,yp_5,P_20/resize,m_lfit,limit_1,h_1080" alt="玉几岛" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">玉几岛</span>
+            </div>
+            <div class="photo-item">
+              <img src="https://n.sinaimg.cn/sinakd20121/213/w2048h1365/20200531/07cb-iumkapv7475349.jpg" alt="日落观景台" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">日落观景台</span>
+            </div>
+            <div class="photo-item">
+              <img src="https://qcloud.dpfile.com/pc/24_AgxR0uY4r_jOJnXBuQGSr_0ggU3J_GxaRLB_DPQ8_PbZPVe5_9Id3pF9rzKXKY0q73sB2DyQcgmKUxZFQtw.jpg" alt="海景咖啡馆" loading="lazy" referrerpolicy="no-referrer">
+              <span class="photo-label">海景咖啡馆</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="spot-with-route fade-in">
+          <div class="spot">
+            <h3 class="spot-name">大理大学樱花 <span class="spot-highlight-tag">免费</span></h3>
+            <p class="spot-highlight">整条樱花大道盛放，苍山为背景，春日校园感拉满。需提前公众号预约入校。</p>
+            <span class="spot-transport">🚌 古城乘公交约20分钟，带身份证入校</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-detail fade-in closable-card" id="routeDetail" data-card-id="dali-route-detail" data-card-name="大理详细路线">
+        <div class="route-detail-header" onclick="toggleRouteDetail()">
+          <span class="route-detail-title">📅 详细路线</span>
+          <span class="route-detail-tip">以古城为大本营，2天玩完洱海</span>
+          <button class="route-toggle-btn" aria-label="折叠/展开">
+            <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="route-detail-content">
+        <div class="route-detail-day">
+          <div class="route-detail-day-header">
+            <span class="day-badge">Day1</span>
+            <span class="day-theme">海西精华线 · 田园花海+洱海出片</span>
+          </div>
+          <div class="route-timeline">
+            <div class="timeline-item">
+              <span class="time">7:00</span>
+              <span class="time-optional">可选</span>
+              <span class="event">古城出发→龙龛码头看洱海日出</span>
+            </div>
+            <div class="timeline-item">
+              <span class="time">9:00</span>
+              <span class="event"><strong>喜洲古镇</strong>（5元中巴直达），拍转角楼、喜林苑黄墙、油菜花田，吃喜洲粑粑</span>
+            </div>
+            <div class="timeline-item">
+              <span class="time">12:30</span>
+              <span class="event">喜洲→磻溪村，吃午饭，避开正午暴晒</span>
+            </div>
+            <div class="timeline-item">
+              <span class="time">15:00</span>
+              <span class="event"><strong>磻溪S湾→才村码头</strong>，沿生态廊道骑行，随停随拍</span>
+            </div>
+            <div class="timeline-item">
+              <span class="time">18:00</span>
+              <span class="event"><strong>才村码头</strong>等洱海日落，拍橘子海大片</span>
+            </div>
+            <div class="timeline-item">
+              <span class="time">19:30</span>
+              <span class="event">回古城，逛夜景、吃夜市小吃</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="route-detail-day">
+          <div class="route-detail-day-header">
+            <span class="day-badge">Day2</span>
+            <span class="day-theme">海东慢游线 · 一线海景+日落躺平</span>
+          </div>
+          <div class="route-timeline">
+            <div class="timeline-item">
+              <span class="time">10:00</span>
+              <span class="event">古城→<strong>双廊古镇</strong>（25元景区直通车/30元拼车）</span>
+            </div>
+            <div class="timeline-item">
+              <span class="time">11:30</span>
+              <span class="event">双廊慢逛：玉几岛临海栈道、日落观景台，海景咖啡馆发呆</span>
+            </div>
+            <div class="timeline-item">
+              <span class="time">16:00</span>
+              <span class="event">双廊→<strong>挖色小普陀</strong>→环海东路，打卡小众海边机位</span>
+            </div>
+            <div class="timeline-item">
+              <span class="time">18:00</span>
+              <span class="event"><strong>环海东路观景台</strong>，等TOP级苍山洱海日落</span>
+            </div>
+            <div class="timeline-item">
+              <span class="time">19:30</span>
+              <span class="event">回古城，结束行程</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="info-item fade-in closable-card" data-card-id="dali-stay" data-card-name="大理住宿推荐">
+        <div class="info-label">🏨 住宿推荐</div>
+        <div class="info-content">
+          <p><strong class="text-forest">性价比首选：</strong>古城南门/北门周边，步行5分钟到古城，双床房120-200元/晚，拼房人均60-100元</p>
+          <p class="mt-2"><strong class="text-forest">体验升级：</strong>才村、龙龛码头，推窗见海看日出，双床房200-300元/晚，拼房人均100-150元</p>
+          <p class="info-note">避坑：别信低价"海景房"；订房选「可免费取消」的</p>
+        </div>
+      </div>
+
+      <div class="key-info fade-in closable-card" data-card-id="dali-student" data-card-name="大理学生优惠">
+        <div class="key-info-title">🎫 学生优惠（带学生证）</div>
+        <div class="key-info-grid">
+          <div class="key-info-row">
+            <span class="key-info-row-icon">🏛️</span>
+            <span class="key-info-row-text"><strong>崇圣寺三塔：</strong>100元→半价50元</span>
+          </div>
+          <div class="key-info-row">
+            <span class="key-info-row-icon">🚡</span>
+            <span class="key-info-row-text"><strong>苍山索道：</strong>感通110元→55元 / 洗马潭198元→99元</span>
+          </div>
+          <div class="key-info-row">
+            <span class="key-info-row-icon">🦋</span>
+            <span class="key-info-row-text"><strong>蝴蝶泉公园：</strong>55元→半价28元</span>
+          </div>
+          <div class="key-info-row">
+            <span class="key-info-row-icon">🎬</span>
+            <span class="key-info-row-text"><strong>天龙八部影视城：</strong>52元→半价26元</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-item fade-in closable-card" data-card-id="dali-food" data-card-name="大理必吃美食">
+        <div class="info-label">🍜 必吃美食</div>
+        <div class="info-content">
+          <p>大理酸辣鱼、凉鸡米线、扒肉饵丝、烤乳扇（先买5块小份尝尝）、喜洲粑粑、玫瑰烤奶</p>
+          <p class="info-note">北门菜市场小吃性价比最高；鲜花饼去嘉华/潘祥记官方门店买</p>
+        </div>
+      </div>
+
+      <div class="simple-info fade-in closable-card" data-card-id="dali-budget" data-card-name="大理预算参考">
+        <div class="simple-info-title">💰 预算参考（2天）</div>
+        <div class="simple-info-content">
+          <strong>常规版约600元：</strong>住宿150元+餐饮150元+环湖交通100元+体验项目100元<br>
+          <strong>经济版约250元：</strong>青旅住宿+公交出行+只逛免费景点（古城、喜洲、洱海廊道全免费）
+        </div>
+      </div>
+
+      <div class="warning-box fade-in">
+        <strong>避坑提醒：</strong>
+        <ul class="ul-indent">
+          <li>别信古城门口"50元环洱海一日游"，全是购物团</li>
+          <li>别在古城里买银饰、玉石，水很深</li>
+          <li>洱海租车提前问清楚续航、有没有隐藏费用</li>
+        </ul>
+      </div>
+    </section></div>
+    <div class="slide" data-index="3"><section id="lijiang" class="section">
+      <div class="section-header">
+        <div class="section-number">叁</div>
+        <h2 class="section-title title-style-petal">丽江 · 古城雪山</h2>
+        <p class="section-desc">3月旱季晴天率极高，雪山积雪完整，蓝月谷湖水澄澈，是全年最佳观景期。</p>
+      </div>
+
+      <div class="quick-tips fade-in">
+        <div class="quick-tip">
+          <div class="quick-tip-icon">🕐</div>
+          <div class="quick-tip-label">建议天数</div>
+          <div class="quick-tip-value">1-2天</div>
+        </div>
+        <div class="quick-tip">
+          <div class="quick-tip-icon">🎫</div>
+          <div class="quick-tip-label">雪山门票</div>
+          <div class="quick-tip-value">提前3天约</div>
+        </div>
+        <div class="quick-tip">
+          <div class="quick-tip-icon">🌡️</div>
+          <div class="quick-tip-label">山顶温度</div>
+          <div class="quick-tip-value">-6~4°C</div>
+        </div>
+      </div>
+
+      <figure class="section-cover fade-in">
+        <img src="https://img.zcool.cn/community/019a1662c552340002c45e377ee170.jpg?x-oss-process=image/saveexif,1/auto-orient,1/resize,m_lfit,w_1280,limit_1/sharpen,100/quality,q_100/format,webp" alt="玉龙雪山与蓝月谷" loading="lazy" referrerpolicy="no-referrer">
+        <figcaption class="section-cover-caption">玉龙雪山 · 蓝月谷</figcaption>
+      </figure>
+
+      <div class="key-info fade-in closable-card" data-card-id="lijiang-tips" data-card-name="丽江核心要点">
+        <div class="key-info-title">📌 核心要点</div>
+        <div class="key-info-grid">
+          <div class="key-info-row">
+            <span class="key-info-row-icon">→</span>
+            <span class="key-info-row-text"><strong>必玩：</strong>玉龙雪山（大索道登顶）、蓝月谷、丽江古城</span>
+          </div>
+          <div class="key-info-row">
+            <span class="key-info-row-icon">→</span>
+            <span class="key-info-row-text"><strong>省钱包：</strong>住市区，氧气瓶市区药店买15-20元，景区60元</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="venue-section fade-in closable-card" data-card-id="lijiang-venue" data-card-name="丽江景点">
+        <div class="venue-item">
+          <div class="venue-name">丽江古城 <span class="venue-tag">免费</span></div>
+          <div class="venue-desc">世界文化遗产，青瓦木楼配雪山远景。大水车、四方街、酒吧街都超有氛围。古城维护费50元散客自愿缴纳。</div>
+        </div>
+        <div class="venue-item">
+          <div class="venue-name">玉龙雪山+蓝月谷 <span class="venue-tag">必去</span></div>
+          <div class="venue-desc">进山费100元（学生半价50元）+大索道140元+环保车20元。大索道票提前3天在「丽江旅游集团」公众号抢。</div>
+        </div>
+        <div class="venue-item">
+          <div class="venue-name">白沙古镇 <span class="venue-tag">推荐</span></div>
+          <div class="venue-desc">最原生态的纳西古镇，抬头就能看见玉龙雪山，小众不商业化，1-2小时可逛完。</div>
+        </div>
+        <div class="venue-item">
+          <div class="venue-name">束河古镇 <span class="venue-tag">推荐</span></div>
+          <div class="venue-desc">比大研古城安静，水系发达，有"小桥流水人家"感觉。门票40元（学生半价20元），多个侧门可免费进入。</div>
+        </div>
+      </div>
+
+      <div class="simple-info fade-in closable-card" data-card-id="lijiang-transport" data-card-name="丽江交通指南">
+        <div class="simple-info-title">🚗 交通指南</div>
+        <div class="simple-info-content">
+          <strong>大理→丽江：</strong>高铁74-82元，1.5小时<br>
+          <strong>古城→玉龙雪山：</strong>景区直通车20元往返，公交101路15元往返<br>
+          <strong>古城→白沙古镇：</strong>公交6路2元，拼车人均10元<br>
+          <strong>古城→束河古镇：</strong>公交5路2元，滴滴约10元
+        </div>
+      </div>
+
+      <div class="simple-info fade-in closable-card" data-card-id="lijiang-budget" data-card-name="丽江预算参考">
+        <div class="simple-info-title">💰 预算参考（2天）</div>
+        <div class="simple-info-content">
+          <strong>常规版约500元：</strong>雪山门票210元+住宿100元+餐饮100元+市内交通50元<br>
+          <strong>经济版约200元：</strong>只逛免费景点+青旅住宿+公交出行
+        </div>
+      </div>
+
+      <div class="info-grid closable-card" data-card-id="lijiang-info" data-card-name="丽江住宿美食">
+        <div class="info-item fade-in">
+          <div class="info-label">住宿首选</div>
+          <div class="info-content">古城南门/北门外围，步行5分钟到古城，双床房100-160元/晚</div>
+        </div>
+        <div class="info-item fade-in">
+          <div class="info-label">必吃美食</div>
+          <div class="info-content">腊排骨火锅、土鸡米线、纳西烤肉、鸡豆凉粉。古城外吃更划算</div>
+        </div>
+      </div>
+
+      <div class="warning-box fade-in">
+        <strong>避坑：</strong>别信古城里"50元玉龙雪山一日游"，全是购物团；别买古城里的银器玉石；大索道票现场买不到，提前抢。
+      </div>
+    </section></div>
+    <div class="slide" data-index="4"><section id="shangri" class="section">
+      <div class="section-header">
+        <div class="section-number">肆</div>
+        <h2 class="section-title title-style-petal">香格里拉 · 藏地风光</h2>
+        <p class="section-desc">3月晴天多、温差大，气温-3~14℃，夜间最低-5℃。无蚊虫，重点防寒，适合体验高原藏地风光。</p>
+      </div>
+
+      <div class="quick-tips fade-in">
+        <div class="quick-tip">
+          <div class="quick-tip-icon">🕐</div>
+          <div class="quick-tip-label">建议天数</div>
+          <div class="quick-tip-value">1-2天</div>
+        </div>
+        <div class="quick-tip">
+          <div class="quick-tip-icon">🏔️</div>
+          <div class="quick-tip-label">海拔</div>
+          <div class="quick-tip-value">3300m+</div>
+        </div>
+        <div class="quick-tip">
+          <div class="quick-tip-icon">🧥</div>
+          <div class="quick-tip-label">必带</div>
+          <div class="quick-tip-value">羽绒服</div>
+        </div>
+      </div>
+
+      <figure class="section-cover fade-in">
+        <img src="https://pic4.zhimg.com/v2-f241458cc6d785d779c969d2a1ab4dd1_1440w.jpg" alt="梅里雪山日照金山" loading="lazy" referrerpolicy="no-referrer">
+        <figcaption class="section-cover-caption">梅里雪山 · 日照金山</figcaption>
+      </figure>
+
+      <div class="venue-section fade-in closable-card" data-card-id="shangri-venue" data-card-name="香格里拉景点">
+        <div class="venue-item">
+          <div class="venue-name">独克宗古城 <span class="venue-tag">免费</span></div>
+          <div class="venue-desc">中国保存最好的藏式古城，有世界最大转经筒。傍晚夜景超美，适合适应海拔。转经筒要顺时针转，至少3人一起推。</div>
+        </div>
+        <div class="venue-item">
+          <div class="venue-name">松赞林寺 <span class="venue-tag">必去</span></div>
+          <div class="venue-desc">"小布达拉宫"，门票90元（学生半价45元）+观光车25元。上午8-11点顺光拍照最好看。进寺庙不穿暴露衣服，不踩门槛。</div>
+        </div>
+        <div class="venue-item">
+          <div class="venue-name">纳帕海依拉草原 <span class="venue-tag">推荐</span></div>
+          <div class="venue-desc">环湖免费，导航"环湖西路"。高原湖泊+草原+雪山同框，有"小瑞士"感觉。租电动车50元/天随停随拍。</div>
+        </div>
+        <div class="venue-item">
+          <div class="venue-name">普达措国家公园 <span class="venue-tag optional">可选</span></div>
+          <div class="venue-desc">门票138元（学生半价69元）+观光车120元。原始森林、高山湖泊，能看到松鼠牦牛。海拔3500米+，注意防寒。</div>
+        </div>
+      </div>
+
+      <div class="simple-info fade-in closable-card" data-card-id="shangri-transport" data-card-name="香格里拉交通指南">
+        <div class="simple-info-title">🚗 交通指南</div>
+        <div class="simple-info-content">
+          <strong>丽江→香格里拉：</strong>高铁70元，1小时20分钟<br>
+          <strong>高铁站→古城：</strong>打车10元，公交1路2元<br>
+          <strong>古城→松赞林寺：</strong>公交3路2元，打车15元<br>
+          <strong>古城→纳帕海：</strong>租电动车50元/天，拼车环湖人均30-40元<br>
+          <strong>古城→普达措：</strong>景区直通车30元往返，拼车人均50元
+        </div>
+      </div>
+
+      <div class="simple-info fade-in closable-card" data-card-id="shangri-budget" data-card-name="香格里拉预算参考">
+        <div class="simple-info-title">💰 预算参考（1-2天）</div>
+        <div class="simple-info-content">
+          <strong>常规版约350元：</strong>松赞林寺70元+住宿100元+餐饮80元+交通50元<br>
+          <strong>经济版约150元：</strong>只逛免费景点+青旅住宿+公交出行
+        </div>
+      </div>
+
+      <div class="info-grid closable-card" data-card-id="shangri-info" data-card-name="香格里拉住宿美食">
+        <div class="info-item fade-in">
+          <div class="info-label">住宿首选</div>
+          <div class="info-content">独克宗古城周边，双床房140-200元/晚。3月底夜间最低-5℃，优先选有地暖/供氧的民宿</div>
+        </div>
+        <div class="info-item fade-in">
+          <div class="info-label">必吃美食</div>
+          <div class="info-content">牦牛肉火锅、酥油茶（甜口10元/壶，能缓解高反）、青稞饼、藏式酸奶</div>
+        </div>
+      </div>
+
+      <div class="warning-box fade-in">
+        <strong>高原提醒：</strong>刚到别剧烈运动、别洗澡、别喝酒。氧气瓶提前在古城药店买。别信路边"100元骑马环湖"，容易被宰。
+      </div>
+    </section></div>
+  </main>
+
+  <footer class="footer">
+    <p class="footer-text">愿你的云南之旅，一路花开</p>
+  </footer>
+
+  <div id="a11yAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <div class="toast" id="cardToast">
+    <span id="toastMessage">已隐藏</span>
+    <span class="toast-action" id="toastAction">点此恢复</span>
+  </div>
+
+  <div class="music-prompt" id="musicPrompt">
+    <div class="music-prompt-icon">🌸</div>
+    <p class="music-prompt-text">春花 - やまだ豊<br><span style="font-size: 0.75rem; color: var(--text-muted);">点击播放背景音乐</span></p>
+    <button class="music-prompt-btn" id="musicPromptBtn">播放音乐</button>
+    <button class="music-prompt-close" id="musicPromptClose">稍后再说</button>
+  </div>
+
+  <div class="music-player" id="musicPlayer">
+    <div class="music-info" id="musicInfo">正在播放：春花</div>
+    <button class="music-toggle" id="musicToggle" aria-label="播放/暂停音乐">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 18V5l12-2v13"/>
+        <circle cx="6" cy="18" r="3"/>
+        <circle cx="18" cy="16" r="3"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="first-visit-tip" id="firstVisitTip">
+    点击卡片右上角 × 可隐藏内容 <button class="first-visit-close" id="firstVisitClose">知道了</button>
+  </div>
+
+  <audio id="bgMusic" loop preload="auto">
+    <source src="spring-flowers.mp3" type="audio/mpeg">
+  </audio>
+
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="管理已隐藏卡片">
+    <span class="sidebar-toggle-label">管理内容</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+    <span class="badge" id="sidebarBadge">0</span>
+  </button>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="sidebar-panel" id="sidebarPanel">
+    <div class="sidebar-header">
+      <span class="sidebar-title">已隐藏的内容</span>
+      <button class="sidebar-close" id="sidebarClose" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="sidebar-content" id="sidebarContent">
+      <div class="sidebar-empty" id="sidebarEmpty">
+        <div class="sidebar-empty-icon">📋</div>
+        <p>没有隐藏的内容</p>
+        <p class="sidebar-empty-hint">点击卡片右上角的 × 可以隐藏不需要的内容</p>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="sidebar-reset-btn" id="sidebarReset">恢复所有隐藏内容</button>
+    </div>
+  </div>
+
+  <button class="nav-arrow prev" aria-label="上一页">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </button>
+  <button class="nav-arrow next" aria-label="下一页">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  </button>
+
+  <button class="back-top" aria-label="返回首页">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+    </svg>
+  </button>
+
+  <div class="slide-indicator" role="tablist" aria-label="页面导航">
+    <span class="slide-dot active" role="tab" tabindex="0" aria-label="首页" aria-selected="true"></span>
+    <span class="slide-dot" role="tab" tabindex="0" aria-label="斗南" aria-selected="false"></span>
+    <span class="slide-dot" role="tab" tabindex="0" aria-label="大理" aria-selected="false"></span>
+    <span class="slide-dot" role="tab" tabindex="0" aria-label="丽江" aria-selected="false"></span>
+    <span class="slide-dot" role="tab" tabindex="0" aria-label="香格里拉" aria-selected="false"></span>
+  </div>
+
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    
+    function initTheme() {
+      const saved = safeStorage.getItem('theme');
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else if (saved === 'light') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      }
+    }
+    
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        safeStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        safeStorage.setItem('theme', 'dark');
+      }
+    }
+    
+    initTheme();
+    themeToggle.addEventListener('click', toggleTheme);
+
+    const tabs = document.querySelectorAll('.nav-tab');
+    const slidesContainer = document.querySelector('.slides-container');
+    const slides = document.querySelectorAll('.slide');
+    const backTop = document.querySelector('.back-top');
+    const dots = document.querySelectorAll('.slide-dot');
+    const prevBtn = document.querySelector('.nav-arrow.prev');
+    const nextBtn = document.querySelector('.nav-arrow.next');
+    const destCards = document.querySelectorAll('.dest-card');
+    let currentIndex = 0;
+    let isDragging = false;
+    let startX = 0;
+    let scrollLeft = 0;
+
+    function goToSlide(index, direction) {
+      if (index < 0 || index >= slides.length) return;
+      
+      const prevIndex = currentIndex;
+      currentIndex = index;
+      
+      slides.forEach((slide, i) => {
+        slide.classList.remove('slide-in-right', 'slide-in-left');
+        if (i === index) {
+          if (direction === 'right' || (direction === undefined && index > prevIndex)) {
+            slide.classList.add('slide-in-right');
+          } else if (direction === 'left' || (direction === undefined && index < prevIndex)) {
+            slide.classList.add('slide-in-left');
+          }
+        }
+      });
+      
+      slidesContainer.scrollTo({
+        left: index * window.innerWidth,
+        behavior: 'smooth'
+      });
+      updateActiveStates();
+    }
+
+    function updateActiveStates() {
+      tabs.forEach((tab, i) => {
+        tab.classList.toggle('active', i === currentIndex);
+      });
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+        dot.setAttribute('aria-selected', i === currentIndex ? 'true' : 'false');
+      });
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentIndex);
+      });
+      backTop.classList.toggle('visible', currentIndex > 0);
+      if (prevBtn) prevBtn.style.opacity = currentIndex === 0 ? '0.3' : '1';
+      if (nextBtn) nextBtn.style.opacity = currentIndex === slides.length - 1 ? '0.3' : '1';
+    }
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => {
+        const direction = index > currentIndex ? 'right' : 'left';
+        goToSlide(index, direction);
+      });
+    });
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        const direction = index > currentIndex ? 'right' : 'left';
+        goToSlide(index, direction);
+      });
+      dot.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const direction = index > currentIndex ? 'right' : 'left';
+          goToSlide(index, direction);
+        }
+      });
+    });
+
+    destCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        const gotoIndex = parseInt(card.dataset.goto);
+        if (!isNaN(gotoIndex)) {
+          createRipple(e, card);
+          goToSlide(gotoIndex, 'right');
+        }
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const gotoIndex = parseInt(card.dataset.goto);
+          if (!isNaN(gotoIndex)) goToSlide(gotoIndex, 'right');
+        }
+      });
+    });
+
+    if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1, 'left'));
+    if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1, 'right'));
+
+    let scrollTimeout;
+    slidesContainer.addEventListener('scroll', () => {
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const scrollL = slidesContainer.scrollLeft;
+        const newIndex = Math.round(scrollL / window.innerWidth);
+        if (newIndex !== currentIndex && newIndex >= 0 && newIndex < slides.length) {
+          const direction = newIndex > currentIndex ? 'right' : 'left';
+          currentIndex = newIndex;
+          updateActiveStates();
+        }
+      }, 100);
+    }, { passive: true });
+
+    // Touch swipe
+    let touchStartX = 0;
+    slidesContainer.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    slidesContainer.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0 && currentIndex < slides.length - 1) {
+          goToSlide(currentIndex + 1, 'right');
+        } else if (diff < 0 && currentIndex > 0) {
+          goToSlide(currentIndex - 1, 'left');
+        }
+      }
+    }, { passive: true });
+
+    // Mouse drag for desktop
+    slidesContainer.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.pageX - slidesContainer.offsetLeft;
+      scrollLeft = slidesContainer.scrollLeft;
+      slidesContainer.style.cursor = 'grabbing';
+    });
+
+    slidesContainer.addEventListener('mouseleave', () => {
+      isDragging = false;
+      slidesContainer.style.cursor = 'grab';
+    });
+
+    slidesContainer.addEventListener('mouseup', (e) => {
+      isDragging = false;
+      slidesContainer.style.cursor = 'grab';
+      const endX = e.pageX - slidesContainer.offsetLeft;
+      const diff = startX - endX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0 && currentIndex < slides.length - 1) {
+          goToSlide(currentIndex + 1, 'right');
+        } else if (diff < 0 && currentIndex > 0) {
+          goToSlide(currentIndex - 1, 'left');
+        }
+      } else {
+        goToSlide(currentIndex);
+      }
+    });
+
+    slidesContainer.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - slidesContainer.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      slidesContainer.scrollLeft = scrollLeft - walk;
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        goToSlide(currentIndex - 1, 'left');
+      } else if (e.key === 'ArrowRight') {
+        goToSlide(currentIndex + 1, 'right');
+      }
+    });
+
+    // Ripple effect for touch
+    function createRipple(event, element) {
+      const ripple = document.createElement('span');
+      ripple.classList.add('ripple');
+      const rect = element.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (event.clientX || event.changedTouches[0].clientX) - rect.left - size / 2 + 'px';
+      ripple.style.top = (event.clientY || event.changedTouches[0].clientY) - rect.top - size / 2 + 'px';
+      element.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 500);
+    }
+
+    // Initialize
+    // Disable browser scroll restoration
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    
+    slidesContainer.style.cursor = 'grab';
+    slides[0].classList.add('active');
+    updateActiveStates();
+
+    // Force scroll to top on load
+    window.addEventListener('load', () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      slidesContainer.scrollLeft = 0;
+    });
+    
+    // Also scroll immediately
+    window.scrollTo(0, 0);
+    slidesContainer.scrollLeft = 0;
+
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        } else {
+          entry.target.classList.remove('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '50px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+    // Safe localStorage wrapper
+    const safeStorage = {
+      getItem(key) {
+        try {
+          return localStorage.getItem(key);
+        } catch (e) {
+          return null;
+        }
+      },
+      setItem(key, value) {
+        try {
+          localStorage.setItem(key, value);
+        } catch (e) {}
+      },
+      removeItem(key) {
+        try {
+          localStorage.removeItem(key);
+        } catch (e) {}
+      }
+    };
+
+    // Card management system
+    const cardManager = {
+      hiddenCards: new Set(),
+      
+      init() {
+        const saved = safeStorage.getItem('hiddenCards');
+        if (saved) {
+          try {
+            this.hiddenCards = new Set(JSON.parse(saved));
+          } catch (e) {}
+        }
+        
+        this.addCloseButtons();
+        this.applyHiddenState();
+        this.updateBadge();
+        this.setupSidebar();
+      },
+      
+      addCloseButtons() {
+        document.querySelectorAll('.closable-card').forEach(card => {
+          const btn = document.createElement('button');
+          btn.className = 'card-close-btn';
+          btn.setAttribute('aria-label', '隐藏此卡片');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.hideCard(card.dataset.cardId);
+          });
+          card.appendChild(btn);
+        });
+      },
+      
+      hideCard(cardId) {
+        const card = document.querySelector(`[data-card-id="${cardId}"]`);
+        if (!card) return;
+        
+        const cardName = card.dataset.cardName;
+        card.classList.add('hiding');
+        setTimeout(() => {
+          card.classList.add('card-hidden');
+          card.classList.remove('hiding');
+        }, 300);
+        
+        this.hiddenCards.add(cardId);
+        this.saveState();
+        this.updateSidebarList();
+        this.updateBadge(true);
+        this.announce(`已隐藏${cardName}`);
+        this.showToast(`已隐藏「${cardName}」`);
+      },
+      
+      showCard(cardId) {
+        const card = document.querySelector(`[data-card-id="${cardId}"]`);
+        if (!card) return;
+        
+        const cardName = card.dataset.cardName;
+        card.classList.remove('card-hidden');
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.95)';
+        
+        requestAnimationFrame(() => {
+          card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          card.style.opacity = '1';
+          card.style.transform = 'scale(1)';
+        });
+        
+        this.hiddenCards.delete(cardId);
+        this.saveState();
+        this.updateSidebarList();
+        this.updateBadge(true);
+        this.announce(`已恢复${cardName}`);
+      },
+      
+      showAllCards() {
+        const count = this.hiddenCards.size;
+        this.hiddenCards.forEach(cardId => {
+          const card = document.querySelector(`[data-card-id="${cardId}"]`);
+          if (card) {
+            card.classList.remove('card-hidden');
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.95)';
+            requestAnimationFrame(() => {
+              card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+              card.style.opacity = '1';
+              card.style.transform = 'scale(1)';
+            });
+          }
+        });
+        this.hiddenCards.clear();
+        this.saveState();
+        this.updateSidebarList();
+        this.updateBadge(true);
+        this.announce(`已恢复所有隐藏内容`);
+      },
+      
+      applyHiddenState() {
+        this.hiddenCards.forEach(cardId => {
+          const card = document.querySelector(`[data-card-id="${cardId}"]`);
+          if (card) card.classList.add('card-hidden');
+        });
+      },
+      
+      saveState() {
+        safeStorage.setItem('hiddenCards', JSON.stringify([...this.hiddenCards]));
+      },
+      
+      announce(message) {
+        const announcer = document.getElementById('a11yAnnouncer');
+        if (announcer) {
+          announcer.textContent = '';
+          setTimeout(() => {
+            announcer.textContent = message;
+          }, 100);
+        }
+      },
+      
+      showToast(message) {
+        const toast = document.getElementById('cardToast');
+        const toastMessage = document.getElementById('toastMessage');
+        const toastAction = document.getElementById('toastAction');
+        
+        if (!toast || !toastMessage) return;
+        
+        toastMessage.textContent = message;
+        toast.classList.add('show');
+        
+        if (toastAction) {
+          toastAction.onclick = () => {
+            const panel = document.getElementById('sidebarPanel');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (panel && overlay) {
+              panel.classList.add('active');
+              overlay.classList.add('active');
+              this.updateSidebarList();
+            }
+          };
+        }
+        
+        clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      },
+      
+      updateBadge(pulse = false) {
+        const badge = document.getElementById('sidebarBadge');
+        const toggle = document.getElementById('sidebarToggle');
+        if (badge && toggle) {
+          const count = this.hiddenCards.size;
+          badge.textContent = count;
+          toggle.classList.toggle('has-hidden', count > 0);
+          
+          if (pulse && count > 0) {
+            toggle.classList.remove('pulse');
+            void toggle.offsetWidth;
+            toggle.classList.add('pulse');
+          }
+        }
+      },
+      
+      setupSidebar() {
+        const toggle = document.getElementById('sidebarToggle');
+        const overlay = document.getElementById('sidebarOverlay');
+        const panel = document.getElementById('sidebarPanel');
+        const closeBtn = document.getElementById('sidebarClose');
+        const resetBtn = document.getElementById('sidebarReset');
+        
+        const openSidebar = () => {
+          panel.classList.add('active');
+          overlay.classList.add('active');
+          this.updateSidebarList();
+        };
+        
+        const closeSidebar = () => {
+          panel.classList.remove('active');
+          overlay.classList.remove('active');
+        };
+        
+        toggle.addEventListener('click', openSidebar);
+        overlay.addEventListener('click', closeSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        resetBtn.addEventListener('click', () => {
+          this.showAllCards();
+          closeSidebar();
+        });
+        
+        this.updateSidebarList();
+      },
+      
+      updateSidebarList() {
+        const content = document.getElementById('sidebarContent');
+        const empty = document.getElementById('sidebarEmpty');
+        
+        if (!content) return;
+        
+        const items = content.querySelectorAll('.sidebar-item');
+        items.forEach(item => item.remove());
+        
+        if (this.hiddenCards.size === 0) {
+          if (empty) empty.style.display = 'block';
+          return;
+        }
+        
+        if (empty) empty.style.display = 'none';
+        
+        this.hiddenCards.forEach(cardId => {
+          const card = document.querySelector(`[data-card-id="${cardId}"]`);
+          if (!card) return;
+          
+          const cardName = card.dataset.cardName;
+          const item = document.createElement('div');
+          item.className = 'sidebar-item';
+          item.innerHTML = `
+            <span class="sidebar-item-name">${cardName}</span>
+            <button class="sidebar-item-restore" data-card-id="${cardId}" aria-label="恢复${cardName}">恢复</button>
+          `;
+          
+          item.querySelector('.sidebar-item-restore').addEventListener('click', () => {
+            this.showCard(cardId);
+          });
+          
+          content.appendChild(item);
+        });
+      }
+    };
+
+    cardManager.init();
+
+    // First visit tip
+    const firstVisitTip = document.getElementById('firstVisitTip');
+    const firstVisitClose = document.getElementById('firstVisitClose');
+    
+    if (firstVisitTip && safeStorage.getItem('seenCardTip') !== 'true') {
+      setTimeout(() => {
+        firstVisitTip.classList.add('show');
+      }, 2000);
+      
+      firstVisitClose.addEventListener('click', () => {
+        firstVisitTip.classList.remove('show');
+        safeStorage.setItem('seenCardTip', 'true');
+      });
+      
+      setTimeout(() => {
+        firstVisitTip.classList.remove('show');
+        safeStorage.setItem('seenCardTip', 'true');
+      }, 8000);
+    }
+
+    // Image error handling
+    function handleImageError(img) {
+      img.classList.add('img-error');
+      const fallback = document.createElement('div');
+      fallback.className = 'img-fallback';
+      fallback.textContent = '图片加载失败';
+      img.parentNode.appendChild(fallback);
+    }
+
+    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+      img.addEventListener('error', () => handleImageError(img));
+    });
+
+    // Route detail collapse functionality
+    function toggleRouteDetail() {
+      const routeDetail = document.getElementById('routeDetail');
+      if (!routeDetail) return;
+      
+      routeDetail.classList.toggle('collapsed');
+      const isCollapsed = routeDetail.classList.contains('collapsed');
+      safeStorage.setItem('routeDetailCollapsed', isCollapsed);
+    }
+
+    // Restore collapse state on load
+    function initRouteDetailState() {
+      const routeDetail = document.getElementById('routeDetail');
+      if (!routeDetail) return;
+      
+      const isCollapsed = safeStorage.getItem('routeDetailCollapsed') === 'true';
+      if (isCollapsed) {
+        routeDetail.classList.add('collapsed');
+      }
+    }
+
+    initRouteDetailState();
+
+    // Itinerary tabs
+    const itineraryTabs = document.querySelectorAll('.itinerary-tab');
+    const itineraryContents = document.querySelectorAll('.itinerary-content');
+    
+    itineraryTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.itinerary;
+        
+        itineraryTabs.forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        
+        itineraryContents.forEach(content => {
+          content.classList.remove('active');
+          if (content.id === 'itinerary-' + target) {
+            content.classList.add('active');
+          }
+        });
+      });
+    });
+
+    backTop.addEventListener('click', () => goToSlide(0, 'left'));
+
+    // Music player
+    const musicPlayer = {
+      audio: document.getElementById('bgMusic'),
+      toggle: document.getElementById('musicToggle'),
+      player: document.getElementById('musicPlayer'),
+      info: document.getElementById('musicInfo'),
+      prompt: document.getElementById('musicPrompt'),
+      promptBtn: document.getElementById('musicPromptBtn'),
+      promptClose: document.getElementById('musicPromptClose'),
+      isPlaying: false,
+      userDismissed: false,
+
+      init() {
+        if (!this.audio || !this.toggle) return;
+
+        const dismissed = safeStorage.getItem('musicDismissed');
+        if (dismissed === 'true') {
+          this.userDismissed = true;
+          return;
+        }
+
+        setTimeout(() => {
+          if (!this.userDismissed) {
+            this.showPrompt();
+          }
+        }, 6000);
+
+        this.toggle.addEventListener('click', () => this.togglePlay());
+        this.promptBtn.addEventListener('click', () => {
+          this.play();
+          this.hidePrompt();
+        });
+        this.promptClose.addEventListener('click', () => {
+          this.userDismissed = true;
+          safeStorage.setItem('musicDismissed', 'true');
+          this.hidePrompt();
+        });
+
+        this.audio.addEventListener('error', () => {
+          console.warn('Music file not found, player hidden');
+          this.player.style.display = 'none';
+        });
+      },
+
+      showPrompt() {
+        if (this.prompt) {
+          this.prompt.classList.add('show');
+        }
+      },
+
+      hidePrompt() {
+        if (this.prompt) {
+          this.prompt.classList.remove('show');
+        }
+      },
+
+      play() {
+        if (!this.audio) return;
+        
+        this.audio.play().then(() => {
+          this.isPlaying = true;
+          this.toggle.classList.add('playing');
+          this.player.classList.add('show-info');
+          this.toggle.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="6" y="4" width="4" height="16"/>
+              <rect x="14" y="4" width="4" height="16"/>
+            </svg>
+          `;
+        }).catch(() => {
+          this.toggle.classList.remove('playing');
+        });
+      },
+
+      pause() {
+        if (!this.audio) return;
+        
+        this.audio.pause();
+        this.isPlaying = false;
+        this.toggle.classList.remove('playing');
+        this.player.classList.remove('show-info');
+        this.toggle.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18V5l12-2v13"/>
+            <circle cx="6" cy="18" r="3"/>
+            <circle cx="18" cy="16" r="3"/>
+          </svg>
+        `;
+      },
+
+      togglePlay() {
+        if (this.isPlaying) {
+          this.pause();
+        } else {
+          this.play();
+        }
+      }
+    };
+
+    musicPlayer.init();
+  </script>
+</body>
+</html>
