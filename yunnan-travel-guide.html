@@ -259,7 +259,7 @@
       display: flex;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      min-height: calc(100vh - 100px);
+      min-height: 100vh;
       width: 100%;
       overscroll-behavior-x: contain;
     }
@@ -273,10 +273,11 @@
       width: 100%;
       scroll-snap-align: start;
       scroll-snap-stop: always;
-      min-height: 100%;
-      display: flex;
-      flex-direction: column;
+      height: auto !important;
+      display: flex !important;
+      flex-direction: column !important;
       align-items: flex-start;
+      position: relative;
     }
 
     .slide .section {
@@ -284,7 +285,7 @@
       max-width: 680px;
       margin: 0 auto;
       width: 100%;
-      flex: 1;
+      min-height: 0;
     }
 
     .slide:not(.active) .section {
@@ -296,8 +297,9 @@
       flex-direction: column;
       padding-top: var(--space-xs);
       gap: var(--space-sm);
-      min-height: calc(100vh - 120px);
+      min-height: 0;
       justify-content: flex-start;
+      padding-bottom: var(--space-xl);
     }
 
     .home-intro {
@@ -1031,6 +1033,7 @@
     .route-detail.collapsed {
       padding: 0;
       background: transparent;
+      margin-bottom: var(--space-sm);
     }
 
     .route-detail-header {
@@ -1312,6 +1315,7 @@
       color: white;
       font-size: var(--text-xs);
       text-align: center;
+      pointer-events: none;
     }
 
     .spot-with-route {
@@ -2032,8 +2036,9 @@
     }
 
     .info-grid.closable-card .card-close-btn {
-      left: var(--space-sm);
-      right: auto;
+      left: auto;
+      right: var(--space-sm);
+      top: var(--space-xs);
     }
 
     .closable-card:hover .card-close-btn,
@@ -2112,7 +2117,7 @@
 
     .music-player {
       position: fixed;
-      bottom: 140px;
+      bottom: 130px;
       right: var(--space-md);
       z-index: 85;
       display: flex;
@@ -2597,7 +2602,7 @@
 
     .toast {
       position: fixed;
-      bottom: 140px;
+      bottom: 200px;
       right: var(--space-md);
       background: var(--text);
       color: var(--card);
@@ -2618,10 +2623,11 @@
     }
 
     .toast-action {
-      color: var(--sunset);
-      text-decoration: underline;
+      color: var(--sky-light);
+      text-decoration: none;
       cursor: pointer;
       margin-left: var(--space-xs);
+      font-size: 0.75rem;
     }
 
     .sidebar-reset-btn:active {
@@ -3045,7 +3051,7 @@
     .back-top {
       position: fixed;
       bottom: 1.5rem;
-      left: 1rem;
+      right: var(--space-md);
       width: 2.75rem;
       height: 2.75rem;
       background: var(--forest);
@@ -3054,7 +3060,7 @@
       border-radius: 50%;
       cursor: pointer;
       opacity: 0;
-      transform: translateX(-1rem);
+      transform: translateX(0.5rem);
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
@@ -3402,6 +3408,7 @@
     /* Section Cover Animation */
     .section-cover {
       position: relative;
+      cursor: pointer;
     }
 
     .section-cover::after {
@@ -4171,6 +4178,265 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* ========== 移动端专项修复 ========== */
+    @media (max-width: 480px) {
+      /* 1. 行程标签 - 防止文字换行不对称 */
+      .itinerary-tabs {
+        flex-wrap: wrap;
+        gap: var(--space-2xs);
+      }
+      
+      .itinerary-tab {
+        font-size: 0.68rem;
+        padding: var(--space-xs) var(--space-sm);
+        white-space: nowrap;
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+      }
+      
+      .itinerary-tab .tab-badge {
+        font-size: 0.55rem;
+        padding: 1px 4px;
+        margin-left: 2px;
+      }
+
+      /* 2. 省内高铁交通 - 统一布局 */
+      .home-transport-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-xs);
+      }
+      
+      .transport-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-sm);
+      }
+      
+      .transport-route {
+        margin-bottom: 0;
+        justify-content: flex-start;
+      }
+      
+      .transport-info {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 2px;
+      }
+      
+      .transport-price {
+        font-size: 0.85rem;
+      }
+      
+      .transport-time {
+        font-size: 0.65rem;
+      }
+
+      /* 3. 出行必备 - 防止单个标签独占一行 */
+      .home-checklist-items {
+        justify-content: flex-start;
+        gap: var(--space-2xs);
+      }
+      
+      .checklist-tag {
+        font-size: 0.7rem;
+        padding: var(--space-2xs) var(--space-xs);
+      }
+
+      /* 4. 快速提示卡片 - 统一高度 */
+      .quick-tips {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-2xs);
+      }
+      
+      .quick-tip {
+        padding: var(--space-sm) var(--space-2xs);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .quick-tip-icon {
+        font-size: 1rem;
+        margin-bottom: 2px;
+      }
+      
+      .quick-tip-label {
+        font-size: 0.6rem;
+      }
+      
+      .quick-tip-value {
+        font-size: 0.65rem;
+        margin-top: 2px;
+        font-weight: 700;
+        color: var(--sunset-soft);
+      }
+
+      /* 5. 价格和时间突出显示 */
+      .quick-tip-value,
+      .transport-price,
+      .budget-value,
+      .price-tag,
+      .time-table-cell.highlight,
+      .route-card-time {
+        color: var(--sunset) !important;
+        font-weight: 700;
+      }
+
+      /* 6. 大理板块弯箭头在移动端显示 */
+      .route-curve {
+        display: none;
+      }
+      
+      .route-label {
+        display: block;
+        font-size: 0.65rem;
+        padding: 0.25rem 0.5rem;
+        position: relative;
+        right: auto;
+        top: auto;
+        transform: none;
+        margin-top: var(--space-xs);
+        width: fit-content;
+      }
+
+      /* 7. 大理板块照片网格 - 移动端也显示3张 */
+      .spot-photo-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-2xs);
+      }
+
+      /* 9. 卡片删除按钮在移动端始终显示 */
+      .closable-card .card-close-btn {
+        opacity: 0.6;
+        transform: scale(0.85) rotate(0deg);
+        width: 28px;
+        height: 28px;
+      }
+      
+      .closable-card:active .card-close-btn,
+      .closable-card:focus-within .card-close-btn {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .home-section {
+        min-height: 0;
+        padding-bottom: var(--space-xl);
+      }
+    }
+
+    /* ========== 图片灯箱 ========== */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0);
+      visibility: hidden;
+      transition: background 0.35s ease, visibility 0.35s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .lightbox.active {
+      background: rgba(0, 0, 0, 0.92);
+      visibility: visible;
+    }
+
+    .lightbox-content {
+      position: relative;
+      max-width: 95vw;
+      max-height: 90vh;
+      opacity: 0;
+      transform: scale(0.85) translateY(20px);
+      transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1), 
+                  transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .lightbox.active .lightbox-content {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .lightbox-img {
+      max-width: 95vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: var(--space-sm);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -44px;
+      right: 0;
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+    }
+
+    .lightbox-close:active {
+      transform: scale(0.95);
+    }
+
+    .lightbox-close svg {
+      width: 18px;
+      height: 18px;
+      color: white;
+    }
+
+    .lightbox-label {
+      position: absolute;
+      bottom: -36px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.85rem;
+      white-space: nowrap;
+      font-family: 'ZCOOL XiaoWei', serif;
+      letter-spacing: 0.05em;
+    }
+
+    .photo-item {
+      cursor: pointer;
+    }
+
+    .photo-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0);
+      transition: background 0.2s ease;
+      pointer-events: none;
+      border-radius: var(--space-sm);
+    }
+
+    .photo-item:active::after {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lightbox,
+      .lightbox-content {
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -4234,8 +4500,8 @@
         <div class="home-itinerary-header">
           <span class="home-itinerary-title">📍 推荐行程（斗南+大理）</span>
           <div class="itinerary-tabs" role="tablist" aria-label="行程选择">
-            <button class="itinerary-tab active" data-itinerary="core4" role="tab" aria-selected="true" aria-controls="itinerary-core4">4天3晚舒适版 <span class="tab-badge">推荐</span></button>
-            <button class="itinerary-tab" data-itinerary="core3" role="tab" aria-selected="false" aria-controls="itinerary-core3">3天2晚紧凑版</button>
+            <button class="itinerary-tab active" data-itinerary="core4" role="tab" aria-selected="true" aria-controls="itinerary-core4">4天3晚<span class="tab-badge">推荐</span></button>
+            <button class="itinerary-tab" data-itinerary="core3" role="tab" aria-selected="false" aria-controls="itinerary-core3">3天2晚</button>
             <button class="itinerary-tab" data-itinerary="full" role="tab" aria-selected="false" aria-controls="itinerary-full">全路线</button>
           </div>
         </div>
@@ -4349,7 +4615,7 @@
       <div class="destinations-grid" role="list">
         <div class="dest-card fade-in" data-goto="1" role="listitem" tabindex="0" aria-label="查看斗南花市攻略">
           <div class="dest-card-image">
-            <img src="https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=600&q=80" alt="斗南花市鲜花批发市场，摊位上摆满各色鲜花">
+            <img src="https://sns-webpic-qc.xhscdn.com/202603192213/51b07f5976cf484db3edda0f17e37b7c/notes_pre_post/1040g3k031s3bq972lk6g5nmvi0n08p1tcac9irg!nd_dft_wlteh_webp_3" alt="斗南花市鲜花批发市场，摊位上摆满各色鲜花" referrerpolicy="no-referrer">
             <div class="dest-card-overlay"></div>
           </div>
           <div class="dest-card-content">
@@ -4363,7 +4629,7 @@
 
         <div class="dest-card fade-in" data-goto="2" role="listitem" tabindex="0" aria-label="查看大理攻略">
           <div class="dest-card-image">
-            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="大理洱海风光，蓝天白云倒映在湖面">
+            <img src="https://sns-webpic-qc.xhscdn.com/202603192215/27aac7be66a0996ae9d8d6fee5db1752/notes_pre_post/1040g3k031qgvgrfpn0604a4q4ojcqamuthcis9g!nd_dft_wlteh_webp_3" alt="大理洱海风光，蓝天白云倒映在湖面" referrerpolicy="no-referrer">
             <div class="dest-card-overlay"></div>
           </div>
           <div class="dest-card-content">
@@ -4377,7 +4643,7 @@
 
         <div class="dest-card fade-in" data-goto="3" role="listitem" tabindex="0" aria-label="查看丽江攻略">
           <div class="dest-card-image">
-            <img src="https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=600&q=80" alt="丽江古城夜景，灯火辉煌的传统建筑">
+            <img src="http://sns-webpic-qc.xhscdn.com/202603192216/75e04b2ca529b69419906f0a490d788c/notes_pre_post/1040g3k031gk9epiqjs004bmlj7oeivqtcc7ppt8!nd_dft_wlteh_webp_3" alt="丽江古城夜景，灯火辉煌的传统建筑" referrerpolicy="no-referrer">
             <div class="dest-card-overlay"></div>
           </div>
           <div class="dest-card-content">
@@ -4391,7 +4657,7 @@
 
         <div class="dest-card fade-in" data-goto="4" role="listitem" tabindex="0" aria-label="查看香格里拉攻略">
           <div class="dest-card-image">
-            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80" alt="香格里拉雪山草甸，高原风光">
+            <img src="https://sns-webpic-qc.xhscdn.com/202603192217/6fcc638e481bba34431235444a64c65b/1040g2sg31tce883j68jg48v8jg1f3jcr0fufck0!nd_dft_wlteh_webp_3" alt="香格里拉雪山草甸，高原风光" referrerpolicy="no-referrer">
             <div class="dest-card-overlay"></div>
           </div>
           <div class="dest-card-content">
@@ -4489,7 +4755,8 @@
           <span class="checklist-tag">舒适鞋</span>
         </div>
       </div>
-    </section></div>
+    </section>
+  </div>
 
     <div class="slide" data-index="1"><section id="dounan" class="section">
       <div class="section-header">
@@ -4502,7 +4769,7 @@
         <div class="quick-tip">
           <div class="quick-tip-icon">🚇</div>
           <div class="quick-tip-label">交通</div>
-          <div class="quick-tip-value">地铁4号线金桂街B口</div>
+          <div class="quick-tip-value">地铁4号线<br>金桂街B口</div>
         </div>
         <div class="quick-tip">
           <div class="quick-tip-icon">💰</div>
@@ -4621,7 +4888,8 @@
           <div class="info-content">场内炸洋芋、木瓜水5-15元；无名豆花米线8元；嘉华/潘祥记鲜花饼市场里有门店</div>
         </div>
       </div>
-    </section></div>
+    </section>
+  </div>
 
     <div class="slide" data-index="2"><section id="dali" class="section">
       <div class="section-header">
@@ -4698,7 +4966,7 @@
           </div>
           <div class="spot-photo-grid">
             <div class="photo-item">
-              <img src="https://dimg04.c-ctrip.com/images/1mh3g12000gdy2lplFBA1_D_180_180.jpg?proc=autoorient" alt="转角楼" loading="lazy" referrerpolicy="no-referrer">
+              <img src="https://sns-webpic-qc.xhscdn.com/202603192301/a4c4e13855e4dd13f5f3217a06e7072f/notes_pre_post/1040g3k831sb56rt762d05plafgvncaf0drjdmoo!nd_dft_wlteh_webp_3" alt="转角楼" loading="lazy" referrerpolicy="no-referrer">
               <span class="photo-label">转角楼</span>
             </div>
             <div class="photo-item">
@@ -4767,15 +5035,6 @@
               <img src="https://qcloud.dpfile.com/pc/24_AgxR0uY4r_jOJnXBuQGSr_0ggU3J_GxaRLB_DPQ8_PbZPVe5_9Id3pF9rzKXKY0q73sB2DyQcgmKUxZFQtw.jpg" alt="海景咖啡馆" loading="lazy" referrerpolicy="no-referrer">
               <span class="photo-label">海景咖啡馆</span>
             </div>
-          </div>
-        </div>
-
-        <div class="spot-with-route fade-in">
-          <div class="spot">
-            <h3 class="spot-name">大理大学樱花 <span class="spot-highlight-tag">免费</span></h3>
-            <p class="spot-highlight">整条樱花大道盛放，苍山为背景，春日校园感拉满。需提前公众号预约入校。</p>
-            <span class="spot-transport">🚌 古城乘公交约20分钟，带身份证入校</span>
-          </div>
         </div>
       </div>
 
@@ -4800,23 +5059,23 @@
             <div class="timeline-item">
               <span class="time">7:00</span>
               <span class="time-optional">可选</span>
-              <span class="event">古城出发→龙龛码头看洱海日出</span>
+              <span class="event">古城出发→龙龛码头看洱海日出（公交C2路2元直达，看完可在龙龛段廊道慢逛）</span>
             </div>
             <div class="timeline-item">
               <span class="time">9:00</span>
-              <span class="event"><strong>喜洲古镇</strong>（5元中巴直达），拍转角楼、喜林苑黄墙、油菜花田，吃喜洲粑粑</span>
+              <span class="event"><strong>喜洲古镇</strong>（5元中巴/拼车人均10元），拍转角楼、喜林苑黄墙、油菜花田，吃喜洲粑粑</span>
             </div>
             <div class="timeline-item">
               <span class="time">12:30</span>
-              <span class="event">喜洲→磻溪村，吃午饭，避开正午暴晒</span>
+              <span class="event">喜洲→桃源码头（廊道精华段起点），吃午饭，避开正午暴晒</span>
             </div>
             <div class="timeline-item">
               <span class="time">15:00</span>
-              <span class="event"><strong>磻溪S湾→才村码头</strong>，沿生态廊道骑行，随停随拍</span>
+              <span class="event"><strong>桃源码头→磻溪S湾</strong>，沿生态廊道骑行随停随拍</span>
             </div>
             <div class="timeline-item">
               <span class="time">18:00</span>
-              <span class="event"><strong>才村码头</strong>等洱海日落，拍橘子海大片</span>
+              <span class="event">磻溪S湾→才村码头，等洱海日落，拍橘子海大片</span>
             </div>
             <div class="timeline-item">
               <span class="time">19:30</span>
@@ -4833,11 +5092,11 @@
           <div class="route-timeline">
             <div class="timeline-item">
               <span class="time">10:00</span>
-              <span class="event">古城→<strong>双廊古镇</strong>（25元景区直通车/30元拼车）</span>
+              <span class="event">古城→<strong>双廊古镇</strong>（25元景区直通车/30元拼车，约1小时）</span>
             </div>
             <div class="timeline-item">
               <span class="time">11:30</span>
-              <span class="event">双廊慢逛：玉几岛临海栈道、日落观景台，海景咖啡馆发呆</span>
+              <span class="event">双廊慢逛：玉几岛临海栈道、日落观景台，海景咖啡馆发呆看海</span>
             </div>
             <div class="timeline-item">
               <span class="time">16:00</span>
@@ -4845,7 +5104,7 @@
             </div>
             <div class="timeline-item">
               <span class="time">18:00</span>
-              <span class="event"><strong>环海东路观景台</strong>，等TOP级苍山洱海日落</span>
+              <span class="event"><strong>环海东路观景台</strong>，等苍山洱海日落</span>
             </div>
             <div class="timeline-item">
               <span class="time">19:30</span>
@@ -5007,8 +5266,9 @@
       <div class="warning-box fade-in">
         <strong>避坑：</strong>别信古城里"50元玉龙雪山一日游"，全是购物团；别买古城里的银器玉石；大索道票现场买不到，提前抢。
       </div>
-    </section></div>
-    <div class="slide" data-index="4"><section id="shangri" class="section">
+    </section>
+  </div>
+  <div class="slide" data-index="4"><section id="shangri" class="section">
       <div class="section-header">
         <div class="section-number">肆</div>
         <h2 class="section-title title-style-petal">香格里拉 · 藏地风光</h2>
@@ -5090,8 +5350,9 @@
       <div class="warning-box fade-in">
         <strong>高原提醒：</strong>刚到别剧烈运动、别洗澡、别喝酒。氧气瓶提前在古城药店买。别信路边"100元骑马环湖"，容易被宰。
       </div>
-    </section></div>
-  </main>
+    </section>
+  </div>
+</main>
 
   <footer class="footer">
     <p class="footer-text">愿你的云南之旅，一路花开</p>
@@ -5101,7 +5362,7 @@
 
   <div class="toast" id="cardToast">
     <span id="toastMessage">已隐藏</span>
-    <span class="toast-action" id="toastAction">点此恢复</span>
+    <span class="toast-action" id="toastAction">管理内容</span>
   </div>
 
   <div class="music-prompt" id="musicPrompt">
@@ -5185,7 +5446,41 @@
     <span class="slide-dot" role="tab" tabindex="0" aria-label="香格里拉" aria-selected="false"></span>
   </div>
 
+  <!-- 图片灯箱 -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="图片预览">
+    <div class="lightbox-content">
+      <button class="lightbox-close" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+      <img class="lightbox-img" id="lightboxImg" src="" alt="">
+      <div class="lightbox-label" id="lightboxLabel"></div>
+    </div>
+  </div>
+
   <script>
+    // Safe localStorage wrapper - must be defined before use
+    const safeStorage = {
+      getItem(key) {
+        try {
+          return localStorage.getItem(key);
+        } catch (e) {
+          return null;
+        }
+      },
+      setItem(key, value) {
+        try {
+          localStorage.setItem(key, value);
+        } catch (e) {}
+      },
+      removeItem(key) {
+        try {
+          localStorage.removeItem(key);
+        } catch (e) {}
+      }
+    };
+
     // Theme toggle
     const themeToggle = document.getElementById('themeToggle');
     
@@ -5251,6 +5546,7 @@
         behavior: 'smooth'
       });
       updateActiveStates();
+      adjustHeights();
     }
 
     function updateActiveStates() {
@@ -5267,6 +5563,30 @@
       backTop.classList.toggle('visible', currentIndex > 0);
       if (prevBtn) prevBtn.style.opacity = currentIndex === 0 ? '0.3' : '1';
       if (nextBtn) nextBtn.style.opacity = currentIndex === slides.length - 1 ? '0.3' : '1';
+    }
+
+    // 动态调整文档高度和 slides 容器高度
+    function adjustHeights() {
+      const activeSlide = document.querySelector('.slide.active');
+      if (!activeSlide) return;
+
+      const hero = document.querySelector('.hero');
+      const nav = document.querySelector('.nav-tabs');
+      const footer = document.querySelector('.footer');
+      const slidesContainer = document.querySelector('.slides-container');
+
+      if (!hero || !nav || !footer || !slidesContainer) return;
+
+      const slideHeight = activeSlide.scrollHeight;
+      const heroHeight = hero.offsetHeight;
+      const navHeight = nav.offsetHeight;
+      const footerHeight = footer.offsetHeight;
+
+      const totalHeight = heroHeight + navHeight + slideHeight + footerHeight + 50;
+
+      document.body.style.height = totalHeight + 'px';
+      document.documentElement.style.height = totalHeight + 'px';
+      slidesContainer.style.height = slideHeight + 'px';
     }
 
     tabs.forEach((tab, index) => {
@@ -5432,27 +5752,6 @@
     }, { threshold: 0.1, rootMargin: '50px' });
 
     document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
-
-    // Safe localStorage wrapper
-    const safeStorage = {
-      getItem(key) {
-        try {
-          return localStorage.getItem(key);
-        } catch (e) {
-          return null;
-        }
-      },
-      setItem(key, value) {
-        try {
-          localStorage.setItem(key, value);
-        } catch (e) {}
-      },
-      removeItem(key) {
-        try {
-          localStorage.removeItem(key);
-        } catch (e) {}
-      }
-    };
 
     // Card management system
     const cardManager = {
@@ -5723,6 +6022,9 @@
       routeDetail.classList.toggle('collapsed');
       const isCollapsed = routeDetail.classList.contains('collapsed');
       safeStorage.setItem('routeDetailCollapsed', isCollapsed);
+      
+      // 高度变化后重新计算文档高度
+      setTimeout(adjustHeights, 50);
     }
 
     // Restore collapse state on load
@@ -5863,7 +6165,18 @@
       }
     };
 
-    musicPlayer.init();
+musicPlayer.init();
+
+    // 页面加载和窗口变化时调整高度
+    window.addEventListener('load', () => {
+      setTimeout(adjustHeights, 100);
+    });
+    window.addEventListener('resize', adjustHeights);
+
+    // 图片加载完成后调整高度
+    document.querySelectorAll('img').forEach(img => {
+      img.addEventListener('load', adjustHeights);
+    });
   </script>
 </body>
 </html>
