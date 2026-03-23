@@ -248,6 +248,16 @@
   font-weight: calc(600 + var(--text-weight-boost, 0));
 }
 
+.card-section-gap {
+  margin-top: var(--space-lg);
+}
+
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border) 50%, transparent 100%);
+  margin: var(--space-xl) 0;
+}
+
 .info-grid {
   display: grid;
   gap: var(--space-sm);

@@ -193,32 +193,42 @@
 
       <InfoCard
         card-id="dali-practical"
-        card-name="大理实用信息"
+        card-name="大理住宿美食"
         :hidden-cards="hiddenCards"
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="practical-section fade-in">
-          <div class="practical-grid">
-            <div class="practical-block">
-              <div class="practical-block-title">🏨 住宿</div>
-              <div class="practical-block-content">
-                <div class="practical-item" v-for="item in data.accommodations[0].items.slice(0, 2)" :key="item.name">
-                  <span class="practical-item-name">{{ item.name }}</span>
-                  <span class="practical-item-price">{{ item.price }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="practical-block">
-              <div class="practical-block-title">🍜 美食</div>
-              <div class="practical-block-content">
-                <div class="practical-item" v-for="food in data.foods.slice(0, 3)" :key="food.name">
-                  <span class="practical-item-name">{{ food.name }}</span>
-                  <span class="practical-item-price">{{ food.price }}</span>
+          <div class="practical-Stay">
+            <div class="practical-section-title">🏨 住宿推荐</div>
+            <div class="stay-groups">
+              <div class="stay-group" v-for="group in data.accommodations" :key="group.category">
+                <div class="stay-group-label">{{ group.category }}</div>
+                <div class="stay-items">
+                  <div class="stay-item" v-for="item in group.items" :key="item.name">
+                    <div class="stay-item-header">
+                      <span class="stay-item-name">{{ item.name }}</span>
+                      <span class="stay-item-price">{{ item.price }}</span>
+                    </div>
+                    <div class="stay-item-location">{{ item.location }}</div>
+                    <div class="stay-item-highlights">{{ item.highlights }}</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="practical-note">更多住宿美食选择可在美团/大众点评查看</div>
+          <div class="practical-food">
+            <div class="practical-section-title">🍜 必吃美食</div>
+            <div class="food-items">
+              <div class="food-item-compact" v-for="food in data.foods" :key="food.name">
+                <div class="food-item-header">
+                  <span class="food-item-name">{{ food.name }}</span>
+                  <span class="food-item-price">{{ food.price }}</span>
+                </div>
+                <div class="food-item-shops">推荐：{{ food.shops }}</div>
+                <div class="food-item-tip" v-if="food.tip">{{ food.tip }}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </InfoCard>
 
@@ -229,17 +239,24 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="ticket-section fade-in">
-          <div class="ticket-grid">
-            <div class="ticket-item" v-for="item in data.studentDiscounts.slice(0, 3)" :key="item.spot">
-              <div class="ticket-spot">{{ item.spot }}</div>
-              <div class="ticket-price">
-                <span class="ticket-full">{{ item.fullPrice }}</span>
-                <span class="ticket-arrow">→</span>
-                <span class="ticket-student">{{ item.studentPrice }}</span>
+          <div class="ticket-header">
+            <span class="ticket-label">🎫 学生票（持学生证）</span>
+          </div>
+          <div class="ticket-list">
+            <div class="ticket-item-detail" v-for="item in data.studentDiscounts" :key="item.spot">
+              <div class="ticket-item-row">
+                <span class="ticket-spot-name">{{ item.spot }}</span>
+                <span class="ticket-price-row">
+                  <span class="ticket-full">{{ item.fullPrice }}</span>
+                  <span class="ticket-arrow">→</span>
+                  <span class="ticket-student">{{ item.studentPrice }}</span>
+                </span>
               </div>
+              <div class="ticket-item-note" v-if="item.note">{{ item.note }}</div>
             </div>
           </div>
           <div class="ticket-booking">
+            <div class="ticket-booking-title">📅 预约信息</div>
             <div class="ticket-booking-item" v-for="item in data.bookingInfo" :key="item.spot" :class="{ important: item.important }">
               <strong>{{ item.spot }}</strong>：{{ item.note }}
             </div>
@@ -1011,77 +1028,170 @@ onMounted(() => {
   padding: var(--space-md);
 }
 
-.practical-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.practical-section-title {
+  font-size: calc(0.9rem * var(--text-scale, 1));
+  font-weight: calc(700 + var(--text-weight-boost, 0));
+  color: var(--forest);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-xs);
+  border-bottom: 2px solid var(--forest-light);
+}
+
+.practical-stay {
+  margin-bottom: var(--space-lg);
+}
+
+.stay-groups {
+  display: flex;
+  flex-direction: column;
   gap: var(--space-md);
 }
 
-.practical-block-title {
-  font-size: var(--text-sm);
+.stay-group-label {
+  font-size: 0.7rem;
   font-weight: 600;
-  color: var(--forest);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   margin-bottom: var(--space-xs);
 }
 
-.practical-block-content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
+.stay-items {
+  display: grid;
+  gap: var(--space-sm);
 }
 
-.practical-item {
+.stay-item {
+  background: var(--forest-light);
+  border-radius: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-left: 3px solid var(--forest);
+}
+
+.stay-item-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 0.75rem;
+  align-items: baseline;
+  margin-bottom: 4px;
 }
 
-.practical-item-name {
-  color: var(--text);
+.stay-item-name {
+  font-size: calc(0.85rem * var(--text-scale, 1));
+  font-weight: calc(700 + var(--text-weight-boost, 0));
+  color: var(--forest);
 }
 
-.practical-item-price {
-  color: var(--sunset);
+.stay-item-price {
+  font-size: calc(0.8rem * var(--text-scale, 1));
   font-weight: 600;
+  color: var(--sunset);
+  white-space: nowrap;
 }
 
-.practical-note {
-  font-size: 0.7rem;
+.stay-item-location {
+  font-size: calc(0.7rem * var(--text-scale, 1));
   color: var(--text-muted);
-  text-align: center;
-  margin-top: var(--space-md);
-  padding-top: var(--space-sm);
-  border-top: 1px dashed var(--border);
+  line-height: 1.4;
+}
+
+.stay-item-highlights {
+  font-size: calc(0.7rem * var(--text-scale, 1));
+  color: var(--text);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.food-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.food-item-compact {
+  background: var(--forest-light);
+  border-radius: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-left: 3px solid var(--sunset);
+}
+
+.food-item-compact .food-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.food-item-compact .food-item-name {
+  font-size: calc(0.85rem * var(--text-scale, 1));
+  font-weight: calc(700 + var(--text-weight-boost, 0));
+  color: var(--forest);
+}
+
+.food-item-compact .food-item-price {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-weight: 600;
+  color: var(--sunset);
+  white-space: nowrap;
+}
+
+.food-item-compact .food-item-shops {
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.food-item-compact .food-item-tip {
+  font-size: calc(0.7rem * var(--text-scale, 1));
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.4;
 }
 
 .ticket-section {
   padding: var(--space-md);
 }
 
-.ticket-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-xs);
-  margin-bottom: var(--space-sm);
+.ticket-header {
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-xs);
+  border-bottom: 2px solid var(--forest-light);
 }
 
-.ticket-item {
+.ticket-label {
+  font-size: calc(0.9rem * var(--text-scale, 1));
+  font-weight: calc(700 + var(--text-weight-boost, 0));
+  color: var(--forest);
+}
+
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.ticket-item-detail {
   background: var(--forest-light);
   border-radius: var(--space-sm);
-  padding: var(--space-xs);
-  text-align: center;
+  padding: var(--space-sm) var(--space-md);
+  border-left: 3px solid var(--forest);
 }
 
-.ticket-spot {
-  font-size: 0.7rem;
-  font-weight: 600;
+.ticket-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.ticket-spot-name {
+  font-size: calc(0.85rem * var(--text-scale, 1));
+  font-weight: calc(600 + var(--text-weight-boost, 0));
   color: var(--text);
-  margin-bottom: 2px;
 }
 
-.ticket-price {
-  font-size: 0.65rem;
+.ticket-price-row {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  white-space: nowrap;
 }
 
 .ticket-full {
@@ -1091,7 +1201,7 @@ onMounted(() => {
 
 .ticket-arrow {
   color: var(--text-muted);
-  margin: 0 2px;
+  margin: 0 6px;
 }
 
 .ticket-student {
@@ -1099,16 +1209,31 @@ onMounted(() => {
   font-weight: 600;
 }
 
+.ticket-item-note {
+  font-size: calc(0.7rem * var(--text-scale, 1));
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
 .ticket-booking {
   background: var(--earth-light);
   border-radius: var(--space-sm);
-  padding: var(--space-sm);
+  padding: var(--space-md);
+}
+
+.ticket-booking-title {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-weight: calc(600 + var(--text-weight-boost, 0));
+  color: var(--text);
+  margin-bottom: var(--space-sm);
 }
 
 .ticket-booking-item {
-  font-size: 0.75rem;
+  font-size: calc(0.75rem * var(--text-scale, 1));
   color: var(--text);
   margin-bottom: var(--space-xs);
+  line-height: 1.5;
 }
 
 .ticket-booking-item:last-child {
@@ -1116,6 +1241,9 @@ onMounted(() => {
 }
 
 .ticket-booking-item.important {
+  background: var(--sunset-soft);
+  margin: 0 calc(var(--space-md) * -1);
+  padding: var(--space-xs) var(--space-md);
   color: var(--sunset);
   font-weight: 600;
 }
@@ -1125,10 +1253,18 @@ onMounted(() => {
 }
 
 .ticket-note {
-  font-size: 0.7rem;
+  font-size: calc(0.7rem * var(--text-scale, 1));
   color: var(--text-muted);
   text-align: center;
-  margin-top: var(--space-sm);
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px dashed var(--border);
+}
+
+@media (min-width: 480px) {
+  .stay-items {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .info-note {
