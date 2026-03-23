@@ -6,7 +6,7 @@ export const destinations = [
     name: '斗南花市',
     location: '昆明 · 亚洲最大花市',
     desc: '5元实现鲜花自由，直接寄回家',
-    image: 'https://sns-webpic-qc.xhscdn.com/202603192213/51b07f5976cf484db3edda0f17e37b7c/notes_pre_post/1040g3k031s3bq972lk6g5nmvi0n08p1tcac9irg!nd_dft_wlteh_webp_3'
+    image: '/images/dounan.jpg'
   },
   {
     id: 'dali',
@@ -15,7 +15,7 @@ export const destinations = [
     name: '大理',
     location: '苍山洱海 · 古城樱花',
     desc: '喜洲油菜花、洱海骑行、古城樱花',
-    image: 'https://sns-webpic-qc.xhscdn.com/202603192215/27aac7be66a0996ae9d8d6fee5db1752/notes_pre_post/1040g3k031qgvgrfpn0604a4q4ojcqamuthcis9g!nd_dft_wlteh_webp_3'
+    image: '/images/dali.jpg'
   },
   {
     id: 'lijiang',
@@ -24,7 +24,7 @@ export const destinations = [
     name: '丽江',
     location: '古城 · 玉龙雪山',
     desc: '雪山积雪完整，蓝月谷澄澈',
-    image: 'http://sns-webpic-qc.xhscdn.com/202603192216/75e04b2ca529b69419906f0a490d788c/notes_pre_post/1040g3k031gk9epiqjs004bmlj7oeivqtcc7ppt8!nd_dft_wlteh_webp_3'
+    image: '/images/lijiang.jpg'
   },
   {
     id: 'shangri',
@@ -33,7 +33,7 @@ export const destinations = [
     name: '香格里拉',
     location: '藏地 · 古城转经筒',
     desc: '高原藏地人文，雪山湖泊草甸',
-    image: 'https://sns-webpic-qc.xhscdn.com/202603192217/6fcc638e481bba34431235444a64c65b/1040g2sg31tce883j68jg48v8jg1f3jcr0fufck0!nd_dft_wlteh_webp_3'
+    image: '/images/shangri.jpg'
   }
 ]
 
@@ -108,9 +108,9 @@ export const dounanData = {
     { icon: '📷', label: '拍照+慢慢选', value: '14:00-18:00' }
   ],
   photos: [
-    { src: 'https://p3-sign.toutiaoimg.com/tos-cn-i-6w9my0ksvp/e134c8cb36044bca80aeef0c3695e132~tplv-tt-origin-web:gif.jpeg?_iz=58558&from=article.pc_detail&lk3s=953192f4&x-expires=1774510352&x-signature=FxT1kzwaKbqDWjs1CVldjnh7QSU%3D', label: '花海' },
-    { src: 'https://p3-sign.toutiaoimg.com/tos-cn-i-6w9my0ksvp/9f096c07a3194d409fea78f88097177d~tplv-tt-origin-web:gif.jpeg?_iz=58558&from=article.pc_detail&lk3s=953192f4&x-expires=1774510352&x-signature=s5kwcoHAbGXmFI04H9o9MbTikco%3D', label: '批发盛况' },
-    { src: 'https://p3-sign.toutiaoimg.com/tos-cn-i-6w9my0ksvp/4b692832c93a4f16ab20b3e05140f027~tplv-tt-origin-web:gif.jpeg?_iz=58558&from=article.pc_detail&lk3s=953192f4&x-expires=1774510352&x-signature=toFtzEOJ4k8divVxj5eovNPDf%2Fo%3D', label: '多肉天堂' }
+    { src: '/images/dounan-1-huahai.jpeg', label: '花海' },
+    { src: '/images/dounan-2-pifa.jpeg', label: '批发盛况' },
+    { src: '/images/dounan-3-durou.jpeg', label: '多肉天堂' }
   ],
   timeTable: {
     rows: [
@@ -132,9 +132,9 @@ export const daliData = {
       highlight: '人民路、红龙井樱花大道盛开，粉樱配青瓦白墙。清晨逛石板路，夜间逛人民路、洋人街。住宿大本营。',
       transport: '🚌 火车站乘4路/8路公交直达，约30分钟',
       photos: [
-        { src: 'https://q5.itc.cn/q_70/images03/20251226/33c845ac097646e7a951b67fce25e55d.jpeg', label: '北门樱花巷' },
-        { src: 'https://vcg05.cfp.cn/creative/vcg/nowater800/new/VCG211362918532.jpg?x-oss-process=image/format,webp', label: '五华楼夜景' },
-        { src: 'https://5b0988e595225.cdn.sohucs.com/images/20180504/09e7328cefda45b69239f032a25b283f.jpeg', label: '洋人街' }
+        { src: '/images/dali-gucheng-1-beimen-yinghua.jpg', label: '北门樱花巷' },
+        { src: '/images/dali-gucheng-2-wuhualou.jpg', label: '五华楼夜景' },
+        { src: '/images/dali-gucheng-3-yangrenjie.jpeg', label: '洋人街' }
       ],
       routeLabel: '→ 喜洲古镇'
     },
@@ -144,9 +144,9 @@ export const daliData = {
       highlight: '金黄油菜花田正盛，白族黄墙+苍山雪峰同框，电影感拉满。可体验白族扎染，吃喜洲粑粑。',
       transport: '🚌 古城乘中巴5元/人，约40分钟；滴滴约25元',
       photos: [
-        { src: 'https://sns-webpic-qc.xhscdn.com/202603192301/a4c4e13855e4dd13f5f3217a06e7072f/notes_pre_post/1040g3k831sb56rt762d05plafgvncaf0drjdmoo!nd_dft_wlteh_webp_3', label: '转角楼' },
-        { src: 'https://pic3.zhimg.com/v2-2051200624b9b6ec7e4164ad753be8f2_1440w.jpg', label: '杨家登油菜花' },
-        { src: 'https://pic2.zhimg.com/v2-3c818ca76e6df13ac0eb9660116d6285_1440w.jpg', label: '喜林苑黄墙' }
+        { src: '/images/xizhou-corner.jpg', label: '转角楼' },
+        { src: '/images/xizhou-1-yangjiadeng.jpg', label: '杨家登油菜花' },
+        { src: '/images/xizhou-2-xilinyuan.jpg', label: '喜林苑黄墙' }
       ],
       routeLabel: '→ 洱海廊道'
     },
@@ -156,9 +156,9 @@ export const daliData = {
       highlight: '洱海精华段，骑行随停随拍。龙龛码头→磻溪S弯→才村段，3月晴天能见度拉满。',
       transport: '🚴 古城骑行或打车至龙龛码头约10分钟',
       photos: [
-        { src: 'https://pic2.zhimg.com/v2-bdef4c45c6015141002b101c1038898d_1440w.jpg', label: '龙龛码头' },
-        { src: 'https://p2.itc.cn/images01/20220626/bf818c98450b4297b94771f353825132.jpeg', label: '磻溪S湾' },
-        { src: 'https://bkimg.cdn.bcebos.com/pic/d009b3de9c82d158808736d3820a19d8bc3e424e?x-bce-process=image/format,f_auto/watermark,image_d2F0ZXIvYmFpa2UyNzI,g_7,xp_5,yp_5,P_20/resize,m_lfit,limit_1,h_1080', label: '才村码头' }
+        { src: '/images/erhai-1-longkan.jpg', label: '龙龛码头' },
+        { src: '/images/erhai-2-panxi.jpg', label: '磻溪S湾' },
+        { src: '/images/erhai-3-caicun.jpg', label: '才村码头' }
       ],
       routeLabel: 'Day2→双廊'
     },
@@ -168,9 +168,9 @@ export const daliData = {
       highlight: '洱海东岸，直面苍山日落，"苍洱第一镇"。适合发呆看海，找咖啡馆坐一下午。',
       transport: '🚌 景区直通车25元/拼车30元，约1小时',
       photos: [
-        { src: 'https://bkimg.cdn.bcebos.com/pic/574e9258d109b3de9c82a8f9d8e37b81800a19d8e654?x-bce-process=image/format,f_auto/watermark,image_d2F0ZXIvYmFpa2UyNzI,g_7,xp_5,yp_5,P_20/resize,m_lfit,limit_1,h_1080', label: '玉几岛' },
-        { src: 'https://n.sinaimg.cn/sinakd20121/213/w2048h1365/20200531/07cb-iumkapv7475349.jpg', label: '日落观景台' },
-        { src: 'https://qcloud.dpfile.com/pc/24_AgxR0uY4r_jOJnXBuQGSr_0ggU3J_GxaRLB_DPQ8_PbZPVe5_9Id3pF9rzKXKY0q73sB2DyQcgmKUxZFQtw.jpg', label: '海景咖啡馆' }
+        { src: '/images/shuanglang-1-yujiidao.jpg', label: '玉几岛' },
+        { src: '/images/shuanglang-2-riluo.jpg', label: '日落观景台' },
+        { src: '/images/shuanglang-3-kafeiguan.jpg', label: '海景咖啡馆' }
       ]
     }
   ],
@@ -209,7 +209,7 @@ export const lijiangData = {
     { icon: '🌡️', label: '山顶温度', value: '-6~4°C' }
   ],
   coverImage: {
-    src: 'https://img.zcool.cn/community/019a1662c552340002c45e377ee170.jpg?x-oss-process=image/saveexif,1/auto-orient,1/resize,m_lfit,w_1280,limit_1/sharpen,100/quality,q_100/format,webp',
+    src: '/images/lijiang-lanyuegu.jpg',
     caption: '玉龙雪山 · 蓝月谷'
   },
   venues: [
@@ -230,7 +230,7 @@ export const shangriData = {
     { icon: '🧥', label: '必带', value: '羽绒服' }
   ],
   coverImage: {
-    src: 'https://pic4.zhimg.com/v2-f241458cc6d785d779c969d2a1ab4dd1_1440w.jpg',
+    src: '/images/shangri-rizhaoshan.jpg',
     caption: '梅里雪山 · 日照金山'
   },
   venues: [
