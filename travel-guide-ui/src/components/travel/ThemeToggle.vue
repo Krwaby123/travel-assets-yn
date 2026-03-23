@@ -77,20 +77,52 @@ onMounted(() => {
   color: var(--text);
 }
 
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon {
+  position: absolute;
+  transition: opacity 0.3s var(--ease-out-quart), transform 0.4s var(--ease-out-quart);
+}
+
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon {
+  position: absolute;
+  transition: opacity 0.35s var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)),
+              transform 0.45s var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1));
+}
+
 .theme-toggle .icon-sun {
-  display: block;
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
 }
 
 .theme-toggle .icon-moon {
-  display: none;
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
 }
 
 [data-theme="dark"] .theme-toggle .icon-sun {
-  display: none;
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
 }
 
 [data-theme="dark"] .theme-toggle .icon-moon {
-  display: block;
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.theme-toggle .icon-moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+}
+
+[data-theme="dark"] .theme-toggle .icon-sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+
+[data-theme="dark"] .theme-toggle .icon-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
 }
 
 @media (max-width: 480px) {

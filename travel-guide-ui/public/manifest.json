@@ -1,17 +1,49 @@
 {
   "name": "云南旅游攻略",
   "short_name": "云南攻略",
-  "description": "昆明-大理-丽江-香格里拉旅游攻略",
-  "start_url": "./index.html",
+  "description": "云南旅行实用攻略，斗南花市、大理洱海、丽江、香格里拉全指南",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#F5F5F0",
+  "background_color": "#f9f7f3",
   "theme_color": "#2D5A3D",
+  "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "img/icons/icon.png",
+      "src": "img/icons/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icons/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icons/android-chrome-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "img/icons/android-chrome-maskable-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
+    },
+    {
+      "src": "img/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ]
 }

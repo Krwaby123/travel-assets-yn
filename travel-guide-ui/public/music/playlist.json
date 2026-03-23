@@ -1,0 +1,11 @@
+{
+  "songs": [
+    {
+      "id": 1,
+      "name": "春花",
+      "artist": "やまだ豊",
+      "file": "spring-flowers.mp3",
+      "cover": "spring-flowers-cover.jpg"
+    }
+  ]
+}

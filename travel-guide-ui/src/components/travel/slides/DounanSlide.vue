@@ -34,13 +34,13 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="time-table">
-          <div class="time-table-title">⏰ 营业时间（别跑空）</div>
+          <div class="time-table-title"><span class="emoji" aria-hidden="true">⏰</span> 营业时间（别跑空）</div>
           <div class="time-table-row time-table-header">
             <div class="time-table-cell">区域</div>
             <div class="time-table-cell">时间</div>
             <div class="time-table-cell">特点</div>
           </div>
-          <div class="time-table-row" v-for="row in data.timeTable.rows" :key="row.area">
+          <div class="time-table-row" v-for="(row, index) in data.timeTable.rows" :key="row.area" :style="{ '--row-index': index }">
             <div class="time-table-cell area">{{ row.area }}</div>
             <div class="time-table-cell" :class="{ highlight: row.highlight }">{{ row.time }}</div>
             <div class="time-table-cell tip">{{ row.tip }}</div>
@@ -60,7 +60,7 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="simple-info">
-          <div class="simple-info-title">📍 两条逛买路线</div>
+          <div class="simple-info-title"><span class="emoji" aria-hidden="true">📍</span> 两条逛买路线</div>
           <div class="simple-info-content">
             <strong>白天版（14:00-18:00）：</strong>主场馆1楼鲜花→2楼拍卖参观→3楼多肉→1/2号馆伴手礼<br>
             <strong>夜间版（20:30后）：</strong>场外夜市→主场馆捡漏→快递点寄花回家
@@ -96,11 +96,17 @@
         :hidden-cards="hiddenCards"
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
-        <div class="simple-info">
-          <div class="simple-info-title">📦 寄花回家</div>
-          <div class="simple-info-content">
-            优先<strong>顺丰冷链</strong>，省内次日达。包装保水棉+冰袋+硬壳，运费10-20元/束。技巧：买花苞半开的寄回家花期更长。
+        <div class="shipping-section">
+          <div class="shipping-title"><span class="emoji" aria-hidden="true">📦</span> 寄花回家</div>
+          <div class="shipping-warning">{{ data.shipping?.warning }}</div>
+          <div class="shipping-methods">
+            <div class="shipping-method" v-for="method in data.shipping?.methods" :key="method.name">
+              <div class="shipping-method-name">{{ method.name }}</div>
+              <div class="shipping-method-channels">{{ method.channels }}</div>
+              <div class="shipping-method-feature">{{ method.feature }}</div>
+            </div>
           </div>
+          <div class="shipping-tips">{{ data.shipping?.tips }}</div>
         </div>
       </InfoCard>
 
@@ -111,7 +117,7 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="simple-info">
-          <div class="simple-info-title">🌿 选花技巧</div>
+          <div class="simple-info-title"><span class="emoji" aria-hidden="true">🌿</span> 选花技巧</div>
           <div class="simple-info-content">
             <strong>1.</strong> 选花苞半开的，别买完全盛开的<br>
             <strong>2.</strong> 看花瓣无烂瓣霉点，花茎粗壮不发软<br>
@@ -131,7 +137,7 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="simple-info">
-          <div class="simple-info-title">💰 预算参考（半天）</div>
+          <div class="simple-info-title"><span class="emoji" aria-hidden="true">💰</span> 预算参考（半天）</div>
           <div class="simple-info-content">
             <strong>常规版约100元：</strong>买花50元+寄花运费20元+小吃20元+地铁往返4-14元<br>
             <strong>经济版约30元：</strong>只逛不买+地铁往返
@@ -263,10 +269,78 @@ defineEmits(['hide-card', 'open-lightbox'])
   color: var(--text-muted);
 }
 
+.shipping-section {
+  padding: var(--space-md);
+}
+
+.shipping-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--forest);
+  margin-bottom: var(--space-sm);
+  text-align: center;
+}
+
+.shipping-warning {
+  background: var(--sunset-soft);
+  color: var(--sunset);
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--space-xs);
+  margin-bottom: var(--space-sm);
+  text-align: center;
+}
+
+.shipping-methods {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.shipping-method {
+  background: var(--forest-light);
+  border-radius: var(--space-sm);
+  padding: var(--space-sm);
+}
+
+.shipping-method-name {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-weight: calc(700 + var(--text-weight-boost, 0));
+  color: var(--forest);
+  margin-bottom: 2px;
+}
+
+.shipping-method-channels {
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  color: var(--text);
+  font-weight: calc(600 + var(--text-weight-boost, 0));
+}
+
+.shipping-method-feature {
+  font-size: calc(0.7rem * var(--text-scale, 1));
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.shipping-tips {
+  font-size: calc(0.7rem * var(--text-scale, 1));
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px dashed var(--border);
+}
+
 @media (min-width: 480px) {
   .time-table-cell {
     padding: var(--space-sm) var(--space-sm);
     font-size: var(--text-sm);
+  }
+  .shipping-methods {
+    flex-direction: row;
+  }
+  .shipping-method {
+    flex: 1;
   }
 }
 </style>

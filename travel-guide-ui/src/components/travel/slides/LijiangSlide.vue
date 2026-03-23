@@ -26,7 +26,7 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="key-info">
-          <div class="key-info-title">📌 核心要点</div>
+          <div class="key-info-title"><span class="emoji" aria-hidden="true">📌</span> 核心要点</div>
           <div class="key-info-grid">
             <div class="key-info-row">
               <span class="key-info-row-icon">→</span>
@@ -47,9 +47,34 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="venue-section">
-          <div class="venue-item" v-for="venue in data.venues" :key="venue.name">
-            <div class="venue-name">{{ venue.name }} <span class="venue-tag">{{ venue.tag }}</span></div>
+          <div class="venue-item" v-for="venue in data.venues" :key="venue.name" :class="{ important: venue.important }">
+            <div class="venue-header">
+              <div class="venue-name">{{ venue.name }} <span class="venue-tag">{{ venue.tag }}</span></div>
+              <div class="venue-meta" v-if="venue.openTime || venue.booking">
+                <span class="venue-time" v-if="venue.openTime">{{ venue.openTime }}</span>
+                <span class="venue-booking" v-if="venue.booking" :class="{ warn: venue.important }">{{ venue.booking }}</span>
+              </div>
+            </div>
             <div class="venue-desc">{{ venue.desc }}</div>
+          </div>
+        </div>
+      </InfoCard>
+
+      <InfoCard
+        card-id="lijiang-booking"
+        card-name="丽江预约信息"
+        :hidden-cards="hiddenCards"
+        @hide="(id, name) => $emit('hide-card', id, name)"
+      >
+        <div class="booking-section">
+          <div class="booking-title"><span class="emoji" aria-hidden="true">📅</span> 预约信息</div>
+          <div class="booking-list">
+            <div class="booking-item" v-for="item in data.bookingInfo" :key="item.spot" :class="{ important: item.important }">
+              <div class="booking-spot">{{ item.spot }}</div>
+              <div class="booking-note">{{ item.note }}</div>
+              <div class="booking-channel" v-if="item.channel">预约渠道：{{ item.channel }}</div>
+              <div class="booking-tip" v-if="item.tip">{{ item.tip }}</div>
+            </div>
           </div>
         </div>
       </InfoCard>
@@ -61,7 +86,7 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="simple-info">
-          <div class="simple-info-title">🚗 交通指南</div>
+          <div class="simple-info-title"><span class="emoji" aria-hidden="true">🚗</span> 交通指南</div>
           <div class="simple-info-content">
             <strong>大理→丽江：</strong>高铁74-82元，1.5小时<br>
             <strong>古城→玉龙雪山：</strong>景区直通车20元往返，公交101路15元往返<br>
@@ -78,7 +103,7 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="simple-info">
-          <div class="simple-info-title">💰 预算参考（2天）</div>
+          <div class="simple-info-title"><span class="emoji" aria-hidden="true">💰</span> 预算参考（2天）</div>
           <div class="simple-info-content">
             <strong>常规版约500元：</strong>雪山门票210元+住宿100元+餐饮100元+市内交通50元<br>
             <strong>经济版约200元：</strong>只逛免费景点+青旅住宿+公交出行
@@ -139,7 +164,7 @@ defineEmits(['hide-card', 'open-lightbox'])
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s var(--ease-out-quart);
 }
 
 .section-cover:hover img {
@@ -202,6 +227,106 @@ defineEmits(['hide-card', 'open-lightbox'])
 .key-info-row-text strong {
   color: var(--forest);
   font-weight: 600;
+}
+
+.venue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.venue-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.venue-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: var(--earth-light);
+  padding: 2px 6px;
+  border-radius: var(--space-2xs);
+}
+
+.venue-booking {
+  font-size: 0.7rem;
+  color: var(--forest);
+  background: var(--forest-light);
+  padding: 2px 6px;
+  border-radius: var(--space-2xs);
+}
+
+.venue-booking.warn {
+  color: var(--sunset);
+  background: var(--sunset-soft);
+}
+
+.venue-item.important {
+  border-left: 3px solid var(--sunset);
+}
+
+.booking-section {
+  background: var(--card);
+  border: 2px solid var(--forest);
+  border-radius: var(--space-md);
+  padding: var(--space-md);
+}
+
+.booking-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--forest);
+  margin-bottom: var(--space-sm);
+  text-align: center;
+}
+
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.booking-item {
+  background: var(--forest-light);
+  border-radius: var(--space-sm);
+  padding: var(--space-sm);
+}
+
+.booking-item.important {
+  border: 2px solid var(--sunset);
+  background: var(--sunset-soft);
+}
+
+.booking-spot {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-weight: calc(700 + var(--text-weight-boost, 0));
+  color: var(--forest);
+}
+
+.booking-item.important .booking-spot {
+  color: var(--sunset);
+}
+
+.booking-note {
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.booking-channel {
+  font-size: 0.7rem;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.booking-tip {
+  font-size: 0.7rem;
+  color: var(--sunset);
+  margin-top: 2px;
 }
 
 .info-grid {

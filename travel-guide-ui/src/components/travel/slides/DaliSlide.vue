@@ -13,7 +13,7 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="route-overview fade-in">
-          <div class="route-overview-title">📍 2天路线总览</div>
+          <div class="route-overview-title"><span class="emoji" aria-hidden="true">📍</span> 2天路线总览</div>
           <div class="route-overview-days">
             <div class="route-overview-day">
               <span class="route-overview-badge day1">Day1</span>
@@ -115,8 +115,12 @@
               <span class="spot-highlight-tag">{{ spot.tag || '免费' }}</span>
             </h3>
             <p class="spot-highlight">{{ spot.highlight }}</p>
-            <span class="spot-transport">{{ spot.transport }}</span>
+            <div class="spot-meta">
+              <span class="spot-transport">{{ spot.transport }}</span>
+              <span class="spot-time" v-if="spot.openTime">{{ spot.openTime }}</span>
+            </div>
           </div>
+          
           <div class="spot-photo-grid">
             <div
               class="photo-item"
@@ -139,67 +143,108 @@
               </div>
             </div>
           </div>
-          <span class="route-label" v-if="spot.routeLabel">{{ spot.routeLabel }}</span>
+
+          <div class="spot-cycling" v-if="spot.cycling">
+            <button class="expandable-toggle" @click="toggleSpotDetail('cycling-' + idx)" :aria-expanded="isSpotDetailExpanded('cycling-' + idx)">
+              <span class="expandable-icon">🚴</span>
+              <span>骑行分段</span>
+              <svg class="expandable-arrow" :class="{ collapsed: !isSpotDetailExpanded('cycling-' + idx) }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="expandable-content" :class="{ collapsed: !isSpotDetailExpanded('cycling-' + idx) }">
+              <div>
+                <div class="cycling-routes">
+                  <div class="cycling-route" v-for="route in spot.cycling.routes" :key="route.name">
+                    <div class="cycling-route-name">{{ route.name }}</div>
+                    <div class="cycling-route-info">
+                      <span>{{ route.distance }}</span>
+                      <span>{{ route.time }}</span>
+                    </div>
+                    <div class="cycling-route-tip">{{ route.tip }}</div>
+                  </div>
+                </div>
+                <div class="cycling-tips">{{ spot.cycling.tips }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-photo-spots" v-if="spot.photoSpots">
+            <button class="expandable-toggle" @click="toggleSpotDetail('photo-' + idx)" :aria-expanded="isSpotDetailExpanded('photo-' + idx)">
+              <span class="expandable-icon">📷</span>
+              <span>打卡机位</span>
+              <svg class="expandable-arrow" :class="{ collapsed: !isSpotDetailExpanded('photo-' + idx) }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="expandable-content" :class="{ collapsed: !isSpotDetailExpanded('photo-' + idx) }">
+              <div>
+                <div class="photo-spots-list">
+                  <div class="photo-spot-item" v-for="ps in spot.photoSpots" :key="ps.name">
+                    <span class="photo-spot-name">{{ ps.name }}</span>
+                    <span class="photo-spot-tip" v-if="ps.tip">{{ ps.tip }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <InfoCard
-        card-id="dali-stay"
-        card-name="大理住宿推荐"
+        card-id="dali-practical"
+        card-name="大理实用信息"
         :hidden-cards="hiddenCards"
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
-        <div class="info-item fade-in">
-          <div class="info-label">🏨 住宿推荐</div>
-          <div class="info-content">
-            <p><strong class="text-forest">性价比首选：</strong>古城南门/北门周边，步行5分钟到古城，双床房120-200元/晚，拼房人均60-100元</p>
-            <p class="mt-2"><strong class="text-forest">体验升级：</strong>才村、龙龛码头，推窗见海看日出，双床房200-300元/晚，拼房人均100-150元</p>
-            <p class="info-note">避坑：别信低价"海景房"；订房选「可免费取消」的</p>
+        <div class="practical-section fade-in">
+          <div class="practical-grid">
+            <div class="practical-block">
+              <div class="practical-block-title">🏨 住宿</div>
+              <div class="practical-block-content">
+                <div class="practical-item" v-for="item in data.accommodations[0].items.slice(0, 2)" :key="item.name">
+                  <span class="practical-item-name">{{ item.name }}</span>
+                  <span class="practical-item-price">{{ item.price }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="practical-block">
+              <div class="practical-block-title">🍜 美食</div>
+              <div class="practical-block-content">
+                <div class="practical-item" v-for="food in data.foods.slice(0, 3)" :key="food.name">
+                  <span class="practical-item-name">{{ food.name }}</span>
+                  <span class="practical-item-price">{{ food.price }}</span>
+                </div>
+              </div>
+            </div>
           </div>
+          <div class="practical-note">更多住宿美食选择可在美团/大众点评查看</div>
         </div>
       </InfoCard>
 
       <InfoCard
-        card-id="dali-student"
-        card-name="大理学生优惠"
+        card-id="dali-ticket"
+        card-name="大理门票&预约"
         :hidden-cards="hiddenCards"
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
-        <div class="key-info fade-in">
-          <div class="key-info-title">🎫 学生优惠（带学生证）</div>
-          <div class="key-info-grid">
-            <div class="key-info-row">
-              <span class="key-info-row-icon">🏛️</span>
-              <span class="key-info-row-text"><strong>崇圣寺三塔：</strong>100元→半价50元</span>
-            </div>
-            <div class="key-info-row">
-              <span class="key-info-row-icon">🚡</span>
-              <span class="key-info-row-text"><strong>苍山索道：</strong>感通110元→55元 / 洗马潭198元→99元</span>
-            </div>
-            <div class="key-info-row">
-              <span class="key-info-row-icon">🦋</span>
-              <span class="key-info-row-text"><strong>蝴蝶泉公园：</strong>55元→半价28元</span>
-            </div>
-            <div class="key-info-row">
-              <span class="key-info-row-icon">🎬</span>
-              <span class="key-info-row-text"><strong>天龙八部影视城：</strong>52元→半价26元</span>
+        <div class="ticket-section fade-in">
+          <div class="ticket-grid">
+            <div class="ticket-item" v-for="item in data.studentDiscounts.slice(0, 3)" :key="item.spot">
+              <div class="ticket-spot">{{ item.spot }}</div>
+              <div class="ticket-price">
+                <span class="ticket-full">{{ item.fullPrice }}</span>
+                <span class="ticket-arrow">→</span>
+                <span class="ticket-student">{{ item.studentPrice }}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </InfoCard>
-
-      <InfoCard
-        card-id="dali-food"
-        card-name="大理必吃美食"
-        :hidden-cards="hiddenCards"
-        @hide="(id, name) => $emit('hide-card', id, name)"
-      >
-        <div class="info-item fade-in">
-          <div class="info-label">🍜 必吃美食</div>
-          <div class="info-content">
-            <p>大理酸辣鱼、凉鸡米线、扒肉饵丝、烤乳扇（先买5块小份尝尝）、喜洲粑粑、玫瑰烤奶</p>
-            <p class="info-note">北门菜市场小吃性价比最高；鲜花饼去嘉华/潘祥记官方门店买</p>
+          <div class="ticket-booking">
+            <div class="ticket-booking-item" v-for="item in data.bookingInfo" :key="item.spot" :class="{ important: item.important }">
+              <strong>{{ item.spot }}</strong>：{{ item.note }}
+            </div>
           </div>
+          <div class="ticket-note">大理古城、洱海廊道、喜洲古镇免费开放</div>
         </div>
       </InfoCard>
 
@@ -210,21 +255,16 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="simple-info fade-in">
-          <div class="simple-info-title">💰 预算参考（2天）</div>
+          <div class="simple-info-title"><span class="emoji" aria-hidden="true">💰</span> 预算参考（2天）</div>
           <div class="simple-info-content">
             <strong>常规版约600元：</strong>住宿150元+餐饮150元+环湖交通100元+体验项目100元<br>
-            <strong>经济版约250元：</strong>青旅住宿+公交出行+只逛免费景点（古城、喜洲、洱海廊道全免费）
+            <strong>经济版约250元：</strong>青旅住宿+公交出行+只逛免费景点
           </div>
         </div>
       </InfoCard>
 
-      <div class="warning-box fade-in" @mousedown="createRipple">
-        <strong>避坑提醒：</strong>
-        <ul class="ul-indent">
-          <li>别信古城门口"50元环洱海一日游"，全是购物团</li>
-          <li>别在古城里买银饰、玉石，水很深</li>
-          <li>洱海租车提前问清楚续航、有没有隐藏费用</li>
-        </ul>
+      <div class="warning-box fade-in">
+        <strong>避坑：</strong>别信"50元环洱海一日游"；别买古城银饰玉石；租车问清续航和隐藏费用。
       </div>
     </section>
 </template>
@@ -240,7 +280,8 @@ defineProps({
 
 defineEmits(['hide-card', 'open-lightbox'])
 
-const routeDetailCollapsed = ref(false)
+const routeDetailCollapsed = ref(true)
+const spotDetailCollapsed = reactive({})
 const imgErrors = reactive({})
 
 const safeStorage = {
@@ -255,6 +296,14 @@ const safeStorage = {
 const toggleRouteDetail = () => {
   routeDetailCollapsed.value = !routeDetailCollapsed.value
   safeStorage.setItem('routeDetailCollapsed', routeDetailCollapsed.value)
+}
+
+const toggleSpotDetail = (key) => {
+  spotDetailCollapsed[key] = !spotDetailCollapsed[key]
+}
+
+const isSpotDetailExpanded = (key) => {
+  return spotDetailCollapsed[key] === true
 }
 
 const initRouteDetailState = () => {
@@ -392,7 +441,7 @@ onMounted(() => {
   font-size: var(--text-sm);
   font-weight: 600;
   color: var(--forest);
-  transition: background 0.2s ease;
+  transition: background var(--duration-normal) var(--ease-out-quart), color var(--duration-normal) var(--ease-out-quart);
   min-height: 44px;
   -webkit-tap-highlight-color: transparent;
 }
@@ -428,7 +477,7 @@ onMounted(() => {
 .route-detail-content {
   display: grid;
   grid-template-rows: 1fr;
-  transition: grid-template-rows 0.35s var(--ease-out-quart), opacity 0.3s ease;
+  transition: grid-template-rows 0.35s var(--ease-out-quart), opacity 0.3s var(--ease-out-quart);
   opacity: 1;
 }
 
@@ -515,9 +564,10 @@ onMounted(() => {
 }
 
 .timeline-event {
-  font-size: var(--text-xs);
+  font-size: calc(var(--text-sm) * var(--text-scale, 1));
   color: var(--text);
   line-height: 1.6;
+  font-weight: calc(400 + var(--text-weight-boost, 0));
 }
 
 .timeline-event :deep(strong) {
@@ -573,7 +623,7 @@ onMounted(() => {
   background: var(--sunset);
   border-radius: 50%;
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: transform var(--duration-normal) var(--ease-out-quart);
 }
 
 .spot:hover .spot-dot {
@@ -606,7 +656,8 @@ onMounted(() => {
 }
 
 .spot-transport {
-  font-size: var(--text-xs);
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-weight: calc(400 + var(--text-weight-boost, 0));
   color: var(--sky);
   background: var(--sky-light);
   padding: var(--space-2xs) var(--space-xs);
@@ -640,7 +691,7 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out-quart);
 }
 
 .photo-item:active img {
@@ -671,34 +722,6 @@ onMounted(() => {
   gap: var(--space-2xs);
   font-size: 0.7rem;
   color: var(--text-muted);
-}
-
-.route-label {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--forest);
-  color: white;
-  font-size: 0.7rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 0.8rem;
-  white-space: nowrap;
-}
-
-.spot-with-route:nth-child(2) .route-label {
-  background: var(--forest);
-}
-
-.spot-with-route:nth-child(3) .route-label {
-  background: var(--sunset);
-  top: auto;
-  bottom: 0;
-  transform: translateY(50%);
-}
-
-.spot-with-route:last-child .route-label {
-  display: none;
 }
 
 @media (max-width: 480px) {
@@ -752,43 +775,398 @@ onMounted(() => {
   font-weight: 600;
 }
 
+.key-info-price {
+  color: var(--sunset);
+  font-weight: 600;
+  margin-left: var(--space-xs);
+}
+
+.key-info-note {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.key-info-footer {
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px dashed var(--border);
+  text-align: center;
+}
+
+.key-info-footer-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.booking-section {
+  background: var(--card);
+  border: 2px solid var(--forest);
+  border-radius: var(--space-md);
+  padding: var(--space-md);
+}
+
+.booking-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--forest);
+  margin-bottom: var(--space-sm);
+  text-align: center;
+}
+
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.booking-item {
+  background: var(--forest-light);
+  border-radius: var(--space-sm);
+  padding: var(--space-sm);
+}
+
+.booking-item.important {
+  border: 2px solid var(--sunset);
+  background: var(--sunset-soft);
+}
+
+.booking-spot {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-weight: calc(700 + var(--text-weight-boost, 0));
+  color: var(--forest);
+}
+
+.booking-item.important .booking-spot {
+  color: var(--sunset);
+}
+
+.booking-note {
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.spot-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-2xs);
+}
+
+.spot-time {
+  font-size: calc(0.7rem * var(--text-scale, 1));
+  color: var(--text-muted);
+  background: var(--earth-light);
+  padding: 2px 6px;
+  border-radius: var(--space-2xs);
+}
+
+.spot-cycling {
+  background: var(--sky-light);
+  border-radius: var(--space-sm);
+  margin-top: var(--space-sm);
+  overflow: hidden;
+}
+
+.expandable-toggle {
+  width: 100%;
+  padding: var(--space-sm);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--sky);
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.expandable-toggle:hover {
+  background: var(--sky);
+  color: white;
+}
+
+.expandable-toggle:active {
+  transform: scale(0.98);
+}
+
+.expandable-icon {
+  font-size: 1rem;
+}
+
+.expandable-arrow {
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  transition: transform 0.3s var(--ease-out-quart);
+}
+
+.expandable-arrow.collapsed {
+  transform: rotate(-90deg);
+}
+
+.expandable-content {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.3s var(--ease-out-quart);
+  padding: 0 var(--space-sm) var(--space-sm);
+}
+
+.expandable-content.collapsed {
+  grid-template-rows: 0fr;
+  padding-bottom: 0;
+}
+
+.expandable-content > * {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.cycling-routes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.cycling-route {
+  background: var(--card);
+  border-radius: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.cycling-route-name {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-weight: calc(600 + var(--text-weight-boost, 0));
+  color: var(--text);
+}
+
+.cycling-route-info {
+  display: flex;
+  gap: var(--space-sm);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.cycling-route-tip {
+  font-size: 0.7rem;
+  color: var(--sky);
+  margin-top: 2px;
+}
+
+.cycling-tips {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px dashed var(--border);
+}
+
+.spot-photo-spots {
+  background: var(--sunset-soft);
+  border-radius: var(--space-sm);
+  margin-top: var(--space-sm);
+  overflow: hidden;
+}
+
+.spot-photo-spots .expandable-toggle {
+  color: var(--sunset);
+}
+
+.spot-photo-spots .expandable-toggle:hover {
+  background: var(--sunset);
+  color: white;
+}
+
+.photo-spots-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.photo-spot-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.photo-spot-name {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-weight: calc(600 + var(--text-weight-boost, 0));
+  color: var(--text);
+}
+
+.photo-spot-tip {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.practical-section {
+  padding: var(--space-md);
+}
+
+.practical-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.practical-block-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--forest);
+  margin-bottom: var(--space-xs);
+}
+
+.practical-block-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.practical-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.practical-item-name {
+  color: var(--text);
+}
+
+.practical-item-price {
+  color: var(--sunset);
+  font-weight: 600;
+}
+
+.practical-note {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px dashed var(--border);
+}
+
+.ticket-section {
+  padding: var(--space-md);
+}
+
+.ticket-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.ticket-item {
+  background: var(--forest-light);
+  border-radius: var(--space-sm);
+  padding: var(--space-xs);
+  text-align: center;
+}
+
+.ticket-spot {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.ticket-price {
+  font-size: 0.65rem;
+}
+
+.ticket-full {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.ticket-arrow {
+  color: var(--text-muted);
+  margin: 0 2px;
+}
+
+.ticket-student {
+  color: var(--sunset);
+  font-weight: 600;
+}
+
+.ticket-booking {
+  background: var(--earth-light);
+  border-radius: var(--space-sm);
+  padding: var(--space-sm);
+}
+
+.ticket-booking-item {
+  font-size: 0.75rem;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.ticket-booking-item:last-child {
+  margin-bottom: 0;
+}
+
+.ticket-booking-item.important {
+  color: var(--sunset);
+  font-weight: 600;
+}
+
+.ticket-booking-item strong {
+  color: var(--forest);
+}
+
+.ticket-note {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: var(--space-sm);
+}
+
 .info-note {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-top: var(--space-sm);
 }
 
-.mt-2 { margin-top: var(--space-sm); }
-.ul-indent { margin-top: var(--space-sm); padding-left: 1rem; }
-
-.ripple {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.4);
-  transform: scale(0);
-  animation: rippleEffect 0.5s var(--ease-out-quart);
-  pointer-events: none;
+.warning-box {
+  background: var(--sunset-soft);
+  border-radius: var(--space-md);
+  padding: var(--space-md);
+  font-size: var(--text-sm);
+  color: var(--text);
+  line-height: 1.6;
 }
 
-@keyframes rippleEffect {
-  to { transform: scale(2.5); opacity: 0; }
+.warning-box strong {
+  color: var(--sunset);
 }
 
 @media (max-width: 480px) {
+  .practical-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+  .ticket-grid {
+    grid-template-columns: 1fr;
+  }
+  .ticket-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
   .spot-photo-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-2xs);
-  }
-  .route-label {
-    display: none;
-  }
-}
-
-@media (min-width: 480px) {
-  .route-label {
-    right: 0.8rem;
-    font-size: 0.75rem;
-    padding: 0.35rem 0.7rem;
   }
 }
 
@@ -796,11 +1174,6 @@ onMounted(() => {
   .spot-photo-grid {
     grid-template-columns: repeat(4, 1fr);
     gap: var(--space-sm);
-  }
-  .route-label {
-    right: 1rem;
-    font-size: 0.8rem;
-    padding: 0.4rem 0.8rem;
   }
 }
 

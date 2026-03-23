@@ -35,11 +35,12 @@
       >
         <div class="home-itinerary">
           <div class="home-itinerary-header">
-            <span class="home-itinerary-title">📍 推荐行程（斗南+大理）</span>
-            <div class="itinerary-tabs" role="tablist" aria-label="行程选择">
+            <span class="home-itinerary-title"><span class="emoji" aria-hidden="true">📍</span> 推荐行程（斗南+大理）</span>
+            <div class="itinerary-tabs" role="tablist" aria-label="行程选择" ref="tabsRef">
               <button
                 v-for="(option, key) in itineraryOptions"
                 :key="key"
+                ref="tabButtons"
                 :class="['itinerary-tab', { active: activeItinerary === key }]"
                 role="tab"
                 :aria-selected="activeItinerary === key"
@@ -49,6 +50,7 @@
                 {{ option.label }}
                 <span v-if="option.badge" class="tab-badge">{{ option.badge }}</span>
               </button>
+              <div class="tab-indicator" :style="indicatorStyle"></div>
             </div>
           </div>
 
@@ -91,12 +93,11 @@
 
       <InfoCard
         card-id="home-travel-tips"
-        card-name="出行防护"
+        card-name="出行须知"
         :hidden-cards="hiddenCards"
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="home-travel-tips fade-in" data-delay="500">
-          <div class="home-tips-title">出行防护</div>
           <div class="home-tips-grid">
             <div class="home-tips-item" v-for="tip in travelTips" :key="tip.title">
               <span class="home-tips-icon">{{ tip.icon }}</span>
@@ -105,6 +106,10 @@
                 <span>{{ tip.desc }}</span>
               </div>
             </div>
+          </div>
+          <div class="home-checklist-inline">
+            <span class="checklist-label">必备：</span>
+            <span class="checklist-tag" v-for="item in checklistItems" :key="item">{{ item }}</span>
           </div>
         </div>
       </InfoCard>
@@ -116,7 +121,7 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="home-transport fade-in" data-delay="600">
-          <div class="home-transport-title">🚄 省内高铁交通</div>
+          <div class="home-transport-title"><span class="emoji" aria-hidden="true">🚄</span> 省内高铁交通</div>
           <div class="home-transport-grid">
             <div class="transport-card" v-for="t in transportInfo" :key="t.from + t.to">
               <div class="transport-route">
@@ -133,25 +138,11 @@
           <div class="home-transport-note">数据来源：12306官方 | 早班/晚班车次有更低折扣</div>
         </div>
       </InfoCard>
-
-      <InfoCard
-        card-id="home-checklist"
-        card-name="出行必备"
-        :hidden-cards="hiddenCards"
-        @hide="(id, name) => $emit('hide-card', id, name)"
-      >
-        <div class="home-checklist fade-in" data-delay="700">
-          <div class="home-checklist-title">📋 出行必备</div>
-          <div class="home-checklist-items">
-            <span class="checklist-tag" v-for="item in checklistItems" :key="item">{{ item }}</span>
-          </div>
-        </div>
-      </InfoCard>
     </section>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick, watch } from 'vue'
 import DestinationCard from '../DestinationCard.vue'
 import InfoCard from '../InfoCard.vue'
 import { destinations, transportInfo, checklistItems, travelTips, itineraryOptions } from '@/data/travelData'
@@ -163,6 +154,33 @@ defineProps({
 const emit = defineEmits(['navigate', 'hide-card'])
 
 const activeItinerary = ref('core4')
+const tabsRef = ref(null)
+const tabButtons = ref([])
+const indicatorStyle = ref({})
+
+const updateIndicator = () => {
+  nextTick(() => {
+    const tabs = tabsRef.value
+    if (!tabs) return
+
+    const activeTab = tabs.querySelector('.itinerary-tab.active')
+    if (!activeTab) return
+
+    const tabsRect = tabs.getBoundingClientRect()
+    const tabRect = activeTab.getBoundingClientRect()
+
+    indicatorStyle.value = {
+      left: `${tabRect.left - tabsRect.left}px`,
+      width: `${tabRect.width}px`
+    }
+  })
+}
+
+watch(activeItinerary, updateIndicator)
+
+onMounted(() => {
+  setTimeout(updateIndicator, 100)
+})
 
 const createRipple = (event) => {
   const element = event.currentTarget
@@ -225,11 +243,11 @@ onMounted(() => {
 }
 
 .home-intro-text {
-  font-size: var(--text-sm);
+  font-size: calc(var(--text-sm) * var(--text-scale, 1));
   color: var(--text);
   line-height: 1.8;
   text-align: center;
-  font-weight: 500;
+  font-weight: calc(500 + var(--text-weight-boost, 0));
 }
 
 .quick-start {
@@ -237,7 +255,7 @@ onMounted(() => {
 }
 
 .quick-start-label {
-  font-size: var(--text-sm);
+  font-size: calc(var(--text-sm) * var(--text-scale, 1));
   color: var(--text-muted);
   margin-bottom: var(--space-sm);
   text-align: center;
@@ -261,11 +279,42 @@ onMounted(() => {
   border-radius: var(--space-md);
   padding: var(--space-md);
   cursor: pointer;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow var(--duration-normal, 250ms) var(--ease-out-quart),
+              border-color var(--duration-normal, 250ms) var(--ease-out-quart),
+              transform var(--duration-fast, 150ms) var(--ease-out-quart),
+              background var(--duration-normal, 250ms) var(--ease-out-quart);
   position: relative;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
+}
+
+.quick-start-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--forest) 0%, var(--sunset) 100%);
+  opacity: 0;
+  transition: opacity var(--duration-normal, 250ms) var(--ease-out-quart);
+  pointer-events: none;
+}
+
+.quick-start-card:hover::before {
+  opacity: 0.05;
+}
+
+.quick-start-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--forest);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.quick-start-card:active::after {
+  opacity: 0.08;
 }
 
 .quick-start-card:hover {
@@ -300,7 +349,7 @@ onMounted(() => {
 }
 
 .quick-start-desc {
-  font-size: 0.75rem;
+  font-size: calc(0.75rem * var(--text-scale, 1));
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -312,6 +361,15 @@ onMounted(() => {
   font-size: var(--text-lg);
   font-weight: 700;
   flex-shrink: 0;
+  transition: transform 0.2s var(--ease-out-quart);
+}
+
+.quick-start-card:hover .quick-start-arrow {
+  transform: translateX(4px);
+}
+
+.quick-start-card:active .quick-start-arrow {
+  transform: translateX(2px);
 }
 
 .destinations-grid {
@@ -347,6 +405,7 @@ onMounted(() => {
   display: flex;
   gap: var(--space-2xs);
   flex-wrap: wrap;
+  position: relative;
 }
 
 .itinerary-tab {
@@ -369,26 +428,18 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
 }
 
-.itinerary-tab::after {
-  content: '';
+.tab-indicator {
   position: absolute;
   bottom: 0;
-  left: 50%;
-  width: 0;
   height: 2px;
   background: var(--forest);
-  transition: width 0.25s var(--ease-out-quart), left 0.25s var(--ease-out-quart);
-}
-
-.itinerary-tab:hover::after {
-  width: 60%;
-  left: 20%;
-}
-
-.itinerary-tab.active::after {
-  width: 0;
+  border-radius: 1px;
+  transition: left 0.3s var(--ease-out-quart), width 0.3s var(--ease-out-quart);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .itinerary-tab:active {
@@ -452,13 +503,15 @@ onMounted(() => {
 }
 
 .itinerary-day-place {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-weight: calc(600 + var(--text-weight-boost, 0));
   color: var(--text);
+  white-space: nowrap;
 }
 
 .itinerary-day-activity {
-  font-size: 0.6rem;
+  font-size: calc(0.65rem * var(--text-scale, 1));
+  font-weight: calc(400 + var(--text-weight-boost, 0));
   color: var(--text-muted);
   white-space: nowrap;
 }
@@ -526,18 +579,43 @@ onMounted(() => {
 }
 
 .home-tips-content {
-  font-size: var(--text-xs);
+  font-size: calc(var(--text-xs) * var(--text-scale, 1));
   line-height: 1.5;
 }
 
 .home-tips-content strong {
   display: block;
   color: var(--text);
-  font-weight: 600;
+  font-weight: calc(600 + var(--text-weight-boost, 0));
 }
 
 .home-tips-content span {
   color: var(--text-muted);
+}
+
+.home-checklist-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px dashed var(--border);
+}
+
+.checklist-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.checklist-tag {
+  background: var(--forest-light);
+  color: var(--forest);
+  font-size: 0.7rem;
+  padding: var(--space-2xs) var(--space-xs);
+  border-radius: 1rem;
+  font-weight: 500;
 }
 
 .home-transport {
@@ -597,58 +675,32 @@ onMounted(() => {
 }
 
 .transport-time {
-  font-size: 0.65rem;
+  font-size: calc(0.65rem * var(--text-scale, 1));
   color: var(--text-muted);
 }
 
 .home-transport-note {
-  font-size: 0.65rem;
+  font-size: calc(0.65rem * var(--text-scale, 1));
   color: var(--text-muted);
   text-align: center;
   margin-top: var(--space-xs);
 }
 
-.home-checklist {
-  background: linear-gradient(135deg, var(--forest-light) 0%, var(--sky-light) 100%);
-  border-radius: var(--space-md);
-  padding: var(--space-md);
-}
-
-.home-checklist-title {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--forest);
-  margin-bottom: var(--space-sm);
-  text-align: center;
-}
-
-.home-checklist-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
-  justify-content: center;
-}
-
-.checklist-tag {
-  background: var(--card);
-  color: var(--text);
-  font-size: var(--text-xs);
-  padding: var(--space-2xs) var(--space-sm);
-  border-radius: 1rem;
-  font-weight: 500;
-}
-
 .ripple {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255,255,255,0.4);
+  background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.2) 50%, transparent 70%);
   transform: scale(0);
-  animation: rippleEffect 0.5s var(--ease-out-quart);
+  animation: rippleEffect 0.6s var(--ease-out-quart);
   pointer-events: none;
 }
 
 @keyframes rippleEffect {
-  to {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
     transform: scale(2.5);
     opacity: 0;
   }

@@ -46,11 +46,18 @@ export const transportInfo = [
 export const checklistItems = ['身份证', '充电宝', '防晒霜', '墨镜', '保暖衣', '舒适鞋']
 
 export const travelTips = [
-  { icon: '🧥', title: '保暖', desc: '丽江香格里拉带羽绒服，昼夜温差大' },
+  { icon: '🧥', title: '穿衣', desc: '洋葱式叠穿，昼夜温差10-20℃' },
   { icon: '☀️', title: '防晒', desc: 'SPF50+防晒霜、墨镜、遮阳帽必备' },
   { icon: '🏔️', title: '高原', desc: '放慢动作不跑跳，氧气瓶市区药店买' },
   { icon: '🚗', title: '交通', desc: '选正规平台，不坐黑车不参低价团' }
 ]
+
+export const weatherGuide = {
+  kunming: { temp: '9-26℃', tip: '干燥，备润唇膏护手霜' },
+  dali: { temp: '5-24℃', tip: '洱海边体感低3-5℃' },
+  lijiang: { temp: '4-22℃', tip: '雪山山顶约0℃' },
+  shangri: { temp: '-5~15℃', tip: '夜间最低-5℃，防寒优先' }
+}
 
 export const itineraryOptions = {
   core4: {
@@ -118,6 +125,19 @@ export const dounanData = {
       { area: '主场馆夜间', time: '20:30-凌晨2点', tip: '价格腰斩，捡漏最佳', highlight: true },
       { area: '1/2/3号馆', time: '09:00-18:00', tip: '干花、伴手礼，18点后闭馆' }
     ]
+  },
+  shipping: {
+    title: '鲜切花物流发货指南',
+    warning: '普通快递运输约3天，易导致鲜花闷损、品质下降',
+    methods: [
+      { name: '大货批发', channels: '广泽航空、滇闽物流', feature: '机场直达，性价比最高' },
+      { name: '小件/一件代发', channels: '顺丰冷链、德邦冷链', feature: '送货上门，时效稳定' }
+    ],
+    tips: '价格会随旺季/淡季动态调整，发货前建议提前询价'
+  },
+  booking: {
+    note: '3月底淡季无需预约，扫码即可入园',
+    peakNote: '春节、国庆需在「斗南花市」公众号分时段预约'
   }
 }
 
@@ -131,42 +151,71 @@ export const daliData = {
       tag: '免费',
       highlight: '人民路、红龙井樱花大道盛开，粉樱配青瓦白墙。清晨逛石板路，夜间逛人民路、洋人街。住宿大本营。',
       transport: '🚌 火车站乘4路/8路公交直达，约30分钟',
+      openTime: '全天开放',
+      booking: '无需预约',
       photos: [
         { src: '/images/dali-gucheng-1-beimen-yinghua.jpg', label: '北门樱花巷' },
         { src: '/images/dali-gucheng-2-wuhualou.jpg', label: '五华楼夜景' },
         { src: '/images/dali-gucheng-3-yangrenjie.jpeg', label: '洋人街' }
-      ],
-      routeLabel: '→ 喜洲古镇'
+      ]
     },
     {
       name: '喜洲古镇',
       tag: '免费',
       highlight: '金黄油菜花田正盛，白族黄墙+苍山雪峰同框，电影感拉满。可体验白族扎染，吃喜洲粑粑。',
       transport: '🚌 古城乘中巴5元/人，约40分钟；滴滴约25元',
+      openTime: '全天开放',
+      booking: '无需预约',
+      photoSpots: [
+        { name: '转角楼', address: '市坪街119号', tip: '45°斜对角拍弧形楼体，上午9-11点光线最佳' }
+      ],
       photos: [
         { src: '/images/xizhou-corner.jpg', label: '转角楼' },
         { src: '/images/xizhou-1-yangjiadeng.jpg', label: '杨家登油菜花' },
         { src: '/images/xizhou-2-xilinyuan.jpg', label: '喜林苑黄墙' }
-      ],
-      routeLabel: '→ 洱海廊道'
+      ]
     },
     {
       name: '洱海生态廊道',
       tag: '免费',
       highlight: '洱海精华段，骑行随停随拍。龙龛码头→磻溪S弯→才村段，3月晴天能见度拉满。',
       transport: '🚴 古城骑行或打车至龙龛码头约10分钟',
+      openTime: '全天开放（不建议夜骑）',
+      booking: '无需预约',
+      cycling: {
+        routes: [
+          {
+            name: '龙龛码头 → 磻溪S弯',
+            distance: '骑行段约5km',
+            time: '休闲骑行约1.5小时',
+            tip: '新手友好，沿途芦苇荡、水杉林出片，清晨最佳'
+          },
+          {
+            name: '磻溪S弯 → 才村码头',
+            distance: '骑行段约7km',
+            time: '休闲骑行约1小时',
+            tip: '白族村落密集，临湖咖啡馆多，傍晚可看日落'
+          }
+        ],
+        tips: '租车优先在民宿租，检查刹车、电量、头盔；禁止在骑行道中间拍照'
+      },
+      photoSpots: [
+        { name: '龙龛码头', tip: '日出打卡，导航「龙龛古渡」，提前40分钟到' },
+        { name: '磻溪S弯', tip: '洱朵酒店附近弯道最标准，早7-9点人少' }
+      ],
       photos: [
         { src: '/images/erhai-1-longkan.jpg', label: '龙龛码头' },
         { src: '/images/erhai-2-panxi.jpg', label: '磻溪S湾' },
         { src: '/images/erhai-3-caicun.jpg', label: '才村码头' }
-      ],
-      routeLabel: 'Day2→双廊'
+      ]
     },
     {
       name: '双廊古镇',
       tag: '免费',
       highlight: '洱海东岸，直面苍山日落，"苍洱第一镇"。适合发呆看海，找咖啡馆坐一下午。',
       transport: '🚌 景区直通车25元/拼车30元，约1小时',
+      openTime: '全天开放',
+      booking: '无需预约',
       photos: [
         { src: '/images/shuanglang-1-yujiidao.jpg', label: '玉几岛' },
         { src: '/images/shuanglang-2-riluo.jpg', label: '日落观景台' },
@@ -196,7 +245,49 @@ export const daliData = {
         { time: '19:30', event: '回古城，结束行程' }
       ]
     }
-  }
+  },
+  accommodations: [
+    {
+      category: '平价青旅',
+      items: [
+        { name: '欢雀青旅', location: '古城南门文献路', price: '床位35元起', highlights: '24h前台、夜间门禁、带锁储物柜' },
+        { name: '桃溪青舍', location: '古城苍山门旁', price: '床位38元起', highlights: '男女分层、临近派出所、安静安全' }
+      ]
+    },
+    {
+      category: '平价民宿',
+      items: [
+        { name: '自在文旅民宿', location: '古城南门旁', price: '大床128元起', highlights: '独栋白族小院、24h门禁、洗衣房' },
+        { name: '风禾里民宿', location: '才村码头主街', price: '园景118元起', highlights: '步行2分钟到洱海、可规划骑行路线' }
+      ]
+    }
+  ],
+  accommodationTips: [
+    '选址优先古城出入口、才村主街等核心区域',
+    '青旅优先选带锁储物柜、可反锁房门的房型',
+    '平季可到店看房后订房，节假日提前1-2周预订'
+  ],
+  foods: [
+    { name: '白族酸辣鱼', price: '人均40-70元', shops: '丽芳饭店、石井私房菜', tip: '点单前确认按条/按斤计价' },
+    { name: '烤乳扇', price: '5-10元/根', shops: '杨记乳扇、阿婆烤乳扇', tip: '趁热吃，凉后发腥' },
+    { name: '喜洲粑粑', price: '5-8元/个', shops: '喜洲古镇内', tip: '甜咸两款，现烤最香' }
+  ],
+  studentDiscounts: [
+    { spot: '崇圣寺三塔', fullPrice: '75元', studentPrice: '半价37.5元', note: '学生证+身份证' },
+    { spot: '苍山索道', fullPrice: '35-270元', studentPrice: '均半价', note: '门票+索道同步优惠' },
+    { spot: '蝴蝶泉', fullPrice: '40元', studentPrice: '半价20元', note: '支持电子学生证' },
+    { spot: '天龙八部影视城', fullPrice: '52元', studentPrice: '半价26元', note: '支持学信网凭证' }
+  ],
+  bookingInfo: [
+    { spot: '崇圣寺三塔', note: '建议提前1天线上预约「游云南」小程序' },
+    { spot: '苍山洗马潭索道', note: '必须提前1天预约「大理苍山世界地质公园」公众号', important: true },
+    { spot: '其他收费景点', note: '淡季可现场购票，节假日建议提前预约' }
+  ],
+  openTimes: [
+    { spot: '崇圣寺三塔', time: '07:30-18:30', note: '17:30停止入园' },
+    { spot: '苍山索道', time: '08:30-17:00', note: '洗马潭15:30停止上行' },
+    { spot: '蝴蝶泉', time: '08:30-17:30', note: '17:00停止入园' }
+  ]
 }
 
 export const lijiangData = {
@@ -213,10 +304,19 @@ export const lijiangData = {
     caption: '玉龙雪山 · 蓝月谷'
   },
   venues: [
-    { name: '丽江古城', tag: '免费', desc: '世界文化遗产，青瓦木楼配雪山远景。大水车、四方街、酒吧街都超有氛围。古城维护费50元散客自愿缴纳。' },
-    { name: '玉龙雪山+蓝月谷', tag: '必去', desc: '进山费100元（学生半价50元）+大索道140元+环保车20元。大索道票提前3天在「丽江旅游集团」公众号抢。' },
-    { name: '白沙古镇', tag: '推荐', desc: '最原生态的纳西古镇，抬头就能看见玉龙雪山，小众不商业化，1-2小时可逛完。' },
-    { name: '束河古镇', tag: '推荐', desc: '比大研古城安静，水系发达，有"小桥流水人家"感觉。门票40元（学生半价20元），多个侧门可免费进入。' }
+    { name: '丽江古城', tag: '免费', desc: '世界文化遗产，青瓦木楼配雪山远景。大水车、四方街、酒吧街都超有氛围。古城维护费50元散客自愿缴纳。', openTime: '全天开放', booking: '无需预约' },
+    { name: '玉龙雪山+蓝月谷', tag: '必去', desc: '进山费100元（学生半价50元）+大索道140元+环保车20元。大索道票提前3天在「丽江旅游集团」公众号抢。', openTime: '6:30-18:00', booking: '大索道必须提前预约', important: true },
+    { name: '白沙古镇', tag: '推荐', desc: '最原生态的纳西古镇，抬头就能看见玉龙雪山，小众不商业化，1-2小时可逛完。', openTime: '全天开放', booking: '无需预约' },
+    { name: '束河古镇', tag: '推荐', desc: '比大研古城安静，水系发达，有"小桥流水人家"感觉。门票40元（学生半价20元），多个侧门可免费进入。', openTime: '全天开放', booking: '无需预约' }
+  ],
+  bookingInfo: [
+    { spot: '玉龙雪山冰川公园大索道', note: '必须提前线上实名预约', important: true, channel: '「丽江旅游集团」公众号', tip: '每日20:00放未来第3天票' },
+    { spot: '云杉坪/牦牛坪索道', note: '淡季可现场预约，节假日提前预约' }
+  ],
+  openTimes: [
+    { spot: '景区大门+蓝月谷', time: '6:30-18:00', note: '18:00停止入园' },
+    { spot: '冰川公园大索道', time: '7:00-18:00', note: '最后一班上行16:00' },
+    { spot: '云杉坪小索道', time: '7:00-18:00', note: '最后一班上行17:30' }
   ]
 }
 
@@ -234,9 +334,17 @@ export const shangriData = {
     caption: '梅里雪山 · 日照金山'
   },
   venues: [
-    { name: '独克宗古城', tag: '免费', desc: '中国保存最好的藏式古城，有世界最大转经筒。傍晚夜景超美，适合适应海拔。转经筒要顺时针转，至少3人一起推。' },
-    { name: '松赞林寺', tag: '必去', desc: '"小布达拉宫"，门票90元（学生半价45元）+观光车25元。上午8-11点顺光拍照最好看。进寺庙不穿暴露衣服，不踩门槛。' },
-    { name: '纳帕海依拉草原', tag: '推荐', desc: '环湖免费，导航"环湖西路"。高原湖泊+草原+雪山同框，有"小瑞士"感觉。租电动车50元/天随停随拍。' },
-    { name: '普达措国家公园', tag: '可选', optional: true, desc: '门票138元（学生半价69元）+观光车120元。原始森林、高山湖泊，能看到松鼠牦牛。海拔3500米+，注意防寒。' }
+    { name: '独克宗古城', tag: '免费', desc: '中国保存最好的藏式古城，有世界最大转经筒。傍晚夜景超美，适合适应海拔。转经筒要顺时针转，至少3人一起推。', openTime: '全天开放', booking: '无需预约' },
+    { name: '松赞林寺', tag: '必去', desc: '"小布达拉宫"，门票90元（学生半价45元）+观光车25元。上午8-11点顺光拍照最好看。进寺庙不穿暴露衣服，不踩门槛。', openTime: '08:00-18:00', booking: '淡季可现场购票' },
+    { name: '纳帕海依拉草原', tag: '推荐', desc: '环湖免费，导航"环湖西路"。高原湖泊+草原+雪山同框，有"小瑞士"感觉。租电动车50元/天随停随拍。', openTime: '全天开放', booking: '无需预约' },
+    { name: '普达措国家公园', tag: '可选', optional: true, desc: '门票138元（学生半价69元）+观光车120元。原始森林、高山湖泊，能看到松鼠牦牛。海拔3500米+，注意防寒。', openTime: '08:30-16:00', booking: '建议提前1天预约' }
+  ],
+  bookingInfo: [
+    { spot: '松赞林寺', note: '淡季可现场购票', channel: '「游云南」小程序或现场' },
+    { spot: '普达措国家公园', note: '建议提前1天预约', channel: '「普达措国家公园」公众号' }
+  ],
+  openTimes: [
+    { spot: '松赞林寺', time: '08:00-18:00', note: '17:00停止售票' },
+    { spot: '普达措国家公园', time: '08:30-16:00', note: '15:30停止入园' }
   ]
 }

@@ -88,6 +88,8 @@ onUnmounted(() => {
   transform: translateY(20px);
   transition: opacity var(--duration-slow, 400ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)),
               transform var(--duration-slow, 400ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1));
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 .closable-card.card-revealed {
@@ -97,7 +99,7 @@ onUnmounted(() => {
 
 .closable-card.hiding {
   opacity: 0;
-  transform: scale(0.95);
+  transform: scale(0.92) rotateX(8deg);
   pointer-events: none;
   transition-duration: var(--duration-normal, 250ms);
 }
@@ -138,9 +140,15 @@ onUnmounted(() => {
 }
 
 .closable-card:hover .card-close-btn,
-.closable-card:focus-within .card-close-btn {
+.closable-card:focus-within .card-close-btn,
+.card-close-btn:focus-visible {
   opacity: 1;
   transform: scale(1) rotate(0deg);
+}
+
+.card-close-btn:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 2px;
 }
 
 .card-close-btn:hover {

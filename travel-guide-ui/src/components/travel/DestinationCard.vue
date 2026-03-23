@@ -4,7 +4,10 @@
     ref="cardRef"
     :class="{ 'dest-revealed': isRevealed }"
     @click="(e) => $emit('click', e)"
+    @keydown.enter="(e) => $emit('click', e)"
+    @keydown.space.prevent="(e) => $emit('click', e)"
     tabindex="0"
+    role="button"
     :aria-label="`查看${name}攻略`"
     :style="{ '--reveal-delay': revealDelay }"
   >
@@ -158,6 +161,20 @@ onUnmounted(() => {
   font-size: 0.7rem;
   opacity: 0.7;
   letter-spacing: 0.1em;
+  transition: opacity 0.3s var(--ease-out-quart);
+}
+
+.dest-card.dest-revealed .dest-number {
+  animation: numberReveal 0.5s var(--ease-out-quart) 0.1s forwards;
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+@keyframes numberReveal {
+  to {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
 }
 
 .dest-name {
@@ -169,6 +186,20 @@ onUnmounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: transform 0.3s var(--ease-out-quart);
+}
+
+.dest-card.dest-revealed .dest-name {
+  animation: nameReveal 0.5s var(--ease-out-quart) 0.15s forwards;
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+@keyframes nameReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dest-location {
@@ -178,6 +209,18 @@ onUnmounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: opacity 0.3s var(--ease-out-quart);
+}
+
+.dest-card.dest-revealed .dest-location {
+  animation: locationReveal 0.5s var(--ease-out-quart) 0.2s forwards;
+  opacity: 0;
+}
+
+@keyframes locationReveal {
+  to {
+    opacity: 0.8;
+  }
 }
 
 .dest-desc {

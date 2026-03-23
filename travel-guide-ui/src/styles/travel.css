@@ -13,6 +13,9 @@
   --card: oklch(100% 0 0);
   --border: oklch(88% 0.01 60);
   
+  --text-scale: 1;
+  --text-weight-boost: 0;
+  
   --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
@@ -45,36 +48,36 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --forest: oklch(55% 0.12 145);
-    --forest-light: oklch(18% 0.04 145);
-    --sky: oklch(55% 0.14 235);
-    --sky-light: oklch(12% 0.03 235);
-    --sunset: oklch(70% 0.16 35);
-    --sunset-soft: oklch(25% 0.06 35);
-    --earth: oklch(75% 0.03 60);
-    --earth-light: oklch(15% 0.01 60);
-    --text: oklch(95% 0.01 60);
-    --text-muted: oklch(70% 0.02 60);
-    --bg: oklch(12% 0.01 60);
-    --card: oklch(16% 0.01 60);
-    --border: oklch(25% 0.02 60);
+    --forest: oklch(72% 0.14 145);
+    --forest-light: oklch(20% 0.04 145);
+    --sky: oklch(70% 0.15 235);
+    --sky-light: oklch(15% 0.03 235);
+    --sunset: oklch(78% 0.17 35);
+    --sunset-soft: oklch(28% 0.07 35);
+    --earth: oklch(78% 0.03 60);
+    --earth-light: oklch(18% 0.02 60);
+    --text: oklch(96% 0.005 60);
+    --text-muted: oklch(72% 0.02 60);
+    --bg: oklch(13% 0.01 60);
+    --card: oklch(17% 0.01 60);
+    --border: oklch(28% 0.02 60);
   }
 }
 
 [data-theme="dark"] {
-  --forest: oklch(55% 0.12 145);
-  --forest-light: oklch(18% 0.04 145);
-  --sky: oklch(55% 0.14 235);
-  --sky-light: oklch(12% 0.03 235);
-  --sunset: oklch(70% 0.16 35);
-  --sunset-soft: oklch(25% 0.06 35);
-  --earth: oklch(75% 0.03 60);
-  --earth-light: oklch(15% 0.01 60);
-  --text: oklch(95% 0.01 60);
-  --text-muted: oklch(70% 0.02 60);
-  --bg: oklch(12% 0.01 60);
-  --card: oklch(16% 0.01 60);
-  --border: oklch(25% 0.02 60);
+  --forest: oklch(72% 0.14 145);
+  --forest-light: oklch(20% 0.04 145);
+  --sky: oklch(70% 0.15 235);
+  --sky-light: oklch(15% 0.03 235);
+  --sunset: oklch(78% 0.17 35);
+  --sunset-soft: oklch(28% 0.07 35);
+  --earth: oklch(78% 0.03 60);
+  --earth-light: oklch(18% 0.02 60);
+  --text: oklch(96% 0.005 60);
+  --text-muted: oklch(72% 0.02 60);
+  --bg: oklch(13% 0.01 60);
+  --card: oklch(17% 0.01 60);
+  --border: oklch(28% 0.02 60);
 }
 
 * {
@@ -240,4 +243,13 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.font-adjustable {
+  font-size: calc(1em * var(--text-scale, 1));
+  font-weight: calc(400 + var(--text-weight-boost, 0));
+}
+
+.font-adjustable-strong {
+  font-weight: calc(600 + var(--text-weight-boost, 0));
 }
