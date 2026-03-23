@@ -48,36 +48,36 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --forest: oklch(72% 0.14 145);
-    --forest-light: oklch(20% 0.04 145);
-    --sky: oklch(70% 0.15 235);
-    --sky-light: oklch(15% 0.03 235);
-    --sunset: oklch(78% 0.17 35);
-    --sunset-soft: oklch(28% 0.07 35);
-    --earth: oklch(78% 0.03 60);
-    --earth-light: oklch(18% 0.02 60);
-    --text: oklch(96% 0.005 60);
+    --forest: oklch(75% 0.14 145);
+    --forest-light: oklch(22% 0.04 145);
+    --sky: oklch(72% 0.15 235);
+    --sky-light: oklch(18% 0.03 235);
+    --sunset: oklch(80% 0.17 35);
+    --sunset-soft: oklch(32% 0.07 35);
+    --earth: oklch(80% 0.03 60);
+    --earth-light: oklch(25% 0.02 60);
+    --text: oklch(95% 0.01 60);
     --text-muted: oklch(72% 0.02 60);
-    --bg: oklch(13% 0.01 60);
-    --card: oklch(17% 0.01 60);
-    --border: oklch(28% 0.02 60);
+    --bg: oklch(14% 0.01 60);
+    --card: oklch(20% 0.01 60);
+    --border: oklch(35% 0.02 60);
   }
 }
 
 [data-theme="dark"] {
-  --forest: oklch(72% 0.14 145);
-  --forest-light: oklch(20% 0.04 145);
-  --sky: oklch(70% 0.15 235);
-  --sky-light: oklch(15% 0.03 235);
-  --sunset: oklch(78% 0.17 35);
-  --sunset-soft: oklch(28% 0.07 35);
-  --earth: oklch(78% 0.03 60);
-  --earth-light: oklch(18% 0.02 60);
-  --text: oklch(96% 0.005 60);
+  --forest: oklch(75% 0.14 145);
+  --forest-light: oklch(22% 0.04 145);
+  --sky: oklch(72% 0.15 235);
+  --sky-light: oklch(18% 0.03 235);
+  --sunset: oklch(80% 0.17 35);
+  --sunset-soft: oklch(32% 0.07 35);
+  --earth: oklch(80% 0.03 60);
+  --earth-light: oklch(25% 0.02 60);
+  --text: oklch(95% 0.01 60);
   --text-muted: oklch(72% 0.02 60);
-  --bg: oklch(13% 0.01 60);
-  --card: oklch(17% 0.01 60);
-  --border: oklch(28% 0.02 60);
+  --bg: oklch(14% 0.01 60);
+  --card: oklch(20% 0.01 60);
+  --border: oklch(35% 0.02 60);
 }
 
 * {

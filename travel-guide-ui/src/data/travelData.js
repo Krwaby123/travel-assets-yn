@@ -102,7 +102,8 @@ export const navTabs = [
   { id: 'dounan', label: '斗南' },
   { id: 'dali', label: '大理' },
   { id: 'lijiang', label: '丽江' },
-  { id: 'shangri', label: '香格里拉' }
+  { id: 'shangri', label: '香格里拉' },
+  { id: 'map', label: '地图' }
 ]
 
 export const dounanData = {

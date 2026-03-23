@@ -1,0 +1,2431 @@
+<template>
+  <section class="section map-section">
+    <div class="map-header">
+      <div class="map-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input
+          ref="searchInput"
+          v-model="searchKeyword"
+          type="text"
+          placeholder="搜索地点..."
+          class="search-input"
+          @keyup.enter="handleSearch"
+        >
+        <button v-if="searchKeyword" class="search-clear" @click="clearSearch" aria-label="清除">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <button class="search-btn" @click="handleSearch" :disabled="!searchKeyword">
+        搜索
+      </button>
+    </div>
+
+    <div class="map-preview-card">
+      <div class="map-preview-container" ref="mapContainer" @touchstart.stop @touchend.stop @touchmove.stop>
+        <div id="amap-container"></div>
+        <div v-if="mapLoading" class="map-loading">
+          <div class="map-loading-spinner"></div>
+          <span>{{ locatingStatus || '地图加载中...' }}</span>
+        </div>
+
+        <div class="map-locating-overlay" v-if="isLocating && !mapLoading">
+          <div class="map-locating-content">
+            <div class="map-locating-spinner"></div>
+            <span>正在获取当前位置...</span>
+          </div>
+        </div>
+
+        <div class="map-gesture-tip" v-if="!mapLoading && showGestureTip">
+          <div class="map-gesture-tip-content">
+            <div class="map-gesture-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+              </svg>
+              <span>双指缩放</span>
+            </div>
+            <div class="map-gesture-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 8v4l2 2"/>
+              </svg>
+              <span>双指旋转</span>
+            </div>
+          </div>
+          <button class="map-gesture-close" @click="dismissGestureTip">知道了</button>
+        </div>
+      </div>
+      <button class="map-expand-btn" @click="openFullscreen" aria-label="放大地图">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+        </svg>
+        <span>全屏查看</span>
+      </button>
+      <div class="map-results" v-if="searchResults.length > 0">
+        <div class="map-results-header">
+          <span class="map-results-title">搜索结果</span>
+          <button class="map-results-close" @click="searchResults = []" aria-label="关闭">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <div class="map-results-list">
+          <div
+            v-for="(item, index) in searchResults"
+            :key="item.id"
+            class="map-result-item"
+          >
+            <div class="map-result-main" @click="selectResult(item)">
+              <div class="map-result-index">{{ index + 1 }}</div>
+              <div class="map-result-info">
+                <div class="map-result-name">{{ item.name }}</div>
+                <div class="map-result-address">{{ item.address || item.district }}</div>
+              </div>
+            </div>
+            <button class="map-result-nav-btn" @click.stop="openRoutePanel(item)" aria-label="导航到这里">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-actions">
+      <button class="map-action-btn" @click="locateMe" aria-label="定位">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>
+        </svg>
+        <span>定位</span>
+      </button>
+      <button class="map-action-btn" @click="openRoutePanelFromButton" :disabled="!routeDestination" aria-label="路线">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z"/>
+        </svg>
+        <span>路线</span>
+      </button>
+      <button class="map-action-btn" @click="resetMap" aria-label="重置">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1018 0 9 9 0 00-18 0z"/>
+          <path d="M12 8v4l2 2"/>
+        </svg>
+        <span>重置</span>
+      </button>
+    </div>
+
+    <div class="map-quick-locations">
+      <div class="map-quick-title">
+        <span>快捷地点</span>
+        <span v-if="currentPosition" class="map-quick-distance-hint">距您当前位置</span>
+      </div>
+      <div class="map-quick-list">
+        <button
+          v-for="loc in quickLocations"
+          :key="loc.name"
+          class="map-quick-item"
+          @click="goToLocation(loc)"
+        >
+          <span class="map-quick-emoji">{{ loc.emoji }}</span>
+          <span class="map-quick-name">{{ loc.name }}</span>
+          <span v-if="currentPosition" class="map-quick-distance">{{ getDistanceToLocation(loc.lnglat) }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="map-tips">
+      <div class="map-tip-title">使用提示</div>
+      <div class="map-tip-content">
+        <p>选择地点后点击「路线」按钮可规划导航路线</p>
+        <p>点击「全屏查看」可展开完整地图</p>
+      </div>
+    </div>
+
+    <Teleport to="body">
+      <Transition name="fullscreen">
+        <div v-if="isFullscreen" class="map-fullscreen-overlay" @click.self="closeFullscreen">
+          <div class="map-fullscreen-container">
+            <div class="map-fullscreen-header">
+              <span class="map-fullscreen-title">地图</span>
+              <button class="map-fullscreen-close" @click="closeFullscreen" aria-label="关闭">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+            <div class="map-fullscreen-map" ref="fullscreenMapContainer">
+              <div id="amap-fullscreen-container"></div>
+            </div>
+            <div class="map-fullscreen-toolbar">
+              <div class="map-fullscreen-search">
+                <input
+                  v-model="fullscreenSearchKeyword"
+                  type="text"
+                  placeholder="搜索地点..."
+                  @keyup.enter="handleFullscreenSearch"
+                >
+                <button @click="handleFullscreenSearch">搜索</button>
+              </div>
+              <div class="map-fullscreen-actions">
+                <button @click="fullscreenLocateMe" class="fullscreen-action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>
+                  </svg>
+                  <span>定位</span>
+                </button>
+                <button @click="fullscreenReset" class="fullscreen-action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12a9 9 0 1018 0 9 9 0 00-18 0z"/>
+                    <path d="M12 8v4l2 2"/>
+                  </svg>
+                  <span>重置</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <Teleport to="body">
+      <Transition name="route-panel">
+        <div v-if="showRoutePanel" class="route-panel-overlay" @click.self="closeRoutePanel">
+          <div class="route-panel">
+            <div class="route-panel-header">
+              <span class="route-panel-title">路线规划</span>
+              <button class="route-panel-close" @click="closeRoutePanel" aria-label="关闭">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="route-info">
+              <div class="route-endpoints">
+                <div class="route-endpoint">
+                  <span class="route-endpoint-dot start"></span>
+                  <span class="route-endpoint-text">我的位置</span>
+                </div>
+                <div class="route-endpoint-line"></div>
+                <div class="route-endpoint">
+                  <span class="route-endpoint-dot end"></span>
+                  <span class="route-endpoint-text">{{ routeDestination?.name }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="route-modes">
+              <button
+                v-for="mode in routeModes"
+                :key="mode.value"
+                :class="['route-mode-btn', { active: selectedRouteMode === mode.value }]"
+                @click="changeRouteMode(mode.value)"
+              >
+                <span class="route-mode-icon">{{ mode.icon }}</span>
+                <span class="route-mode-label">{{ mode.label }}</span>
+              </button>
+            </div>
+
+            <div class="route-result" v-if="routeResult">
+              <div class="route-summary">
+                <div class="route-distance">{{ routeResult.distance }}</div>
+                <div class="route-time">{{ routeResult.time }}</div>
+              </div>
+              <div class="route-detail" v-if="routeResult.tolls">
+                <span>途经高速</span>
+                <span>{{ routeResult.tolls }}</span>
+              </div>
+            </div>
+
+            <div class="route-loading" v-else-if="isRouteLoading">
+              <div class="route-loading-spinner"></div>
+              <span>正在规划路线...</span>
+            </div>
+
+            <div class="route-error" v-else-if="routeError">
+              {{ routeError }}
+            </div>
+
+            <div class="route-actions">
+              <button class="route-action-btn primary" @click="openAmapApp" :disabled="!routeResult">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z"/>
+                </svg>
+                <span>前往高德地图</span>
+              </button>
+              <button class="route-action-btn" @click="showRouteOnMap" :disabled="!routeResult">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span>地图显示路线</span>
+              </button>
+            </div>
+
+            <div class="route-tip">
+              「前往高德地图」可调起手机App导航，「地图显示路线」在当前页面显示
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <Teleport to="body">
+      <Transition name="dialog">
+        <div v-if="showLocationDialog" class="location-dialog-overlay" @click.self="closeLocationDialog">
+          <div class="location-dialog">
+            <div class="location-dialog-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>
+              </svg>
+            </div>
+            <div class="location-dialog-title">开启定位服务</div>
+            <div class="location-dialog-desc">需要在系统设置中开启定位服务才能使用定位功能</div>
+            <div class="location-dialog-actions">
+              <button class="location-dialog-btn cancel" @click="closeLocationDialog">暂不开启</button>
+              <button class="location-dialog-btn confirm" @click="goToLocationSettings">去设置</button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+  </section>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import AMapLoader from '@amap/amap-jsapi-loader'
+
+const props = defineProps({
+  searchPlace: {
+    type: String,
+    default: ''
+  }
+})
+
+const emit = defineEmits(['search-complete'])
+
+const mapContainer = ref(null)
+const fullscreenMapContainer = ref(null)
+const searchInput = ref(null)
+const searchKeyword = ref('')
+const fullscreenSearchKeyword = ref('')
+const searchResults = ref([])
+const mapLoading = ref(true)
+const showGestureTip = ref(false)
+const isFullscreen = ref(false)
+const showRoutePanel = ref(false)
+const routeDestination = ref(null)
+const selectedRouteMode = ref('driving')
+const routeResult = ref(null)
+const isRouteLoading = ref(false)
+const routeError = ref('')
+const currentPosition = ref(null)
+const isLocating = ref(false)
+const locatingStatus = ref('')
+const locationType = ref('')
+const showLocationDialog = ref(false)
+const locationDialogCallback = ref(null)
+
+let map = null
+let fullscreenMap = null
+let AMap = null
+let marker = null
+let fullscreenMarker = null
+let placeSearch = null
+let driving = null
+let riding = null
+let walking = null
+let routePolyline = null
+
+const quickLocations = [
+  { name: '大理古城', emoji: '🏯', lnglat: [100.173, 25.694] },
+  { name: '洱海', emoji: '🌊', lnglat: [100.185, 25.785] },
+  { name: '喜洲古镇', emoji: '🏘️', lnglat: [100.128, 25.764] },
+  { name: '双廊古镇', emoji: '🌅', lnglat: [100.185, 25.91] },
+  { name: '斗南花市', emoji: '🌸', lnglat: [102.788, 24.903] },
+  { name: '丽江古城', emoji: '🏔️', lnglat: [100.225, 26.872] }
+]
+
+const routeModes = [
+  { value: 'driving', label: '驾车', icon: '🚗' },
+  { value: 'riding', label: '骑行', icon: '🚴' },
+  { value: 'walking', label: '步行', icon: '🚶' }
+]
+
+const safeStorage = {
+  getItem (key) {
+    try {
+      return localStorage.getItem(key)
+    } catch (e) {
+      return null
+    }
+  },
+  setItem (key, value) {
+    try {
+      localStorage.setItem(key, value)
+    } catch (e) {}
+  }
+}
+
+const dismissGestureTip = () => {
+  showGestureTip.value = false
+  safeStorage.setItem('mapGestureTipSeen', 'true')
+}
+
+const initMap = () => {
+  window._AMapSecurityConfig = {
+    securityJsCode: 'd74b83d940be20495496bfd02626213e'
+  }
+
+  AMapLoader.load({
+    key: 'c59e09c3d89a186259e126e7dd34aa5e',
+    version: '2.0',
+    plugins: [
+      'AMap.Scale',
+      'AMap.ControlBar',
+      'AMap.PlaceSearch',
+      'AMap.Geolocation',
+      'AMap.Driving',
+      'AMap.Riding',
+      'AMap.Walking'
+    ]
+  })
+    .then((AMapInstance) => {
+      AMap = AMapInstance
+      map = new AMap.Map('amap-container', {
+        viewMode: '3D',
+        pitch: 35,
+        rotation: 0,
+        rotateEnable: true,
+        pitchEnable: true,
+        zoom: 11,
+        zooms: [2, 20],
+        center: [100.267, 25.6],
+        showLabel: true,
+        touchZoom: true,
+        touchZoomCenter: 1,
+        dragEnable: true
+      })
+
+      map.addControl(new AMap.Scale())
+
+      const controlBar = new AMap.ControlBar({
+        showZoomBar: false,
+        showControlButton: true,
+        position: {
+          right: '10px',
+          top: '10px'
+        }
+      })
+      map.addControl(controlBar)
+
+      placeSearch = new AMap.PlaceSearch({
+        pageSize: 10,
+        pageIndex: 1,
+        city: '云南',
+        citylimit: false,
+        extensions: 'all'
+      })
+
+      driving = new AMap.Driving({ policy: AMap.DrivingPolicy.LEAST_TIME })
+      riding = new AMap.Riding()
+      walking = new AMap.Walking()
+
+      mapLoading.value = false
+
+      if (props.searchPlace) {
+        searchKeyword.value = props.searchPlace
+        handleSearch()
+      } else {
+        requestLocation()
+      }
+    })
+    .catch((e) => {
+      console.error('地图加载失败:', e)
+      mapLoading.value = false
+      locatingStatus.value = '地图加载失败'
+    })
+}
+
+const initFullscreenMap = () => {
+  if (fullscreenMap) return
+
+  fullscreenMap = new AMap.Map('amap-fullscreen-container', {
+    viewMode: '3D',
+    pitch: 35,
+    rotation: 0,
+    rotateEnable: true,
+    pitchEnable: true,
+    zoom: map ? map.getZoom() : 11,
+    zooms: [2, 20],
+    center: map ? map.getCenter() : [100.267, 25.6],
+    showLabel: true,
+    touchZoom: true,
+    touchZoomCenter: 1,
+    dragEnable: true
+  })
+
+  fullscreenMap.addControl(new AMap.Scale())
+
+  const controlBar = new AMap.ControlBar({
+    showZoomBar: false,
+    showControlButton: true,
+    position: {
+      right: '10px',
+      top: '60px'
+    }
+  })
+  fullscreenMap.addControl(controlBar)
+
+  if (marker && map) {
+    fullscreenMarker = new AMap.Marker({
+      position: map.getCenter(),
+      title: marker.getTitle()
+    })
+    fullscreenMarker.setMap(fullscreenMap)
+  }
+}
+
+const openFullscreen = () => {
+  isFullscreen.value = true
+  document.body.style.overflow = 'hidden'
+  nextTick(() => {
+    initFullscreenMap()
+  })
+}
+
+const closeFullscreen = () => {
+  isFullscreen.value = false
+  document.body.style.overflow = ''
+  if (fullscreenMap) {
+    fullscreenMap.destroy()
+    fullscreenMap = null
+    fullscreenMarker = null
+  }
+}
+
+const handleSearch = () => {
+  if (!searchKeyword.value || !placeSearch) return
+
+  placeSearch.search(searchKeyword.value, (status, result) => {
+    if (status === 'complete' && result.poiList && result.poiList.pois.length > 0) {
+      searchResults.value = result.poiList.pois.map(poi => ({
+        id: poi.id,
+        name: poi.name,
+        address: poi.address,
+        district: poi.pname + poi.cityname + poi.adname,
+        location: {
+          lng: poi.location.lng,
+          lat: poi.location.lat
+        }
+      }))
+
+      if (searchResults.value.length === 1) {
+        selectResult(searchResults.value[0])
+      }
+    } else {
+      searchResults.value = []
+    }
+  })
+}
+
+const handleFullscreenSearch = () => {
+  if (!fullscreenSearchKeyword.value || !placeSearch || !fullscreenMap) return
+
+  placeSearch.search(fullscreenSearchKeyword.value, (status, result) => {
+    if (!fullscreenMap) return
+    if (status === 'complete' && result.poiList && result.poiList.pois.length > 0) {
+      const poi = result.poiList.pois[0]
+      fullscreenMap.setCenter([poi.location.lng, poi.location.lat])
+      fullscreenMap.setZoom(15)
+
+      if (fullscreenMarker) {
+        fullscreenMarker.setMap(null)
+      }
+
+      fullscreenMarker = new AMap.Marker({
+        position: [poi.location.lng, poi.location.lat],
+        title: poi.name
+      })
+      fullscreenMarker.setMap(fullscreenMap)
+    }
+  })
+}
+
+const selectResult = (item) => {
+  if (!map || !item.location) return
+
+  searchResults.value = []
+
+  map.setCenter([item.location.lng, item.location.lat])
+  map.setZoom(15)
+
+  if (marker) {
+    marker.setMap(null)
+  }
+
+  marker = new AMap.Marker({
+    position: [item.location.lng, item.location.lat],
+    title: item.name
+  })
+  marker.setMap(map)
+
+  routeDestination.value = {
+    name: item.name,
+    location: {
+      lng: item.location.lng,
+      lat: item.location.lat
+    }
+  }
+
+  emit('search-complete', item)
+}
+
+const clearSearch = () => {
+  searchKeyword.value = ''
+  searchResults.value = []
+}
+
+const goToLocation = (loc) => {
+  if (!map) return
+
+  searchKeyword.value = loc.name
+  map.setCenter(loc.lnglat)
+  map.setZoom(14)
+
+  if (marker) {
+    marker.setMap(null)
+  }
+
+  marker = new AMap.Marker({
+    position: loc.lnglat,
+    title: loc.name
+  })
+  marker.setMap(map)
+
+  routeDestination.value = {
+    name: loc.name,
+    location: {
+      lng: loc.lnglat[0],
+      lat: loc.lnglat[1]
+    }
+  }
+}
+
+const openRoutePanelFromButton = () => {
+  if (routeDestination.value) {
+    openRoutePanel(routeDestination.value)
+  }
+}
+
+const getMobileEnvInfo = () => {
+  const ua = navigator.userAgent
+  const isIOS = /iphone|ipad|ipod/i.test(ua)
+  const isAndroid = /android/i.test(ua)
+  const isWeChat = /MicroMessenger/i.test(ua)
+  const isAlipay = /AlipayClient/i.test(ua)
+  const isHTTPS = window.location.protocol === 'https:'
+
+  return {
+    isIOS,
+    isAndroid,
+    isWeChat,
+    isAlipay,
+    isHTTPS,
+    isMobile: isIOS || isAndroid,
+    ua
+  }
+}
+
+const requestLocation = () => {
+  if (!map || !AMap) return
+
+  const env = getMobileEnvInfo()
+
+  console.log('=== 移动端环境检测 ===')
+  console.log('操作系统:', env.isIOS ? 'iOS' : env.isAndroid ? 'Android' : 'Desktop')
+  console.log('浏览器:', env.isWeChat ? '微信' : env.isAlipay ? '支付宝' : '其他')
+  console.log('HTTPS:', env.isHTTPS ? '是' : '否')
+  console.log('UserAgent:', env.ua)
+
+  if (!env.isHTTPS && env.isMobile) {
+    console.warn('警告: 移动端非HTTPS环境，定位可能受限')
+  }
+
+  isLocating.value = true
+  locatingStatus.value = '正在获取当前位置...'
+
+  const geolocation = new AMap.Geolocation({
+    enableHighAccuracy: true,
+    timeout: 15000,
+    maximumAge: 0,
+    convert: true,
+    showButton: false,
+    showMarker: true,
+    showCircle: true,
+    panToLocation: true,
+    zoomToAccuracy: true,
+    noGeoLocation: 0,
+    geoLocationFirst: true,
+    useNative: true,
+    buttonPosition: 'RB'
+  })
+
+  geolocation.getCurrentPosition((status, result) => {
+    isLocating.value = false
+    locatingStatus.value = ''
+
+    console.log('=== 定位结果 ===')
+    console.log('状态:', status)
+    console.log('完整结果:', result)
+    console.log('定位类型:', result.location_type)
+    console.log('精度:', result.accuracy, '米')
+
+    if (status === 'complete') {
+      const lng = result.position.lng
+      const lat = result.position.lat
+      const type = result.location_type
+
+      console.log('经度:', lng)
+      console.log('纬度:', lat)
+      console.log('定位类型:', type)
+      console.log('精度:', result.accuracy, '米')
+
+      currentPosition.value = { lng, lat }
+      locationType.value = type
+
+      if (env.isWeChat && type === 'ip') {
+        console.warn('微信环境IP定位，精度较低')
+      }
+
+      if (type === 'ip') {
+        console.warn('IP定位，精度较低，建议开启GPS')
+      }
+    } else {
+      console.error('定位失败:', result)
+      console.error('错误码:', result.error_code || result.info)
+      console.error('错误信息:', result.message)
+
+      const errorCode = result.error_code || result.info
+      const errorMessage = result.message || ''
+
+      let errorMsg = '无法获取您的位置'
+
+      if (errorCode === 'PERMISSION_DENIED' || errorMessage.includes('permission denied') || errorMessage.includes('Permission denied')) {
+        if (env.isIOS) {
+          errorMsg = '定位权限被拒绝。请在「设置 - 隐私与安全性 - 定位服务」中允许定位，并选择「使用App期间」和「精确定位」'
+        } else if (env.isAndroid) {
+          errorMsg = '定位权限被拒绝。请在「设置 - 应用权限」中允许定位权限'
+        } else {
+          errorMsg = '定位权限被拒绝，请在浏览器设置中允许定位'
+        }
+        showLocationDialog.value = true
+        locationDialogCallback.value = null
+      } else if (errorCode === 'POSITION_UNAVAILABLE' || errorMessage.includes('unavailable')) {
+        if (env.isIOS) {
+          errorMsg = '定位服务不可用。请确认「设置 - 隐私与安全性 - 定位服务」已开启'
+        } else if (env.isAndroid) {
+          errorMsg = '定位服务不可用。请在「设置 - 位置信息」中开启定位，并选择「高精度」模式'
+        } else {
+          errorMsg = '定位服务不可用，请检查系统定位设置'
+        }
+        showLocationDialog.value = true
+        locationDialogCallback.value = null
+      } else if (errorMessage.includes('Get ipLocation') || errorMessage.includes('ipLocation failed')) {
+        errorMsg = '网络定位失败。请检查网络连接，或在开阔地带开启GPS后重试'
+        showLocationDialog.value = true
+        locationDialogCallback.value = null
+      } else if (errorCode === 'TIMEOUT' || errorMessage.includes('timeout') || errorMessage.includes('Timeout')) {
+        errorMsg = 'GPS信号弱，定位超时。请移至开阔地带后重新定位'
+        alert(errorMsg)
+      } else if (!env.isHTTPS && env.isMobile) {
+        errorMsg = '当前非HTTPS环境，定位功能受限。请使用HTTPS访问'
+        alert(errorMsg)
+      } else {
+        errorMsg = '定位失败，请刷新页面重试'
+        alert(errorMsg)
+      }
+      currentPosition.value = null
+    }
+  })
+
+  map.addControl(geolocation)
+}
+
+const closeLocationDialog = () => {
+  showLocationDialog.value = false
+}
+
+const goToLocationSettings = () => {
+  showLocationDialog.value = false
+
+  const env = getMobileEnvInfo()
+  const isAndroid = env.isAndroid
+  const isIOS = env.isIOS
+
+  if (isAndroid) {
+    if (env.isWeChat) {
+      alert('请在微信「设置 - 隐私 - 位置信息」中允许定位')
+    } else {
+      window.location.href = 'intent://settings/location#Intent;scheme=android-app://com.android.settings;end'
+      setTimeout(() => {
+        window.location.href = 'settings://'
+      }, 500)
+    }
+  } else if (isIOS) {
+    if (env.isWeChat) {
+      alert('请在微信「设置 - 隐私 - 位置信息」中允许定位，并选择「使用应用期间」')
+    } else {
+      window.location.href = 'App-Prefs:root=Privacy&path=LOCATION'
+      setTimeout(() => {
+        window.location.href = 'prefs:root=Privacy&path=LOCATION'
+      }, 500)
+    }
+  } else {
+    alert('请手动在系统设置中开启定位服务')
+  }
+}
+
+const locateMe = () => {
+  requestLocation()
+}
+
+const fullscreenLocateMe = () => {
+  if (!fullscreenMap || !AMap) return
+
+  const env = getMobileEnvInfo()
+
+  console.log('=== 全屏地图定位 - 移动端环境 ===')
+  console.log('操作系统:', env.isIOS ? 'iOS' : env.isAndroid ? 'Android' : 'Desktop')
+  console.log('HTTPS:', env.isHTTPS ? '是' : '否')
+
+  isLocating.value = true
+
+  const geolocation = new AMap.Geolocation({
+    enableHighAccuracy: true,
+    timeout: 15000,
+    maximumAge: 0,
+    convert: true,
+    showButton: false,
+    showMarker: true,
+    showCircle: true,
+    panToLocation: true,
+    zoomToAccuracy: true,
+    noGeoLocation: 0,
+    geoLocationFirst: true,
+    useNative: true
+  })
+
+  geolocation.getCurrentPosition((status, result) => {
+    isLocating.value = false
+
+    if (!fullscreenMap) return
+
+    if (status === 'complete') {
+      const lng = result.position.lng
+      const lat = result.position.lat
+      const type = result.location_type
+
+      console.log('全屏定位成功:', lng, lat, '类型:', type, '精度:', result.accuracy)
+
+      currentPosition.value = { lng, lat }
+      locationType.value = type
+    } else {
+      console.error('全屏定位失败:', result)
+      console.error('错误码:', result.error_code || result.info)
+      console.error('错误信息:', result.message)
+
+      const errorCode = result.error_code || result.info
+      const errorMessage = result.message || ''
+
+      if (errorCode === 'PERMISSION_DENIED' || errorMessage.includes('permission denied') || errorMessage.includes('Permission denied')) {
+        showLocationDialog.value = true
+      } else if (errorCode === 'POSITION_UNAVAILABLE' || errorMessage.includes('unavailable')) {
+        showLocationDialog.value = true
+      } else if (errorMessage.includes('Get ipLocation') || errorMessage.includes('ipLocation failed')) {
+        showLocationDialog.value = true
+      } else if (errorCode === 'TIMEOUT' || errorMessage.includes('timeout')) {
+        alert('GPS信号弱，定位超时。请移至开阔地带后重新定位')
+      } else if (!env.isHTTPS && env.isMobile) {
+        alert('当前非HTTPS环境，定位功能受限')
+      } else {
+        alert('定位失败，请刷新页面重试')
+      }
+    }
+  })
+
+  fullscreenMap.addControl(geolocation)
+}
+
+const resetMap = () => {
+  if (!map) return
+
+  if (marker) {
+    marker.setMap(null)
+    marker = null
+  }
+
+  if (routePolyline) {
+    routePolyline.setMap(null)
+    routePolyline = null
+  }
+
+  searchKeyword.value = ''
+  searchResults.value = []
+  map.setCenter([100.267, 25.6])
+  map.setZoom(11)
+  map.setRotation(0)
+  map.setPitch(35)
+}
+
+const fullscreenReset = () => {
+  if (!fullscreenMap) return
+
+  if (fullscreenMarker) {
+    fullscreenMarker.setMap(null)
+    fullscreenMarker = null
+  }
+
+  fullscreenSearchKeyword.value = ''
+  fullscreenMap.setCenter([100.267, 25.6])
+  fullscreenMap.setZoom(11)
+  fullscreenMap.setRotation(0)
+  fullscreenMap.setPitch(35)
+}
+
+const openRoutePanel = async (destination) => {
+  routeDestination.value = destination
+  showRoutePanel.value = true
+  document.body.style.overflow = 'hidden'
+
+  if (!currentPosition.value) {
+    isRouteLoading.value = true
+    routeError.value = ''
+
+    const env = getMobileEnvInfo()
+    console.log('=== 路线规划定位 - 移动端环境 ===')
+    console.log('操作系统:', env.isIOS ? 'iOS' : env.isAndroid ? 'Android' : 'Desktop')
+
+    await new Promise((resolve) => {
+      const geolocation = new AMap.Geolocation({
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0,
+        convert: true,
+        showButton: false,
+        showMarker: true,
+        showCircle: true,
+        panToLocation: true,
+        zoomToAccuracy: true,
+        noGeoLocation: 0,
+        geoLocationFirst: true,
+        useNative: true
+      })
+
+      geolocation.getCurrentPosition((status, result) => {
+        console.log('=== 路线规划定位 ===')
+        console.log('状态:', status)
+        console.log('结果:', result)
+
+        if (status === 'complete') {
+          const lng = result.position.lng
+          const lat = result.position.lat
+          const type = result.location_type
+
+          console.log('起点坐标:', lng, lat)
+          console.log('定位类型:', type)
+          console.log('精度:', result.accuracy, '米')
+
+          currentPosition.value = { lng, lat }
+          locationType.value = type
+        } else {
+          console.error('定位失败:', result)
+          console.error('错误码:', result.error_code || result.info)
+          console.error('错误信息:', result.message)
+
+          const errorCode = result.error_code || result.info
+          const errorMessage = result.message || ''
+          let tip = '无法获取您的位置'
+
+          if (errorCode === 'PERMISSION_DENIED' || errorMessage.includes('permission denied')) {
+            tip = '定位权限被拒绝，请授权后重试'
+            showLocationDialog.value = true
+          } else if (errorCode === 'POSITION_UNAVAILABLE' || errorMessage.includes('unavailable')) {
+            tip = '定位服务不可用，请检查系统定位设置'
+            showLocationDialog.value = true
+          } else if (errorMessage.includes('Get ipLocation') || errorMessage.includes('ipLocation failed')) {
+            tip = '网络定位失败，请检查网络或开启GPS'
+            showLocationDialog.value = true
+          } else if (errorCode === 'TIMEOUT' || errorMessage.includes('timeout')) {
+            tip = 'GPS信号弱，定位超时，请移至开阔地带重试'
+          } else if (!env.isHTTPS && env.isMobile) {
+            tip = '非HTTPS环境，定位功能受限'
+          } else if (errorMessage) {
+            tip = errorMessage
+          }
+
+          routeError.value = tip
+          isRouteLoading.value = false
+        }
+        resolve()
+      })
+    })
+  }
+
+  if (currentPosition.value) {
+    planRoute()
+  }
+}
+
+const closeRoutePanel = () => {
+  showRoutePanel.value = false
+  document.body.style.overflow = ''
+}
+
+const changeRouteMode = (mode) => {
+  selectedRouteMode.value = mode
+  if (currentPosition.value && routeDestination.value) {
+    planRoute()
+  }
+}
+
+const planRoute = () => {
+  if (!currentPosition.value || !routeDestination.value) {
+    routeError.value = '请先选择目的地'
+    return
+  }
+
+  isRouteLoading.value = true
+  routeResult.value = null
+  routeError.value = ''
+
+  const startLng = currentPosition.value.lng
+  const startLat = currentPosition.value.lat
+  const endLng = routeDestination.value.location.lng
+  const endLat = routeDestination.value.location.lat
+
+  const straightDistance = calculateStraightDistance(startLng, startLat, endLng, endLat)
+
+  console.log('=== 路线规划 ===')
+  console.log('起点:', startLng, startLat, '定位类型:', locationType.value)
+  console.log('终点:', endLng, endLat, routeDestination.value.name)
+  console.log('直线距离:', straightDistance.toFixed(1), '公里')
+
+  const start = [startLng, startLat]
+  const end = [endLng, endLat]
+
+  const routePlugin = selectedRouteMode.value === 'driving'
+    ? driving
+    : selectedRouteMode.value === 'riding'
+      ? riding
+      : walking
+
+  if (!routePlugin) {
+    isRouteLoading.value = false
+    routeError.value = '路线规划服务未初始化'
+    return
+  }
+
+  routePlugin.search(start, end, (status, result) => {
+    isRouteLoading.value = false
+
+    console.log('路线规划API结果:', status, result)
+
+    if (status === 'complete' && result.routes && result.routes.length > 0) {
+      const route = result.routes[0]
+      const distance = route.distance
+      const time = route.time
+      const routeDistanceKm = distance / 1000
+
+      console.log('规划距离:', routeDistanceKm.toFixed(1), '公里')
+      console.log('规划时间:', Math.ceil(time / 60), '分钟')
+
+      if (routeDistanceKm < straightDistance * 0.8) {
+        console.warn('警告: 规划距离小于直线距离的80%，可能存在问题')
+      }
+
+      routeResult.value = {
+        distance: formatDistance(distance),
+        time: formatTime(time),
+        tolls: selectedRouteMode.value === 'driving' && route.tolls ? `过路费约${route.tolls}元` : null,
+        rawDistance: distance,
+        rawTime: time
+      }
+    } else if (status === 'no_data') {
+      routeError.value = '两地之间暂无可用路线，请尝试其他目的地'
+    } else {
+      const errorCode = result.info || result.error_code || ''
+      if (errorCode === 'OVER_DIRECTION_RANGE') {
+        if (selectedRouteMode.value === 'walking') {
+          routeError.value = '步行距离太远了（超过100公里），请选择驾车或骑行'
+        } else if (selectedRouteMode.value === 'riding') {
+          routeError.value = '骑行距离太远了，请选择驾车出行'
+        } else {
+          routeError.value = '距离太远，无法规划路线'
+        }
+      } else {
+        routeError.value = '路线规划遇到问题，请稍后再试'
+      }
+    }
+  })
+}
+
+const calculateStraightDistance = (lng1, lat1, lng2, lat2) => {
+  const R = 6371
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLng = (lng2 - lng1) * Math.PI / 180
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return R * c
+}
+
+const getDistanceToLocation = (lnglat) => {
+  if (!currentPosition.value) return ''
+  const distance = calculateStraightDistance(
+    currentPosition.value.lng,
+    currentPosition.value.lat,
+    lnglat[0],
+    lnglat[1]
+  )
+  if (distance < 1) {
+    return Math.round(distance * 1000) + 'm'
+  }
+  return distance.toFixed(1) + 'km'
+}
+
+const formatDistance = (meters) => {
+  if (meters >= 1000) {
+    return (meters / 1000).toFixed(1) + '公里'
+  }
+  return meters + '米'
+}
+
+const formatTime = (seconds) => {
+  if (seconds >= 3600) {
+    const hours = Math.floor(seconds / 3600)
+    const mins = Math.floor((seconds % 3600) / 60)
+    return `${hours}小时${mins}分钟`
+  }
+  return Math.ceil(seconds / 60) + '分钟'
+}
+
+const openAmapApp = () => {
+  if (!currentPosition.value || !routeDestination.value) return
+
+  const startLng = currentPosition.value.lng
+  const startLat = currentPosition.value.lat
+  const endLng = routeDestination.value.location.lng
+  const endLat = routeDestination.value.location.lat
+  const endName = encodeURIComponent(routeDestination.value.name)
+
+  const modeMap = {
+    driving: 'car',
+    riding: 'ride',
+    walking: 'walk'
+  }
+
+  const url = `https://uri.amap.com/navigation?from=${startLng},${startLat},我的位置&to=${endLng},${endLat},${endName}&mode=${modeMap[selectedRouteMode.value]}&src=云南旅行攻略&coordinate=gaode`
+
+  window.open(url, '_blank')
+}
+
+const showRouteOnMap = () => {
+  if (!currentPosition.value || !routeDestination.value || !map || !AMap) return
+
+  const start = [currentPosition.value.lng, currentPosition.value.lat]
+  const end = [routeDestination.value.location.lng, routeDestination.value.location.lat]
+
+  const routePlugin = selectedRouteMode.value === 'driving'
+    ? driving
+    : selectedRouteMode.value === 'riding'
+      ? riding
+      : walking
+
+  if (!routePlugin) return
+
+  routePlugin.search(start, end, (status, result) => {
+    console.log('showRouteOnMap 结果:', status, result)
+
+    if (!map) return
+    if (status !== 'complete' || !result.routes || result.routes.length === 0) {
+      console.error('路线绘制失败:', status, result)
+      return
+    }
+
+    const route = result.routes[0]
+    const path = []
+
+    if (selectedRouteMode.value === 'driving' && route.steps) {
+      route.steps.forEach(step => {
+        if (step.path) {
+          step.path.forEach(point => {
+            path.push([point.lng, point.lat])
+          })
+        }
+      })
+    } else if (selectedRouteMode.value === 'riding' && route.rides) {
+      route.rides.forEach(ride => {
+        if (ride.path) {
+          ride.path.forEach(point => {
+            path.push([point.lng, point.lat])
+          })
+        }
+      })
+    } else if (selectedRouteMode.value === 'walking' && route.steps) {
+      route.steps.forEach(step => {
+        if (step.path) {
+          step.path.forEach(point => {
+            path.push([point.lng, point.lat])
+          })
+        }
+      })
+    }
+
+    if (path.length === 0) {
+      console.error('无法获取路径点')
+      return
+    }
+
+    if (routePolyline) {
+      routePolyline.setMap(null)
+    }
+
+    routePolyline = new AMap.Polyline({
+      path,
+      strokeColor: '#3b82f6',
+      strokeWeight: 6,
+      strokeOpacity: 0.8,
+      lineJoin: 'round',
+      lineCap: 'round'
+    })
+    routePolyline.setMap(map)
+
+    const startMarker = new AMap.Marker({
+      position: start,
+      title: '起点',
+      content: '<div style="background:#22c55e;color:white;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;">起</div>'
+    })
+    startMarker.setMap(map)
+
+    const endMarker = new AMap.Marker({
+      position: end,
+      title: routeDestination.value.name,
+      content: '<div style="background:#ef4444;color:white;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;">终</div>'
+    })
+    endMarker.setMap(map)
+
+    map.setFitView([routePolyline], false, [50, 50, 50, 50])
+
+    closeRoutePanel()
+  })
+}
+
+watch(() => props.searchPlace, (newVal) => {
+  if (newVal) {
+    searchKeyword.value = newVal
+    nextTick(() => {
+      handleSearch()
+    })
+  }
+})
+
+onMounted(() => {
+  initMap()
+  if (safeStorage.getItem('mapGestureTipSeen') !== 'true') {
+    setTimeout(() => {
+      showGestureTip.value = true
+    }, 1500)
+  }
+})
+
+onUnmounted(() => {
+  if (map) {
+    map.destroy()
+  }
+  if (fullscreenMap) {
+    fullscreenMap.destroy()
+  }
+})
+</script>
+
+<style scoped>
+.map-section {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-md);
+  padding-bottom: var(--space-xl);
+  gap: var(--space-md);
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.map-header {
+  display: flex;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  background: var(--card);
+  border-radius: var(--space-md);
+  border: 1px solid var(--border);
+}
+
+.map-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: var(--earth-light);
+  border-radius: var(--space-sm);
+  padding: 0 var(--space-sm);
+}
+
+.search-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: var(--space-sm);
+  font-size: var(--text-sm);
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-clear {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.search-clear svg {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+}
+
+.search-btn {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--forest);
+  color: white;
+  border: none;
+  border-radius: var(--space-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background var(--duration-fast) var(--ease-out-quart);
+}
+
+.search-btn:hover:not(:disabled) {
+  background: var(--sunset);
+}
+
+.search-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.map-preview-card {
+  background: var(--card);
+  border-radius: var(--space-md);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  position: relative;
+}
+
+.map-preview-container {
+  height: 220px;
+  position: relative;
+}
+
+#amap-container {
+  width: 100%;
+  height: 100%;
+}
+
+.map-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.map-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--forest);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.map-locating-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 20;
+}
+
+.map-locating-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.map-locating-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--forest);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.map-location-tip {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  border-radius: var(--space-sm);
+  font-size: var(--text-xs);
+  z-index: 15;
+  max-width: 90%;
+  text-align: center;
+  animation: tipIn 0.3s var(--ease-out-quart);
+}
+
+@keyframes tipIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.map-location-tip button {
+  margin-top: var(--space-xs);
+  padding: var(--space-2xs) var(--space-sm);
+  background: var(--forest);
+  color: white;
+  border: none;
+  border-radius: var(--space-xs);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.map-expand-btn {
+  position: absolute;
+  bottom: var(--space-sm);
+  right: var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--forest);
+  color: white;
+  border: none;
+  border-radius: var(--space-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.map-expand-btn:hover {
+  background: var(--sunset);
+  transform: scale(1.02);
+}
+
+.map-expand-btn:active {
+  transform: scale(0.98);
+}
+
+.map-expand-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.map-gesture-tip {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--space-sm);
+  animation: gestureTipIn 0.4s var(--ease-out-quart);
+  z-index: 50;
+}
+
+@keyframes gestureTipIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.map-gesture-tip-content {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xs);
+}
+
+.map-gesture-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.map-gesture-item svg {
+  width: 18px;
+  height: 18px;
+  color: var(--sunset);
+}
+
+.map-gesture-item span {
+  font-size: 0.65rem;
+  white-space: nowrap;
+}
+
+.map-gesture-close {
+  width: 100%;
+  padding: var(--space-2xs) var(--space-sm);
+  background: var(--forest);
+  color: white;
+  border: none;
+  border-radius: var(--space-xs);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.map-results {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  max-height: 150px;
+  background: var(--card);
+  border-radius: var(--space-sm);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 100;
+  animation: resultsIn 0.25s var(--ease-out-quart);
+}
+
+@keyframes resultsIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.map-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  border-bottom: 1px solid var(--border);
+  background: var(--earth-light);
+}
+
+.map-results-title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--forest);
+}
+
+.map-results-close {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: var(--card);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-results-close svg {
+  width: 10px;
+  height: 10px;
+  color: var(--text-muted);
+}
+
+.map-results-list {
+  overflow-y: auto;
+  max-height: 110px;
+}
+
+.map-result-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border-bottom: 1px solid var(--border);
+}
+
+.map-result-item:last-child {
+  border-bottom: none;
+}
+
+.map-result-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  cursor: pointer;
+  min-width: 0;
+}
+
+.map-result-main:active {
+  background: var(--earth-light);
+}
+
+.map-result-index {
+  width: 20px;
+  height: 20px;
+  background: var(--forest);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.map-result-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.map-result-name {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.map-result-address {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.map-result-nav-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--forest);
+  background: var(--forest-light);
+  border-radius: var(--space-xs);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.map-result-nav-btn:hover {
+  background: var(--forest);
+}
+
+.map-result-nav-btn:hover svg {
+  color: white;
+}
+
+.map-result-nav-btn:active {
+  transform: scale(0.95);
+}
+
+.map-result-nav-btn svg {
+  width: 16px;
+  height: 16px;
+  color: var(--forest);
+}
+
+.map-actions {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--card);
+  border-radius: var(--space-md);
+  border: 1px solid var(--border);
+}
+
+.map-action-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-sm);
+  background: var(--earth-light);
+  border: none;
+  border-radius: var(--space-sm);
+  cursor: pointer;
+  font-family: inherit;
+  min-height: 60px;
+  transition: background var(--duration-fast) var(--ease-out-quart),
+              transform var(--duration-fast) var(--ease-out-quart),
+              box-shadow var(--duration-fast) var(--ease-out-quart);
+}
+
+.map-action-btn:hover {
+  background: var(--forest-light);
+}
+
+.map-action-btn:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 2px;
+  background: var(--forest-light);
+}
+
+.map-action-btn:active {
+  transform: scale(0.98);
+}
+
+.map-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.map-action-btn:disabled:active {
+  transform: none;
+}
+
+.map-action-btn svg {
+  width: 20px;
+  height: 20px;
+  color: var(--forest);
+}
+
+.map-action-btn span {
+  font-size: var(--text-xs);
+  color: var(--text);
+}
+
+.map-quick-locations {
+  padding: var(--space-md);
+  background: var(--card);
+  border-radius: var(--space-md);
+  border: 1px solid var(--border);
+}
+
+.map-quick-title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.map-quick-distance-hint {
+  font-size: 0.65rem;
+  color: var(--sunset);
+  font-weight: 500;
+}
+
+.map-quick-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.map-quick-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--earth-light);
+  border: 1px solid var(--border);
+  border-radius: var(--space-lg);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--text-xs);
+  color: var(--text);
+  min-height: 44px;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.map-quick-item:hover {
+  background: var(--forest-light);
+  border-color: var(--forest);
+}
+
+.map-quick-item:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 2px;
+  background: var(--forest-light);
+}
+
+.map-quick-item:active {
+  transform: scale(0.96);
+}
+
+.map-quick-emoji {
+  font-size: 1rem;
+}
+
+.map-quick-name {
+  white-space: nowrap;
+}
+
+.map-quick-distance {
+  font-size: 0.65rem;
+  color: var(--sunset);
+  background: var(--sunset-soft);
+  padding: 2px 6px;
+  border-radius: var(--space-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.map-tips {
+  padding: var(--space-md);
+  background: var(--forest-light);
+  border-radius: var(--space-md);
+  border: 1px solid var(--forest);
+}
+
+.map-tip-title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--forest);
+  margin-bottom: var(--space-xs);
+}
+
+.map-tip-content p {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.map-tip-content p + p {
+  margin-top: var(--space-xs);
+}
+
+.map-fullscreen-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+}
+
+.map-fullscreen-container {
+  width: 100%;
+  height: 100%;
+  max-width: 100vw;
+  max-height: 100vh;
+  background: var(--card);
+  border-radius: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.map-fullscreen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  flex-shrink: 0;
+}
+
+.map-fullscreen-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--forest);
+}
+
+.map-fullscreen-close {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--earth-light);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--duration-fast) var(--ease-out-quart);
+}
+
+.map-fullscreen-close:hover {
+  background: var(--sunset);
+}
+
+.map-fullscreen-close:hover svg {
+  color: white;
+}
+
+.map-fullscreen-close svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  transition: color var(--duration-fast) var(--ease-out-quart);
+}
+
+.map-fullscreen-map {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+#amap-fullscreen-container {
+  width: 100%;
+  height: 100%;
+}
+
+.map-fullscreen-toolbar {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-top: 1px solid var(--border);
+  background: var(--card);
+  flex-shrink: 0;
+}
+
+.map-fullscreen-search {
+  flex: 1;
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.map-fullscreen-search input {
+  flex: 1;
+  padding: var(--space-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--space-sm);
+  font-size: var(--text-sm);
+  font-family: inherit;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.map-fullscreen-search button {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--forest);
+  color: white;
+  border: none;
+  border-radius: var(--space-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.map-fullscreen-actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.fullscreen-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--border);
+  background: var(--earth-light);
+  border-radius: var(--space-sm);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background var(--duration-fast) var(--ease-out-quart);
+}
+
+.fullscreen-action-btn:hover {
+  background: var(--forest-light);
+}
+
+.fullscreen-action-btn:active {
+  transform: scale(0.96);
+}
+
+.fullscreen-action-btn svg {
+  width: 18px;
+  height: 18px;
+  color: var(--forest);
+}
+
+.fullscreen-action-btn span {
+  font-size: 0.65rem;
+  color: var(--text);
+}
+
+.location-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.location-dialog {
+  background: var(--card);
+  border-radius: var(--space-lg);
+  padding: var(--space-xl);
+  max-width: 320px;
+  width: 100%;
+  text-align: center;
+}
+
+.location-dialog-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto var(--space-md);
+  background: var(--earth-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-dialog-icon svg {
+  width: 28px;
+  height: 28px;
+  color: var(--forest);
+}
+
+.location-dialog-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--space-sm);
+}
+
+.location-dialog-desc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-lg);
+  line-height: 1.5;
+}
+
+.location-dialog-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.location-dialog-btn {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--space-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.location-dialog-btn.cancel {
+  background: var(--earth-light);
+  color: var(--text-muted);
+}
+
+.location-dialog-btn.confirm {
+  background: var(--forest);
+  color: white;
+}
+
+.dialog-enter-active,
+.dialog-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.dialog-enter-from,
+.dialog-leave-to {
+  opacity: 0;
+}
+
+.route-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.route-panel {
+  width: 100%;
+  max-height: 80vh;
+  background: var(--card);
+  border-radius: var(--space-lg) var(--space-lg) 0 0;
+  padding: var(--space-md);
+  overflow-y: auto;
+}
+
+.route-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.route-panel-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--forest);
+}
+
+.route-panel-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--earth-light);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.route-panel-close svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+}
+
+.route-info {
+  margin-bottom: var(--space-md);
+}
+
+.route-endpoints {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.route-endpoint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.route-endpoint-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.route-endpoint-dot.start {
+  background: var(--forest);
+}
+
+.route-endpoint-dot.end {
+  background: var(--sunset);
+}
+
+.route-endpoint-text {
+  font-size: var(--text-sm);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.route-endpoint-line {
+  width: 2px;
+  height: 20px;
+  background: var(--border);
+  margin-left: 5px;
+}
+
+.route-modes {
+  display: flex;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.route-mode-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-sm);
+  background: var(--earth-light);
+  border: 2px solid transparent;
+  border-radius: var(--space-sm);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.route-mode-btn:hover {
+  background: var(--forest-light);
+}
+
+.route-mode-btn.active {
+  border-color: var(--forest);
+  background: var(--forest-light);
+}
+
+.route-mode-icon {
+  font-size: 1.25rem;
+}
+
+.route-mode-label {
+  font-size: var(--text-xs);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.route-result {
+  background: var(--forest-light);
+  border-radius: var(--space-sm);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.route-summary {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xs);
+}
+
+.route-distance {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--forest);
+}
+
+.route-time {
+  font-size: var(--text-lg);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+}
+
+.route-detail {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.route-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xl);
+  color: var(--text-muted);
+}
+
+.route-loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border);
+  border-top-color: var(--forest);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.route-error {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--sunset);
+  font-size: var(--text-sm);
+}
+
+.route-actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.route-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--earth-light);
+  border: 1px solid var(--border);
+  border-radius: var(--space-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.route-action-btn:hover:not(:disabled) {
+  background: var(--forest-light);
+  border-color: var(--forest);
+}
+
+.route-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.route-action-btn.primary {
+  background: var(--forest);
+  color: white;
+  border-color: var(--forest);
+}
+
+.route-action-btn.primary:hover:not(:disabled) {
+  background: var(--sunset);
+  border-color: var(--sunset);
+}
+
+.route-action-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.route-tip {
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.fullscreen-enter-active,
+.fullscreen-leave-active,
+.route-panel-enter-active,
+.route-panel-leave-active {
+  transition: opacity 0.3s var(--ease-out-quart);
+}
+
+.fullscreen-enter-active .map-fullscreen-container,
+.fullscreen-leave-active .map-fullscreen-container {
+  transition: transform 0.3s var(--ease-out-quart);
+}
+
+.route-panel-enter-active .route-panel,
+.route-panel-leave-active .route-panel {
+  transition: transform 0.3s var(--ease-out-quart);
+}
+
+.fullscreen-enter-from,
+.fullscreen-leave-to {
+  opacity: 0;
+}
+
+.fullscreen-enter-from .map-fullscreen-container,
+.fullscreen-leave-to .map-fullscreen-container {
+  transform: scale(0.95);
+}
+
+.route-panel-enter-from,
+.route-panel-leave-to {
+  opacity: 0;
+}
+
+.route-panel-enter-from .route-panel,
+.route-panel-leave-to .route-panel {
+  transform: translateY(100%);
+}
+
+@media (min-width: 768px) {
+  .map-preview-container {
+    height: 300px;
+  }
+
+  .map-fullscreen-container {
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+
+  .route-panel-overlay {
+    align-items: center;
+  }
+
+  .route-panel {
+    max-width: 400px;
+    border-radius: var(--space-lg);
+  }
+}
+</style>

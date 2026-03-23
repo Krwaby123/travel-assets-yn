@@ -38,6 +38,7 @@
           @hide-card="hideCard"
           @navigate="handleNavigate"
           @open-lightbox="openLightbox"
+          @open-map="openMapSearch"
         />
       </div>
     </main>
@@ -319,7 +320,7 @@
         <path d="M15 18l-6-6 6-6"/>
       </svg>
     </button>
-    <button class="nav-arrow next" :style="{ opacity: currentIndex === 4 ? 0.3 : 1 }" @click="goToSlide(currentIndex + 1, 'right')" aria-label="下一页">
+    <button class="nav-arrow next" :style="{ opacity: currentIndex === 5 ? 0.3 : 1 }" @click="goToSlide(currentIndex + 1, 'right')" aria-label="下一页">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M9 18l6-6-6-6"/>
       </svg>
@@ -327,12 +328,12 @@
 
     <div class="slide-indicator" role="tablist" aria-label="页面导航">
       <span
-        v-for="i in 5"
+        v-for="i in 6"
         :key="i"
         :class="['slide-dot', { active: i - 1 === currentIndex }]"
         role="tab"
         tabindex="0"
-        :aria-label="['首页', '斗南', '大理', '丽江', '香格里拉'][i-1]"
+        :aria-label="['首页', '斗南', '大理', '丽江', '香格里拉', '地图'][i-1]"
         :aria-selected="i - 1 === currentIndex"
         @click="goToSlide(i - 1, i - 1 > currentIndex ? 'right' : 'left')"
         @keydown.enter="goToSlide(i - 1, i - 1 > currentIndex ? 'right' : 'left')"
@@ -379,14 +380,18 @@ import DounanSlide from '@/components/travel/slides/DounanSlide.vue'
 import DaliSlide from '@/components/travel/slides/DaliSlide.vue'
 import LijiangSlide from '@/components/travel/slides/LijiangSlide.vue'
 import ShangriSlide from '@/components/travel/slides/ShangriSlide.vue'
+import MapSlide from '@/components/travel/slides/MapSlide.vue'
 import { navTabs, dounanData, daliData, lijiangData, shangriData } from '@/data/travelData'
+
+const mapSearchPlace = ref('')
 
 const slides = [
   { component: HomeSlide, data: {} },
   { component: DounanSlide, data: dounanData },
   { component: DaliSlide, data: daliData },
   { component: LijiangSlide, data: lijiangData },
-  { component: ShangriSlide, data: shangriData }
+  { component: ShangriSlide, data: shangriData },
+  { component: MapSlide, data: computed(() => ({ searchPlace: mapSearchPlace.value })) }
 ]
 
 const appContainer = ref(null)
@@ -405,7 +410,8 @@ const settingsVisible = ref(false)
 const hiddenModalVisible = ref(false)
 
 const currentSlideHeight = ref(0)
-const slideHeights = ref([0, 0, 0, 0, 0])
+const slideHeights = ref([0, 0, 0, 0, 0, 0])
+const slideDirection = ref('right')
 const { width: windowWidth } = useWindowSize()
 
 let resizeObserverCleanup = null
@@ -771,8 +777,14 @@ const safeStorage = {
 }
 
 const goToSlide = (index, direction = null) => {
-  if (index < 0 || index >= 5) return
+  if (index < 0 || index >= 6) return
   if (index === currentIndex.value) return
+
+  if (direction) {
+    slideDirection.value = direction
+  } else {
+    slideDirection.value = index > currentIndex.value ? 'right' : 'left'
+  }
 
   currentSlideHeight.value = slideHeights.value[index] || 0
   currentIndex.value = index
@@ -791,8 +803,25 @@ const goToSlide = (index, direction = null) => {
   })
 }
 
-const handleNavigate = (index) => {
+const handleNavigate = (payload) => {
+  const index = typeof payload === 'object' ? payload.index : payload
+  const scrollTo = typeof payload === 'object' ? payload.scrollTo : null
+  
   goToSlide(index, index > currentIndex.value ? 'right' : 'left')
+  
+  if (scrollTo) {
+    setTimeout(() => {
+      const element = document.querySelector(`[data-card-id="${scrollTo}"]`)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }, 100)
+  }
+}
+
+const openMapSearch = (placeName) => {
+  mapSearchPlace.value = placeName
+  goToSlide(5, 'right')
 }
 
 const setTheme = (mode) => {
@@ -929,7 +958,7 @@ const handleTouchEnd = (e) => {
   const touchEndX = e.changedTouches[0].screenX
   const diff = touchStartX - touchEndX
   if (Math.abs(diff) > 50) {
-    if (diff > 0 && currentIndex.value < 4) {
+    if (diff > 0 && currentIndex.value < 5) {
       goToSlide(currentIndex.value + 1, 'right')
     } else if (diff < 0 && currentIndex.value > 0) {
       goToSlide(currentIndex.value - 1, 'left')
@@ -1016,7 +1045,7 @@ const handleScroll = () => {
   if (!slidesContainer.value || isScrolling) return
   const scrollLeft = slidesContainer.value.scrollLeft
   const newIndex = Math.round(scrollLeft / window.innerWidth)
-  if (newIndex !== currentIndex.value && newIndex >= 0 && newIndex < 5) {
+  if (newIndex !== currentIndex.value && newIndex >= 0 && newIndex < 6) {
     currentSlideHeight.value = slideHeights.value[newIndex] || 0
     currentIndex.value = newIndex
   }
@@ -1049,6 +1078,10 @@ onMounted(() => {
     preloadAllSlideHeights()
     startResizeObserver(currentIndex.value)
   }, 200)
+
+  setTimeout(() => {
+    refreshCurrentSlideHeight()
+  }, 1000)
 })
 
 onUnmounted(() => {
@@ -1126,7 +1159,6 @@ const handleLightboxKeydown = (e) => {
 .hero-content {
   position: relative;
   z-index: 1;
-  animation: heroFadeIn 1.2s var(--ease-out-expo) forwards;
 }
 
 .hero h1 {
@@ -1136,32 +1168,46 @@ const handleLightboxKeydown = (e) => {
   color: var(--forest);
   margin-bottom: 0.3rem;
   letter-spacing: 0.05em;
-  animation: titleReveal 1s var(--ease-out-quart) 0.15s forwards;
+  animation: heroTitleIn 0.8s var(--ease-out-quart) 0.1s forwards;
   opacity: 0;
-  transform: translateY(1.5rem);
+  transform: translateY(20px);
 }
 
 .hero-subtitle {
   font-size: clamp(0.7rem, 2vw, 0.85rem);
   color: var(--text-muted);
-  animation: subtitleReveal 0.8s var(--ease-out-quart) 0.35s forwards;
+  animation: heroSubtitleIn 0.7s var(--ease-out-quart) 0.3s forwards;
   opacity: 0;
-  transform: translateY(1rem);
+  transform: translateY(16px);
 }
 
-@keyframes heroFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--forest), var(--sunset));
+  border-radius: 2px;
+  animation: heroLineIn 0.6s var(--ease-out-quart) 0.5s forwards;
+  opacity: 0;
+  transform: translateX(-50%) scaleX(0);
 }
 
-@keyframes titleReveal {
-  from { opacity: 0; transform: translateY(1.5rem); }
+@keyframes heroTitleIn {
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes subtitleReveal {
-  from { opacity: 0; transform: translateY(1rem); }
+@keyframes heroSubtitleIn {
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroLineIn {
+  from { opacity: 0; transform: translateX(-50%) scaleX(0); }
+  to { opacity: 1; transform: translateX(-50%) scaleX(1); }
 }
 
 @media (min-width: 768px) {
@@ -1225,6 +1271,23 @@ const handleLightboxKeydown = (e) => {
   -webkit-tap-highlight-color: transparent;
 }
 
+.nav-tab::before {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--forest);
+  border-radius: 1px;
+  transform: translateX(-50%);
+  transition: width var(--duration-normal) var(--ease-out-quart);
+}
+
+.nav-tab:hover::before {
+  width: 20px;
+}
+
 .nav-tab::after {
   content: '';
   position: absolute;
@@ -1255,9 +1318,13 @@ const handleLightboxKeydown = (e) => {
   animation: tabActivate 0.35s var(--ease-out-quart);
 }
 
+.nav-tab.active::before {
+  display: none;
+}
+
 @keyframes tabActivate {
-  0% { transform: scale(0.9); }
-  50% { transform: scale(1.05); }
+  0% { transform: scale(0.92); }
+  50% { transform: scale(1.03); }
   100% { transform: scale(1); }
 }
 
@@ -1374,7 +1441,9 @@ const handleLightboxKeydown = (e) => {
   inset: 0;
   background: rgba(0,0,0,0);
   visibility: hidden;
-  transition: background 0.3s ease, visibility 0.3s ease;
+  transition: background var(--duration-slow) var(--ease-out-quart),
+              visibility var(--duration-slow) var(--ease-out-quart),
+              backdrop-filter var(--duration-slow) var(--ease-out-quart);
   z-index: 95;
   backdrop-filter: blur(0);
 }
@@ -1382,7 +1451,7 @@ const handleLightboxKeydown = (e) => {
 .settings-overlay.active {
   background: rgba(0,0,0,0.4);
   visibility: visible;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
 }
 
 .settings-panel {
@@ -1393,17 +1462,17 @@ const handleLightboxKeydown = (e) => {
   width: min(320px, 85vw);
   background: var(--card);
   transform: translateX(100%);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.4s var(--ease-out-quint);
   z-index: 100;
   display: flex;
   flex-direction: column;
-  box-shadow: -8px 0 32px rgba(0,0,0,0);
+  box-shadow: -16px 0 48px rgba(0,0,0,0);
   overflow-y: auto;
 }
 
 .settings-panel.active {
   transform: translateX(0);
-  box-shadow: -8px 0 32px rgba(0,0,0,0.15);
+  box-shadow: -16px 0 48px rgba(0,0,0,0.12);
 }
 
 .settings-header {
@@ -2369,7 +2438,7 @@ const handleLightboxKeydown = (e) => {
   height: 10px;
   border-radius: 50%;
   background: var(--border);
-  transition: all 0.3s var(--ease-out-quart);
+  transition: all 0.25s var(--ease-out-quart);
   cursor: pointer;
   position: relative;
 }
@@ -2386,7 +2455,7 @@ const handleLightboxKeydown = (e) => {
 
 .slide-dot:hover {
   background: var(--text-muted);
-  transform: scale(1.2);
+  transform: scale(1.25);
 }
 
 .slide-dot.active {
@@ -2397,8 +2466,8 @@ const handleLightboxKeydown = (e) => {
 }
 
 @keyframes dotActivate {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.3); }
+  0% { transform: scale(0.8); }
+  40% { transform: scale(1.15); }
   100% { transform: scale(1); }
 }
 

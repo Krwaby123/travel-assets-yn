@@ -50,7 +50,13 @@
           <div class="venue-item" v-for="venue in data.venues" :key="venue.name" :class="{ important: venue.important }">
             <div class="venue-header">
               <div class="venue-name">{{ venue.name }} <span class="venue-tag">{{ venue.tag }}</span></div>
-              <div class="venue-meta" v-if="venue.openTime || venue.booking">
+              <div class="venue-actions">
+                <button class="venue-map-btn" @click="$emit('open-map', venue.name)" :aria-label="'在地图上查看' + venue.name">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </button>
                 <span class="venue-time" v-if="venue.openTime">{{ venue.openTime }}</span>
                 <span class="venue-booking" v-if="venue.booking" :class="{ warn: venue.important }">{{ venue.booking }}</span>
               </div>
@@ -143,7 +149,7 @@ defineProps({
   hiddenCards: Set
 })
 
-defineEmits(['hide-card', 'open-lightbox'])
+defineEmits(['hide-card', 'open-lightbox', 'open-map'])
 </script>
 
 <style scoped>
@@ -238,10 +244,44 @@ defineEmits(['hide-card', 'open-lightbox'])
   margin-bottom: var(--space-xs);
 }
 
-.venue-meta {
+.venue-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-xs);
+}
+
+.venue-map-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--forest);
+  background: var(--forest-light);
+  border-radius: var(--space-xs);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  padding: 0;
+}
+
+.venue-map-btn:hover {
+  background: var(--forest);
+}
+
+.venue-map-btn:active {
+  transform: scale(0.9);
+}
+
+.venue-map-btn svg {
+  width: 14px;
+  height: 14px;
+  color: var(--forest);
+  transition: color var(--duration-fast) var(--ease-out-quart);
+}
+
+.venue-map-btn:hover svg {
+  color: white;
 }
 
 .venue-time {

@@ -1,10 +1,37 @@
 <template>
   <section class="section home-section">
-      <div class="home-intro fade-in" data-delay="0">
+      <div class="home-intro fade-in" style="--delay: 0">
         <p class="home-intro-text">3月云南，晴天为主，气温舒适。<br>昆明斗南→大理洱海，核心两地深度游，慢玩不赶路。</p>
       </div>
 
-      <div class="quick-start fade-in" data-delay="100">
+      <div class="pre-trip-checklist fade-in" style="--delay: 50">
+        <div class="checklist-header">
+          <svg class="checklist-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"/>
+            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+          </svg>
+          <span class="checklist-title">出发前检查清单</span>
+          <span class="checklist-progress">{{ checkedItems.length }}/{{ checklistItems.length }}</span>
+        </div>
+        <div class="checklist-items">
+          <label v-for="(item, idx) in checklistItems" :key="idx" class="checklist-item" :class="{ checked: checkedItems.includes(idx) }">
+            <input 
+              type="checkbox" 
+              :checked="checkedItems.includes(idx)"
+              @change="toggleCheckItem(idx)"
+              class="checklist-checkbox"
+            >
+            <span class="checklist-checkbox-custom"></span>
+            <span class="checklist-item-text">{{ item }}</span>
+          </label>
+        </div>
+        <div class="checklist-tip" v-if="checkedItems.length === checklistItems.length">
+          <span class="checklist-tip-icon">✓</span>
+          准备就绪！祝你旅途愉快 🎉
+        </div>
+      </div>
+
+      <div class="quick-start fade-in" style="--delay: 100">
         <div class="quick-start-label">第一次来？推荐路线</div>
         <div class="quick-start-cards">
           <div class="quick-start-card" @click.stop="$emit('navigate', 1)" @mousedown="createRipple">
@@ -26,6 +53,55 @@
         </div>
       </div>
 
+      <div class="quick-nav-card fade-in" style="--delay: 150">
+        <div class="quick-nav-header">
+          <svg class="quick-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <div class="quick-nav-info">
+            <span class="quick-nav-title">地图导航</span>
+            <span class="quick-nav-desc">查看路线 · 规划行程</span>
+          </div>
+        </div>
+        <button class="quick-nav-btn" @click="$emit('navigate', 5)">
+          <span>打开地图</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="student-discount-card fade-in" style="--delay: 200">
+        <div class="student-discount-badge">
+          <span class="student-discount-badge-icon">🎓</span>
+          <span class="student-discount-badge-text">学生专属</span>
+        </div>
+        <div class="student-discount-content">
+          <div class="student-discount-title">持学生证享半价优惠</div>
+          <div class="student-discount-list">
+            <div class="student-discount-item">
+              <span class="student-discount-spot">崇圣寺三塔</span>
+              <span class="student-discount-save">省37.5元</span>
+            </div>
+            <div class="student-discount-item">
+              <span class="student-discount-spot">苍山索道</span>
+              <span class="student-discount-save">半价优惠</span>
+            </div>
+            <div class="student-discount-item">
+              <span class="student-discount-spot">蝴蝶泉</span>
+              <span class="student-discount-save">省20元</span>
+            </div>
+          </div>
+          <button class="student-discount-more" @click="$emit('navigate', { index: 2, scrollTo: 'dali-ticket' })">
+            查看全部优惠
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
       <InfoCard
         card-id="home-itinerary"
         card-name="推荐行程"
@@ -35,7 +111,12 @@
       >
         <div class="home-itinerary">
           <div class="home-itinerary-header">
-            <span class="home-itinerary-title"><span class="emoji" aria-hidden="true">📍</span> 推荐行程（斗南+大理）</span>
+            <span class="home-itinerary-title">
+              <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+              </svg>
+              推荐行程（斗南+大理）
+            </span>
             <div class="itinerary-tabs" role="tablist" aria-label="行程选择" ref="tabsRef">
               <button
                 v-for="(option, key) in itineraryOptions"
@@ -97,7 +178,7 @@
         :hidden-cards="hiddenCards"
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
-        <div class="home-travel-tips fade-in" data-delay="500">
+        <div class="home-travel-tips fade-in" style="--delay: 500">
           <div class="home-tips-grid">
             <div class="home-tips-item" v-for="tip in travelTips" :key="tip.title">
               <span class="home-tips-icon">{{ tip.icon }}</span>
@@ -120,7 +201,7 @@
         :hidden-cards="hiddenCards"
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
-        <div class="home-transport fade-in" data-delay="600">
+        <div class="home-transport fade-in" style="--delay: 600">
           <div class="home-transport-title"><span class="emoji" aria-hidden="true">🚄</span> 省内高铁交通</div>
           <div class="home-transport-grid">
             <div class="transport-card" v-for="t in transportInfo" :key="t.from + t.to">
@@ -142,7 +223,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch } from 'vue'
+import { ref, onMounted, nextTick, watch, computed } from 'vue'
 import DestinationCard from '../DestinationCard.vue'
 import InfoCard from '../InfoCard.vue'
 import { destinations, transportInfo, checklistItems, travelTips, itineraryOptions } from '@/data/travelData'
@@ -157,6 +238,37 @@ const activeItinerary = ref('core4')
 const tabsRef = ref(null)
 const tabButtons = ref([])
 const indicatorStyle = ref({})
+const checkedItems = ref([])
+
+const safeStorage = {
+  getItem (key) {
+    try { return localStorage.getItem(key) } catch (e) { return null }
+  },
+  setItem (key, value) {
+    try { localStorage.setItem(key, value) } catch (e) {}
+  }
+}
+
+const toggleCheckItem = (idx) => {
+  const index = checkedItems.value.indexOf(idx)
+  if (index > -1) {
+    checkedItems.value.splice(index, 1)
+  } else {
+    checkedItems.value.push(idx)
+  }
+  safeStorage.setItem('preTripChecklist', JSON.stringify(checkedItems.value))
+}
+
+const initChecklist = () => {
+  const saved = safeStorage.getItem('preTripChecklist')
+  if (saved) {
+    try {
+      checkedItems.value = JSON.parse(saved)
+    } catch (e) {
+      checkedItems.value = []
+    }
+  }
+}
 
 const updateIndicator = () => {
   nextTick(() => {
@@ -179,6 +291,7 @@ const updateIndicator = () => {
 watch(activeItinerary, updateIndicator)
 
 onMounted(() => {
+  initChecklist()
   setTimeout(updateIndicator, 100)
 })
 
@@ -248,6 +361,164 @@ onMounted(() => {
   line-height: 1.8;
   text-align: center;
   font-weight: calc(500 + var(--text-weight-boost, 0));
+}
+
+.pre-trip-checklist {
+  background: var(--card);
+  border: 2px solid var(--forest);
+  border-radius: var(--space-md);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+}
+
+.checklist-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border);
+}
+
+.checklist-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--forest);
+  flex-shrink: 0;
+}
+
+.checklist-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--forest);
+  flex: 1;
+}
+
+.checklist-progress {
+  font-size: var(--text-xs);
+  color: white;
+  background: var(--sunset);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--earth-light);
+  border-radius: var(--space-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.checklist-item:hover {
+  background: var(--forest-light);
+}
+
+.checklist-item:active {
+  transform: scale(0.98);
+}
+
+.checklist-item.checked {
+  background: var(--forest-light);
+  opacity: 0.7;
+}
+
+.checklist-item.checked .checklist-item-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.checklist-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checklist-checkbox-custom {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--forest);
+  border-radius: var(--space-xs);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  background: var(--card);
+}
+
+.checklist-item.checked .checklist-checkbox-custom {
+  background: var(--forest);
+  border-color: var(--forest);
+}
+
+.checklist-checkbox-custom::after {
+  content: '';
+  width: 10px;
+  height: 6px;
+  border: 2px solid white;
+  border-top: none;
+  border-right: none;
+  transform: rotate(-45deg) translate(1px, -1px);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out-quart);
+}
+
+.checklist-item.checked .checklist-checkbox-custom::after {
+  opacity: 1;
+}
+
+.checklist-item-text {
+  font-size: calc(var(--text-sm) * var(--text-scale, 1));
+  color: var(--text);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.checklist-tip {
+  margin-top: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--forest);
+  color: white;
+  border-radius: var(--space-sm);
+  text-align: center;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  animation: tipBounce 0.5s var(--ease-out-quart);
+}
+
+@keyframes tipBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.checklist-tip-icon {
+  width: 18px;
+  height: 18px;
+  background: white;
+  color: var(--forest);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .quick-start {
@@ -372,6 +643,200 @@ onMounted(() => {
   transform: translateX(2px);
 }
 
+.quick-nav-card {
+  background: linear-gradient(135deg, var(--sky-light) 0%, var(--forest-light) 100%);
+  border: 2px solid var(--sky);
+  border-radius: var(--space-md);
+  padding: var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin: var(--space-md) 0;
+}
+
+.quick-nav-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 1;
+}
+
+.quick-nav-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--sky);
+  flex-shrink: 0;
+}
+
+.quick-nav-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quick-nav-title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.quick-nav-desc {
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  color: var(--text-muted);
+}
+
+.quick-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--sky);
+  color: white;
+  border: none;
+  border-radius: var(--space-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  white-space: nowrap;
+  min-height: 44px;
+}
+
+.quick-nav-btn:hover {
+  background: var(--forest);
+  transform: translateX(2px);
+}
+
+.quick-nav-btn:active {
+  transform: scale(0.98);
+}
+
+.quick-nav-btn svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--duration-fast) var(--ease-out-quart);
+}
+
+.quick-nav-btn:hover svg {
+  transform: translateX(4px);
+}
+
+.student-discount-card {
+  background: linear-gradient(135deg, var(--sunset-soft) 0%, var(--forest-light) 100%);
+  border: 2px solid var(--sunset);
+  border-radius: var(--space-md);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.student-discount-card::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 80px;
+  height: 80px;
+  background: var(--sunset);
+  opacity: 0.1;
+  border-radius: 50%;
+}
+
+.student-discount-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--sunset);
+  color: white;
+  border-radius: var(--space-lg);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+.student-discount-badge-icon {
+  font-size: 0.9rem;
+}
+
+.student-discount-title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--space-sm);
+}
+
+.student-discount-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.student-discount-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--card);
+  border-radius: var(--space-sm);
+}
+
+.student-discount-spot {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  color: var(--text);
+}
+
+.student-discount-save {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--sunset);
+  background: var(--sunset-soft);
+  padding: 2px 8px;
+  border-radius: var(--space-xs);
+}
+
+.student-discount-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  width: 100%;
+  padding: var(--space-sm);
+  background: var(--sunset);
+  color: white;
+  border: none;
+  border-radius: var(--space-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  min-height: 44px;
+}
+
+.student-discount-more:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.student-discount-more:active {
+  transform: scale(0.98);
+}
+
+.student-discount-more svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--duration-fast) var(--ease-out-quart);
+}
+
+.student-discount-more:hover svg {
+  transform: translateX(4px);
+}
+
 .destinations-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -398,6 +863,16 @@ onMounted(() => {
 .home-itinerary-title {
   font-size: var(--text-sm);
   font-weight: 600;
+  color: var(--forest);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.home-itinerary-title .title-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
   color: var(--forest);
 }
 

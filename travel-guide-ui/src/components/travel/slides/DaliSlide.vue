@@ -13,7 +13,12 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="route-overview fade-in">
-          <div class="route-overview-title"><span class="emoji" aria-hidden="true">📍</span> 2天路线总览</div>
+          <div class="route-overview-title">
+            <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+            </svg>
+            2天路线总览
+          </div>
           <div class="route-overview-days">
             <div class="route-overview-day">
               <span class="route-overview-badge day1">Day1</span>
@@ -106,13 +111,23 @@
           class="spot-with-route fade-in"
           v-for="(spot, idx) in data.spots"
           :key="spot.name"
-          :data-delay="idx * 50"
+          :style="{ '--delay': idx * 50 }"
         >
           <div class="spot" @mousedown="createRipple">
             <h3 class="spot-name">
               <span class="spot-dot"></span>
               {{ spot.name }}
               <span class="spot-highlight-tag">{{ spot.tag || '免费' }}</span>
+              <button
+                class="spot-map-btn"
+                @click.stop="$emit('open-map', spot.name)"
+                :aria-label="'在地图上查看' + spot.name"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+              </button>
             </h3>
             <p class="spot-highlight">{{ spot.highlight }}</p>
             <div class="spot-meta">
@@ -124,6 +139,7 @@
           <div class="spot-photo-grid">
             <div
               class="photo-item"
+              :class="{ 'img-loaded': loadedImages[photo.src], 'img-error': imgErrors[photo.src] }"
               v-for="photo in spot.photos"
               :key="photo.label"
               @click="$emit('open-lightbox', photo.src, photo.label)"
@@ -134,7 +150,8 @@
                 :alt="photo.label"
                 loading="lazy"
                 referrerpolicy="no-referrer"
-                @error="handleImageError"
+                @load="handleImageLoad(photo.src)"
+                @error="handleImageError(photo.src)"
               >
               <span class="photo-label">{{ photo.label }}</span>
               <div class="img-fallback" v-if="imgErrors[photo.src]">
@@ -295,11 +312,12 @@ defineProps({
   hiddenCards: Set
 })
 
-defineEmits(['hide-card', 'open-lightbox'])
+defineEmits(['hide-card', 'open-lightbox', 'open-map'])
 
 const routeDetailCollapsed = ref(true)
 const spotDetailCollapsed = reactive({})
 const imgErrors = reactive({})
+const loadedImages = reactive({})
 
 const safeStorage = {
   getItem (key) {
@@ -343,10 +361,12 @@ const createRipple = (event) => {
   setTimeout(() => ripple.remove(), 500)
 }
 
-const handleImageError = (e) => {
-  const img = e.target
-  img.style.display = 'none'
-  imgErrors[img.src] = true
+const handleImageLoad = (src) => {
+  loadedImages[src] = true
+}
+
+const handleImageError = (src) => {
+  imgErrors[src] = true
 }
 
 onMounted(() => {
@@ -381,6 +401,17 @@ onMounted(() => {
   color: var(--forest);
   margin-bottom: var(--space-md);
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+
+.route-overview-title .title-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--forest);
 }
 
 .route-overview-days {
@@ -665,6 +696,41 @@ onMounted(() => {
   letter-spacing: 0.02em;
 }
 
+.spot-map-btn {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--forest);
+  background: var(--forest-light);
+  border-radius: var(--space-xs);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  flex-shrink: 0;
+}
+
+.spot-map-btn:hover {
+  background: var(--forest);
+  border-color: var(--forest);
+}
+
+.spot-map-btn:active {
+  transform: scale(0.92);
+}
+
+.spot-map-btn svg {
+  width: 16px;
+  height: 16px;
+  color: var(--forest);
+  transition: color var(--duration-fast) var(--ease-out-quart);
+}
+
+.spot-map-btn:hover svg {
+  color: white;
+}
+
 .spot-highlight {
   font-size: var(--text-sm);
   color: var(--text-muted);
@@ -698,6 +764,11 @@ onMounted(() => {
   aspect-ratio: 1 / 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: transform var(--duration-fast) var(--ease-out-quart);
+}
+
+.photo-item:hover {
+  transform: scale(1.02);
 }
 
 .photo-item:active {
@@ -708,7 +779,11 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--duration-normal) var(--ease-out-quart);
+  transition: transform 0.4s var(--ease-out-quart);
+}
+
+.photo-item:hover img {
+  transform: scale(1.08);
 }
 
 .photo-item:active img {

@@ -85,7 +85,7 @@ onUnmounted(() => {
 .closable-card {
   position: relative;
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(24px);
   transition: opacity var(--duration-slow, 400ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)),
               transform var(--duration-slow, 400ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1));
   transform-style: preserve-3d;
@@ -99,7 +99,7 @@ onUnmounted(() => {
 
 .closable-card.hiding {
   opacity: 0;
-  transform: scale(0.92) rotateX(8deg);
+  transform: scale(0.95) translateY(-8px);
   pointer-events: none;
   transition-duration: var(--duration-normal, 250ms);
 }

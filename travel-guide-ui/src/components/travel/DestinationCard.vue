@@ -80,7 +80,7 @@ onUnmounted(() => {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   opacity: 0;
-  transform: translateY(24px) scale(0.95);
+  transform: translateY(28px) scale(0.96);
   transition: opacity var(--duration-slow, 400ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)),
               transform var(--duration-slow, 400ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)),
               box-shadow var(--duration-normal, 250ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1));
@@ -97,8 +97,8 @@ onUnmounted(() => {
 }
 
 .dest-card:hover {
-  transform: translateY(-4px) scale(1);
-  box-shadow: 0 12px 24px -8px rgba(0,0,0,0.15);
+  transform: translateY(-6px) scale(1);
+  box-shadow: 0 16px 32px -12px rgba(0,0,0,0.2);
 }
 
 .dest-card:active {
@@ -115,7 +115,7 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s var(--ease-out-quart);
 }
 
 .dest-card:hover .dest-card-image img {
@@ -125,7 +125,12 @@ onUnmounted(() => {
 .dest-card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+  transition: background var(--duration-normal) var(--ease-out-quart);
+}
+
+.dest-card:hover .dest-card-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
 }
 
 .dest-card-content {
@@ -148,7 +153,7 @@ onUnmounted(() => {
   gap: 0.25rem;
   opacity: 0;
   transform: translateX(8px);
-  transition: all 0.3s ease;
+  transition: all 0.25s var(--ease-out-quart);
 }
 
 .dest-card:hover .dest-card-hint {

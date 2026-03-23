@@ -4,6 +4,13 @@
         <div class="section-number">{{ data.number }}</div>
         <h2 class="section-title title-style-petal">{{ data.title }}</h2>
         <p class="section-desc">{{ data.desc }}</p>
+        <button class="section-map-btn" @click="$emit('open-map', '斗南花市')" aria-label="在地图上查看斗南花市">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span>查看地图</span>
+        </button>
       </div>
 
       <div class="quick-tips fade-in">
@@ -17,13 +24,18 @@
       <div class="dounan-photos">
         <div
           class="photo-item photo-reveal"
+          :class="{ 'img-loaded': loadedImages[photo.src], 'img-error': imgErrors[photo.src] }"
           v-for="(photo, index) in data.photos"
           :key="photo.label"
           :style="{ '--photo-index': index }"
           @click="$emit('open-lightbox', photo.src, photo.label)"
         >
-          <img :src="photo.src" :alt="photo.label" loading="lazy" referrerpolicy="no-referrer">
+          <img :src="photo.src" :alt="photo.label" loading="lazy" referrerpolicy="no-referrer" @load="handleImageLoad(photo.src)" @error="handleImageError(photo.src)">
           <span class="photo-label">{{ photo.label }}</span>
+          <div class="img-fallback" v-if="imgErrors[photo.src]">
+            <span>🖼️</span>
+            <span>图片加载失败</span>
+          </div>
         </div>
       </div>
 
@@ -60,7 +72,12 @@
         @hide="(id, name) => $emit('hide-card', id, name)"
       >
         <div class="simple-info">
-          <div class="simple-info-title"><span class="emoji" aria-hidden="true">📍</span> 两条逛买路线</div>
+          <div class="simple-info-title">
+            <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+            </svg>
+            两条逛买路线
+          </div>
           <div class="simple-info-content">
             <strong>白天版（14:00-18:00）：</strong>主场馆1楼鲜花→2楼拍卖参观→3楼多肉→1/2号馆伴手礼<br>
             <strong>夜间版（20:30后）：</strong>场外夜市→主场馆捡漏→快递点寄花回家
@@ -166,6 +183,7 @@
 </template>
 
 <script setup>
+import { ref, reactive, onMounted } from 'vue'
 import InfoCard from '../InfoCard.vue'
 
 defineProps({
@@ -173,11 +191,64 @@ defineProps({
   hiddenCards: Set
 })
 
-defineEmits(['hide-card', 'open-lightbox'])
+defineEmits(['hide-card', 'open-lightbox', 'open-map'])
+
+const imgErrors = reactive({})
+const loadedImages = reactive({})
+
+const handleImageLoad = (src) => {
+  loadedImages[src] = true
+}
+
+const handleImageError = (src) => {
+  imgErrors[src] = true
+}
+
+onMounted(() => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible')
+      }
+    })
+  }, { threshold: 0.1, rootMargin: '50px' })
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el))
+})
 </script>
 
 <style scoped>
 @import '../slides-common.css';
+
+.section-map-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--forest-light);
+  border: 1px solid var(--forest);
+  border-radius: var(--space-sm);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--text-xs);
+  color: var(--forest);
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.section-map-btn:hover {
+  background: var(--forest);
+  color: white;
+}
+
+.section-map-btn:active {
+  transform: scale(0.96);
+}
+
+.section-map-btn svg {
+  width: 14px;
+  height: 14px;
+}
 
 .dounan-photos {
   display: grid;
@@ -218,6 +289,8 @@ defineEmits(['hide-card', 'open-lightbox'])
   border-radius: var(--space-md);
   overflow: hidden;
   margin: var(--space-lg) 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .time-table-title {
@@ -245,6 +318,11 @@ defineEmits(['hide-card', 'open-lightbox'])
   padding: var(--space-xs) var(--space-xs);
   font-size: var(--text-xs);
   line-height: 1.5;
+  min-width: 60px;
+}
+
+.time-table-cell.area {
+  min-width: 70px;
 }
 
 .time-table-header .time-table-cell {
