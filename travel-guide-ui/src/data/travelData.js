@@ -6,7 +6,7 @@ export const destinations = [
     name: '斗南花市',
     location: '昆明 · 亚洲最大花市',
     desc: '5元实现鲜花自由，直接寄回家',
-    image: '/images/dounan.jpg'
+    image: '/images/spots/dounan.jpg'
   },
   {
     id: 'dali',
@@ -15,7 +15,7 @@ export const destinations = [
     name: '大理',
     location: '苍山洱海 · 古城樱花',
     desc: '喜洲油菜花、洱海骑行、古城樱花',
-    image: '/images/dali.jpg'
+    image: '/images/spots/dali.jpg'
   },
   {
     id: 'lijiang',
@@ -24,7 +24,7 @@ export const destinations = [
     name: '丽江',
     location: '古城 · 玉龙雪山',
     desc: '雪山积雪完整，蓝月谷澄澈',
-    image: '/images/lijiang.jpg'
+    image: '/images/spots/lijiang.jpg'
   },
   {
     id: 'shangri',
@@ -33,7 +33,7 @@ export const destinations = [
     name: '香格里拉',
     location: '藏地 · 古城转经筒',
     desc: '高原藏地人文，雪山湖泊草甸',
-    image: '/images/shangri.jpg'
+    image: '/images/spots/shangri.jpg'
   }
 ]
 
@@ -115,9 +115,9 @@ export const dounanData = {
     { icon: '📷', label: '拍照+慢慢选', value: '14:00-18:00' }
   ],
   photos: [
-    { src: '/images/dounan-1-huahai.jpeg', label: '花海' },
-    { src: '/images/dounan-2-pifa.jpeg', label: '批发盛况' },
-    { src: '/images/dounan-3-durou.jpeg', label: '多肉天堂' }
+    { src: '/images/spots/dounan-1-huahai.jpeg', label: '花海' },
+    { src: '/images/spots/dounan-2-pifa.jpeg', label: '批发盛况' },
+    { src: '/images/spots/dounan-3-durou.jpeg', label: '多肉天堂' }
   ],
   timeTable: {
     rows: [
@@ -154,9 +154,9 @@ export const daliData = {
       openTime: '全天开放',
       booking: '无需预约',
       photos: [
-        { src: '/images/dali-gucheng-1-beimen-yinghua.jpg', label: '北门樱花巷' },
-        { src: '/images/dali-gucheng-2-wuhualou.jpg', label: '五华楼夜景' },
-        { src: '/images/dali-gucheng-3-yangrenjie.jpeg', label: '洋人街' }
+        { src: '/images/spots/dali-gucheng-1-beimen-yinghua.jpg', label: '北门樱花巷' },
+        { src: '/images/spots/dali-gucheng-2-wuhualou.jpg', label: '五华楼夜景' },
+        { src: '/images/spots/dali-gucheng-3-yangrenjie.jpeg', label: '洋人街' }
       ]
     },
     {
@@ -170,9 +170,9 @@ export const daliData = {
         { name: '转角楼', address: '市坪街119号', tip: '45°斜对角拍弧形楼体，上午9-11点光线最佳' }
       ],
       photos: [
-        { src: '/images/xizhou-corner.jpg', label: '转角楼' },
-        { src: '/images/xizhou-1-yangjiadeng.jpg', label: '杨家登油菜花' },
-        { src: '/images/xizhou-2-xilinyuan.jpg', label: '喜林苑黄墙' }
+        { src: '/images/spots/xizhou-corner.jpg', label: '转角楼' },
+        { src: '/images/spots/xizhou-1-yangjiadeng.jpg', label: '杨家登油菜花' },
+        { src: '/images/spots/xizhou-2-xilinyuan.jpg', label: '喜林苑黄墙' }
       ]
     },
     {
@@ -204,9 +204,9 @@ export const daliData = {
         { name: '磻溪S弯', tip: '洱朵酒店附近弯道最标准，早7-9点人少' }
       ],
       photos: [
-        { src: '/images/erhai-1-longkan.jpg', label: '龙龛码头' },
-        { src: '/images/erhai-2-panxi.jpg', label: '磻溪S湾' },
-        { src: '/images/erhai-3-caicun.jpg', label: '才村码头' }
+        { src: '/images/spots/erhai-1-longkan.jpg', label: '龙龛码头' },
+        { src: '/images/spots/erhai-2-panxi.jpg', label: '磻溪S湾' },
+        { src: '/images/spots/erhai-3-caicun.jpg', label: '才村码头' }
       ]
     },
     {
@@ -217,9 +217,9 @@ export const daliData = {
       openTime: '全天开放',
       booking: '无需预约',
       photos: [
-        { src: '/images/shuanglang-1-yujiidao.jpg', label: '玉几岛' },
-        { src: '/images/shuanglang-2-riluo.jpg', label: '日落观景台' },
-        { src: '/images/shuanglang-3-kafeiguan.jpg', label: '海景咖啡馆' }
+        { src: '/images/spots/shuanglang-1-yujiidao.jpg', label: '玉几岛' },
+        { src: '/images/spots/shuanglang-2-riluo.jpg', label: '日落观景台' },
+        { src: '/images/spots/shuanglang-3-kafeiguan.jpg', label: '海景咖啡馆' }
       ]
     }
   ],
@@ -300,7 +300,7 @@ export const lijiangData = {
     { icon: '🌡️', label: '山顶温度', value: '-6~4°C' }
   ],
   coverImage: {
-    src: '/images/lijiang-lanyuegu.jpg',
+    src: '/images/spots/lijiang-lanyuegu.jpg',
     caption: '玉龙雪山 · 蓝月谷'
   },
   venues: [
@@ -330,7 +330,7 @@ export const shangriData = {
     { icon: '🧥', label: '必带', value: '羽绒服' }
   ],
   coverImage: {
-    src: '/images/shangri-rizhaoshan.jpg',
+    src: '/images/spots/shangri-rizhaoshan.jpg',
     caption: '梅里雪山 · 日照金山'
   },
   venues: [

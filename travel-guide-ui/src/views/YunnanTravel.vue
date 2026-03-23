@@ -196,17 +196,17 @@
             <div class="music-disc-grooves"></div>
             <img
               v-if="currentSong?.cover"
-              :src="`/images/${currentSong.cover}`"
+              :src="`/images/music-covers/${currentSong.cover}`"
               :alt="currentSong.name"
               class="music-disc-cover"
-              @click="openLightbox(`/images/${currentSong.cover}`, currentSong.name)"
+              @click="openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)"
             >
             <img
               v-else
-              src="/images/spring-flowers-cover.jpg"
+              src="/images/music-covers/spring-flowers-cover.jpg"
               alt="春花"
               class="music-disc-cover"
-              @click="openLightbox('/images/spring-flowers-cover.jpg', '春花')"
+              @click="openLightbox('/images/music-covers/spring-flowers-cover.jpg', '春花')"
             >
           </div>
           <div class="music-info">
@@ -218,6 +218,7 @@
         <div class="music-progress" v-if="duration > 0">
           <div
             class="music-progress-bar"
+            ref="progressBar"
             tabindex="0"
             role="slider"
             :aria-label="'播放进度'"
@@ -227,8 +228,12 @@
             :aria-valuetext="`${formatTime(currentTime)} / ${formatTime(duration)}`"
             @click="seekProgress"
             @keydown="handleProgressKeydown"
+            @touchstart.passive="handleProgressTouchStart"
+            @touchmove.prevent="handleProgressTouchMove"
+            @touchend="handleProgressTouchEnd"
           >
             <div class="music-progress-fill" :style="{ width: musicProgress + '%' }"></div>
+            <div class="music-progress-thumb" :style="{ left: musicProgress + '%' }"></div>
           </div>
           <div class="music-time">
             <span>{{ formatTime(currentTime) }}</span>
@@ -237,6 +242,18 @@
         </div>
 
         <div class="music-controls">
+          <button class="music-btn mode" @click="cyclePlayMode" :aria-label="'播放模式: ' + (playMode === 'list' ? '列表循环' : playMode === 'single' ? '单曲循环' : '随机播放')">
+            <svg v-if="playMode === 'list'" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
+            </svg>
+            <svg v-else-if="playMode === 'single'" viewBox="0 0 24 24">
+              <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" fill="currentColor"/>
+              <circle cx="12" cy="12" r="2.5" fill="var(--sunset)"/>
+            </svg>
+            <svg v-else viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+            </svg>
+          </button>
           <button class="music-btn prev" @click="prevSong" :disabled="playlist.length <= 1" aria-label="上一首">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
@@ -475,6 +492,8 @@ const volume = ref(80)
 const currentSongIndex = ref(0)
 const playlist = ref([])
 const isLoadingPlaylist = ref(true)
+const playMode = ref('list')
+const shuffleHistory = ref([])
 
 const currentSong = computed(() => playlist.value[currentSongIndex.value] || null)
 
@@ -536,23 +555,36 @@ const playSong = (index) => {
 const prevSong = () => {
   if (playlist.value.length <= 1) return
 
-  if (currentSongIndex.value > 0) {
-    currentSongIndex.value--
+  if (playMode.value === 'shuffle' && shuffleHistory.value.length > 0) {
+    const prevIndex = shuffleHistory.value.pop()
+    currentSongIndex.value = prevIndex
+    playSong(currentSongIndex.value)
   } else {
-    currentSongIndex.value = playlist.value.length - 1
+    if (currentSongIndex.value > 0) {
+      currentSongIndex.value--
+    } else {
+      currentSongIndex.value = playlist.value.length - 1
+    }
+    playSong(currentSongIndex.value)
   }
-  playSong(currentSongIndex.value)
 }
 
 const nextSong = () => {
   if (playlist.value.length <= 1) return
 
-  if (currentSongIndex.value < playlist.value.length - 1) {
-    currentSongIndex.value++
+  if (playMode.value === 'shuffle') {
+    const nextIndex = getRandomIndex()
+    shuffleHistory.value.push(currentSongIndex.value)
+    currentSongIndex.value = nextIndex
+    playSong(currentSongIndex.value)
   } else {
-    currentSongIndex.value = 0
+    if (currentSongIndex.value < playlist.value.length - 1) {
+      currentSongIndex.value++
+    } else {
+      currentSongIndex.value = 0
+    }
+    playSong(currentSongIndex.value)
   }
-  playSong(currentSongIndex.value)
 }
 
 const updateProgress = () => {
@@ -569,7 +601,58 @@ const onAudioLoaded = () => {
 }
 
 const onSongEnded = () => {
-  nextSong()
+  if (playlist.value.length === 1) {
+    bgMusic.value.currentTime = 0
+    bgMusic.value.play().catch(() => {})
+    return
+  }
+
+  if (playMode.value === 'single') {
+    bgMusic.value.currentTime = 0
+    bgMusic.value.play().catch(() => {})
+  } else if (playMode.value === 'shuffle') {
+    const nextIndex = getRandomIndex()
+    shuffleHistory.value.push(currentSongIndex.value)
+    currentSongIndex.value = nextIndex
+    nextTick(() => {
+      if (bgMusic.value) {
+        bgMusic.value.load()
+        bgMusic.value.play().then(() => {
+          isMusicPlaying.value = true
+        }).catch(() => {})
+      }
+    })
+  } else {
+    nextSong()
+  }
+}
+
+const cyclePlayMode = () => {
+  const modes = ['list', 'single', 'shuffle']
+  const currentIndex = modes.indexOf(playMode.value)
+  playMode.value = modes[(currentIndex + 1) % modes.length]
+  if (playMode.value === 'shuffle') {
+    shuffleHistory.value = []
+  }
+}
+
+const getRandomIndex = () => {
+  if (playlist.value.length <= 1) return 0
+  let randomIndex
+  const availableIndices = playlist.value
+    .map((_, i) => i)
+    .filter(i => i !== currentSongIndex.value && !shuffleHistory.value.includes(i))
+
+  if (availableIndices.length === 0) {
+    shuffleHistory.value = []
+    randomIndex = Math.floor(Math.random() * playlist.value.length)
+    if (randomIndex === currentSongIndex.value) {
+      randomIndex = (randomIndex + 1) % playlist.value.length
+    }
+  } else {
+    randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)]
+  }
+  return randomIndex
 }
 
 const setVolume = (e) => {
@@ -584,6 +667,32 @@ const seekProgress = (e) => {
   const bar = e.currentTarget
   const rect = bar.getBoundingClientRect()
   const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
+  bgMusic.value.currentTime = percent * duration.value
+}
+
+const progressBar = ref(null)
+const isProgressDragging = ref(false)
+
+const handleProgressTouchStart = (e) => {
+  isProgressDragging.value = true
+  seekFromTouch(e)
+}
+
+const handleProgressTouchMove = (e) => {
+  if (!isProgressDragging.value) return
+  seekFromTouch(e)
+}
+
+const handleProgressTouchEnd = () => {
+  isProgressDragging.value = false
+}
+
+const seekFromTouch = (e) => {
+  if (!bgMusic.value || duration.value === 0) return
+  const bar = progressBar.value || e.currentTarget
+  const rect = bar.getBoundingClientRect()
+  const touch = e.touches[0] || e.changedTouches[0]
+  const percent = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width))
   bgMusic.value.currentTime = percent * duration.value
 }
 
@@ -1898,8 +2007,18 @@ const handleLightboxKeydown = (e) => {
   height: 5px;
   background: var(--earth-light);
   border-radius: 3px;
-  overflow: hidden;
   cursor: pointer;
+  position: relative;
+  touch-action: none;
+}
+
+.music-progress-bar::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  bottom: -12px;
 }
 
 .music-progress-bar:focus-visible {
@@ -1912,6 +2031,24 @@ const handleLightboxKeydown = (e) => {
   background: linear-gradient(90deg, var(--forest), var(--sunset));
   border-radius: 3px;
   transition: width 0.1s linear;
+}
+
+.music-progress-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  background: var(--forest);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.music-progress-bar:active .music-progress-thumb {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.2);
 }
 
 .music-time {
@@ -1981,6 +2118,14 @@ const handleLightboxKeydown = (e) => {
   width: 16px;
   height: 16px;
   color: var(--text);
+}
+
+.music-btn.mode.active {
+  background: var(--forest-light);
+}
+
+.music-btn.mode svg {
+  color: var(--forest);
 }
 
 .music-volume {

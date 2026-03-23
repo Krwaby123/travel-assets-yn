@@ -120,7 +120,7 @@
               <span class="spot-time" v-if="spot.openTime">{{ spot.openTime }}</span>
             </div>
           </div>
-          
+
           <div class="spot-photo-grid">
             <div
               class="photo-item"
@@ -419,7 +419,7 @@ onMounted(() => {
 }
 
 .route-overview-point {
-  font-size: 0.75rem;
+  font-size: calc(0.75rem * var(--text-scale, 1));
   padding: 0.2rem 0.5rem;
   background: var(--earth-light);
   border-radius: var(--space-sm);
@@ -520,8 +520,8 @@ onMounted(() => {
 }
 
 .route-day-badge {
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-weight: calc(700 + var(--text-weight-boost, 0));
   padding: 0.2rem 0.5rem;
   border-radius: 0.25rem;
   color: white;
@@ -558,14 +558,14 @@ onMounted(() => {
 
 .route-timeline-item.optional .timeline-time::after {
   content: '可选';
-  font-size: 0.6rem;
+  font-size: calc(0.6rem * var(--text-scale, 1));
   margin-left: var(--space-2xs);
   color: var(--text-muted);
 }
 
 .timeline-time {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-weight: calc(600 + var(--text-weight-boost, 0));
   color: var(--sunset);
   min-width: 2.5rem;
   flex-shrink: 0;
@@ -737,7 +737,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: var(--space-2xs);
-  font-size: 0.7rem;
+  font-size: calc(0.7rem * var(--text-scale, 1));
   color: var(--text-muted);
 }
 
@@ -800,7 +800,7 @@ onMounted(() => {
 
 .key-info-note {
   display: block;
-  font-size: 0.75rem;
+  font-size: calc(0.75rem * var(--text-scale, 1));
   color: var(--text-muted);
   margin-top: 2px;
 }
@@ -813,7 +813,7 @@ onMounted(() => {
 }
 
 .key-info-footer-note {
-  font-size: 0.75rem;
+  font-size: calc(0.75rem * var(--text-scale, 1));
   color: var(--text-muted);
 }
 
@@ -966,19 +966,19 @@ onMounted(() => {
 .cycling-route-info {
   display: flex;
   gap: var(--space-sm);
-  font-size: 0.75rem;
+  font-size: calc(0.75rem * var(--text-scale, 1));
   color: var(--text-muted);
   margin-top: 2px;
 }
 
 .cycling-route-tip {
-  font-size: 0.7rem;
+  font-size: calc(0.7rem * var(--text-scale, 1));
   color: var(--sky);
   margin-top: 2px;
 }
 
 .cycling-tips {
-  font-size: 0.7rem;
+  font-size: calc(0.7rem * var(--text-scale, 1));
   color: var(--text-muted);
   margin-top: var(--space-sm);
   padding-top: var(--space-sm);
@@ -1020,7 +1020,7 @@ onMounted(() => {
 }
 
 .photo-spot-tip {
-  font-size: 0.7rem;
+  font-size: calc(0.7rem * var(--text-scale, 1));
   color: var(--text-muted);
 }
 
@@ -1048,8 +1048,8 @@ onMounted(() => {
 }
 
 .stay-group-label {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-weight: calc(600 + var(--text-weight-boost, 0));
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1268,7 +1268,7 @@ onMounted(() => {
 }
 
 .info-note {
-  font-size: 0.85rem;
+  font-size: calc(0.85rem * var(--text-scale, 1));
   color: var(--text-muted);
   margin-top: var(--space-sm);
 }
