@@ -1,7 +1,7 @@
 <template>
   <div
     ref="cardRef"
-    :class="['closable-card', { 'card-hidden': isHidden, hiding: isHiding, 'card-revealed': isRevealed }]"
+    :class="['closable-card', { 'card-hidden': isHidden, hiding: isHiding }]"
     :data-card-id="cardId"
     :data-card-name="cardName"
   >
@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   cardId: {
@@ -45,7 +45,6 @@ const emit = defineEmits(['hide'])
 
 const cardRef = ref(null)
 const isHiding = ref(false)
-const isRevealed = ref(false)
 
 const isHidden = computed(() => props.hiddenCards.has(props.cardId))
 
@@ -56,45 +55,15 @@ const handleClose = () => {
     isHiding.value = false
   }, 300)
 }
-
-let observer = null
-
-onMounted(() => {
-  if (!cardRef.value) return
-
-  observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        setTimeout(() => {
-          isRevealed.value = true
-        }, 50)
-        observer?.disconnect()
-      }
-    })
-  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' })
-
-  observer.observe(cardRef.value)
-})
-
-onUnmounted(() => {
-  observer?.disconnect()
-})
 </script>
 
 <style scoped>
 .closable-card {
   position: relative;
-  opacity: 0;
-  transform: translateY(24px);
+  opacity: 1;
+  transform: none;
   transition: opacity var(--duration-slow, 400ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)),
               transform var(--duration-slow, 400ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1));
-  transform-style: preserve-3d;
-  perspective: 1000px;
-}
-
-.closable-card.card-revealed {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .closable-card.hiding {

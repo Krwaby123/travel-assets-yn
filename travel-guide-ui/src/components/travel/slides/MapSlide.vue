@@ -98,12 +98,12 @@
     </div>
 
     <div class="map-actions">
-      <button class="map-action-btn" @click="locateMe" aria-label="定位">
+      <button class="map-action-btn" @click="refreshLocation" aria-label="刷新位置">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"/>
           <path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>
         </svg>
-        <span>定位</span>
+        <span>刷新位置</span>
       </button>
       <button class="map-action-btn" @click="openRoutePanelFromButton" :disabled="!routeDestination" aria-label="路线">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -111,13 +111,17 @@
         </svg>
         <span>路线</span>
       </button>
-      <button class="map-action-btn" @click="resetMap" aria-label="重置">
+      <button class="map-action-btn danger" @click="clearRoute" :disabled="!hasRoute" aria-label="清除路线">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 12a9 9 0 1018 0 9 9 0 00-18 0z"/>
-          <path d="M12 8v4l2 2"/>
+          <path d="M18 6L6 18M6 6l12 12"/>
         </svg>
-        <span>重置</span>
+        <span>清除路线</span>
       </button>
+    </div>
+
+    <div class="map-route-status" v-if="routeStatusText">
+      <span class="map-route-status-icon">{{ hasRoute ? '💡' : '📍' }}</span>
+      <span class="map-route-status-text">{{ routeStatusText }}</span>
     </div>
 
     <div class="map-quick-locations">
@@ -125,9 +129,10 @@
         <span>快捷地点</span>
         <span v-if="currentPosition" class="map-quick-distance-hint">距您当前位置</span>
       </div>
-      <div class="map-quick-list">
+      <div class="map-quick-list" v-for="(locs, category) in quickLocations" :key="category">
+        <div class="map-quick-category">{{ category }}</div>
         <button
-          v-for="loc in quickLocations"
+          v-for="loc in locs"
           :key="loc.name"
           class="map-quick-item"
           @click="goToLocation(loc)"
@@ -161,16 +166,57 @@
             </div>
             <div class="map-fullscreen-map" ref="fullscreenMapContainer">
               <div id="amap-fullscreen-container"></div>
+              <div class="map-fullscreen-results" v-if="fullscreenSearchResults.length > 0">
+                <div class="map-results-header">
+                  <span class="map-results-title">搜索结果</span>
+                  <button class="map-results-close" @click="fullscreenSearchResults = []" aria-label="关闭">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="map-results-list">
+                  <div
+                    v-for="(item, index) in fullscreenSearchResults"
+                    :key="item.id"
+                    class="map-result-item"
+                  >
+                    <div class="map-result-main" @click="selectFullscreenResult(item)">
+                      <div class="map-result-index">{{ index + 1 }}</div>
+                      <div class="map-result-info">
+                        <div class="map-result-name">{{ item.name }}</div>
+                        <div class="map-result-address">{{ item.address || item.district }}</div>
+                      </div>
+                    </div>
+                    <button class="map-result-nav-btn" @click.stop="openRoutePanel(item)" aria-label="导航到这里">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="map-fullscreen-toolbar">
               <div class="map-fullscreen-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="M21 21l-4.35-4.35"/>
+                </svg>
                 <input
                   v-model="fullscreenSearchKeyword"
                   type="text"
                   placeholder="搜索地点..."
                   @keyup.enter="handleFullscreenSearch"
                 >
-                <button @click="handleFullscreenSearch">搜索</button>
+                <button v-if="fullscreenSearchKeyword" class="search-clear" @click="clearFullscreenSearch" aria-label="清除">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                  </svg>
+                </button>
+                <button class="search-btn" @click="handleFullscreenSearch" :disabled="!fullscreenSearchKeyword">
+                  搜索
+                </button>
               </div>
               <div class="map-fullscreen-actions">
                 <button @click="fullscreenLocateMe" class="fullscreen-action-btn">
@@ -319,6 +365,7 @@ const searchInput = ref(null)
 const searchKeyword = ref('')
 const fullscreenSearchKeyword = ref('')
 const searchResults = ref([])
+const fullscreenSearchResults = ref([])
 const mapLoading = ref(true)
 const showGestureTip = ref(false)
 const isFullscreen = ref(false)
@@ -334,32 +381,63 @@ const locatingStatus = ref('')
 const locationType = ref('')
 const showLocationDialog = ref(false)
 const locationDialogCallback = ref(null)
+const currentIndoorPoiId = ref(null)
+const hasRoute = ref(false)
+const routeStatusText = ref('')
 
 let map = null
 let fullscreenMap = null
 let AMap = null
 let marker = null
 let fullscreenMarker = null
+let userLocationMarker = null
+let startMarker = null
+let endMarker = null
+let fullscreenRoutePolyline = null
+let fullscreenStartMarker = null
+let fullscreenEndMarker = null
+let fullscreenUserLocationMarker = null
 let placeSearch = null
 let driving = null
 let riding = null
 let walking = null
 let routePolyline = null
+let geolocationControl = null
+let fullscreenGeolocationControl = null
+let autoRefreshTimer = null
 
-const quickLocations = [
-  { name: '大理古城', emoji: '🏯', lnglat: [100.173, 25.694] },
-  { name: '洱海', emoji: '🌊', lnglat: [100.185, 25.785] },
-  { name: '喜洲古镇', emoji: '🏘️', lnglat: [100.128, 25.764] },
-  { name: '双廊古镇', emoji: '🌅', lnglat: [100.185, 25.91] },
-  { name: '斗南花市', emoji: '🌸', lnglat: [102.788, 24.903] },
-  { name: '丽江古城', emoji: '🏔️', lnglat: [100.225, 26.872] }
-]
+const ROUTE_STORAGE_KEY = 'yunnan_travel_route'
+
+const quickLocations = {
+  昆明: [
+    { name: '斗南花市', emoji: '🌸', lnglat: [102.788, 24.903], indoorPoiId: 'B0FFGF6XB3' }
+  ],
+  大理: [
+    { name: '大理古城', emoji: '🏯', lnglat: [100.164, 25.694836], indoorPoiId: 'B0FFFZH0RQ' },
+    { name: '洱海', emoji: '🌊', lnglat: [100.247321, 25.603053], indoorPoiId: 'B0KGLSSJRT' },
+    { name: '喜洲古镇', emoji: '🏘️', lnglat: [100.131582, 25.85295], indoorPoiId: 'B0FFH27SSH' },
+    { name: '双廊古镇', emoji: '🌅', lnglat: [100.194322, 25.908323], indoorPoiId: 'B036814RT7' }
+  ],
+  丽江: [
+    { name: '丽江古城', emoji: '🏔️', lnglat: [100.235517, 26.870507], indoorPoiId: 'B0378008PR' }
+  ]
+}
 
 const routeModes = [
   { value: 'driving', label: '驾车', icon: '🚗' },
   { value: 'riding', label: '骑行', icon: '🚴' },
   { value: 'walking', label: '步行', icon: '🚶' }
 ]
+
+const createMarkerContent = () => {
+  return `<div style="width:32px;height:32px;">
+    <img src="/images/icons/marker.svg" style="width:100%;height:100%;" />
+  </div>`
+}
+
+const createUserLocationContent = () => {
+  return '<div style="width:20px;height:20px;background:#ef4444;border:3px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>'
+}
 
 const safeStorage = {
   getItem (key) {
@@ -374,6 +452,105 @@ const safeStorage = {
       localStorage.setItem(key, value)
     } catch (e) {}
   }
+}
+
+const saveRouteToStorage = () => {
+  if (!currentPosition.value || !routeDestination.value) return
+
+  const routeData = {
+    hasRoute: true,
+    userLocation: [currentPosition.value.lng, currentPosition.value.lat],
+    targetLocation: [routeDestination.value.location.lng, routeDestination.value.location.lat],
+    targetName: routeDestination.value.name,
+    routeMode: selectedRouteMode.value,
+    timestamp: Date.now()
+  }
+  safeStorage.setItem(ROUTE_STORAGE_KEY, JSON.stringify(routeData))
+  hasRoute.value = true
+  updateRouteStatusText()
+}
+
+const restoreRouteFromStorage = () => {
+  const savedData = safeStorage.getItem(ROUTE_STORAGE_KEY)
+  if (!savedData) return null
+
+  try {
+    const routeData = JSON.parse(savedData)
+    if (routeData.hasRoute && routeData.userLocation && routeData.targetLocation) {
+      return routeData
+    }
+  } catch (e) {
+    console.error('恢复路线数据失败:', e)
+  }
+  return null
+}
+
+const clearRouteFromStorage = () => {
+  safeStorage.setItem(ROUTE_STORAGE_KEY, '')
+  hasRoute.value = false
+  updateRouteStatusText()
+}
+
+const updateRouteStatusText = () => {
+  if (hasRoute.value) {
+    routeStatusText.value = '路线已保存，页面可见时自动刷新位置'
+  } else {
+    routeStatusText.value = '搜索目的地开始规划路线'
+  }
+}
+
+const startAutoRefresh = () => {
+  if (autoRefreshTimer) return
+  if (!hasRoute.value) return
+
+  autoRefreshTimer = setInterval(() => {
+    if (document.visibilityState === 'visible') {
+      updateUserLocation()
+    }
+  }, 10000)
+  console.log('开启自动刷新')
+}
+
+const stopAutoRefresh = () => {
+  if (autoRefreshTimer) {
+    clearInterval(autoRefreshTimer)
+    autoRefreshTimer = null
+    console.log('停止自动刷新')
+  }
+}
+
+const handleVisibilityChange = () => {
+  if (document.visibilityState === 'visible' && hasRoute.value) {
+    updateUserLocation()
+    startAutoRefresh()
+  } else {
+    stopAutoRefresh()
+  }
+}
+
+const updateUserLocation = () => {
+  if (!geolocationControl || !map) return
+
+  geolocationControl.getCurrentPosition((status, result) => {
+    if (status === 'complete' && result.position) {
+      const { lng, lat } = result.position
+      currentPosition.value = { lng, lat }
+
+      if (userLocationMarker) {
+        userLocationMarker.setPosition([lng, lat])
+      } else {
+        userLocationMarker = new AMap.Marker({
+          position: [lng, lat],
+          content: createUserLocationContent(),
+          offset: new AMap.Pixel(-10, -10),
+          zIndex: 9999
+        })
+        userLocationMarker.setMap(map)
+      }
+
+      console.log('位置已更新:', lng, lat)
+    }
+  })
 }
 
 const dismissGestureTip = () => {
@@ -391,12 +568,12 @@ const initMap = () => {
     version: '2.0',
     plugins: [
       'AMap.Scale',
-      'AMap.ControlBar',
       'AMap.PlaceSearch',
       'AMap.Geolocation',
       'AMap.Driving',
       'AMap.Riding',
-      'AMap.Walking'
+      'AMap.Walking',
+      'AMap.IndoorMap'
     ]
   })
     .then((AMapInstance) => {
@@ -413,20 +590,11 @@ const initMap = () => {
         showLabel: true,
         touchZoom: true,
         touchZoomCenter: 1,
-        dragEnable: true
+        dragEnable: true,
+        showIndoorMap: true
       })
 
       map.addControl(new AMap.Scale())
-
-      const controlBar = new AMap.ControlBar({
-        showZoomBar: false,
-        showControlButton: true,
-        position: {
-          right: '10px',
-          top: '10px'
-        }
-      })
-      map.addControl(controlBar)
 
       placeSearch = new AMap.PlaceSearch({
         pageSize: 10,
@@ -440,13 +608,73 @@ const initMap = () => {
       riding = new AMap.Riding()
       walking = new AMap.Walking()
 
+      geolocationControl = new AMap.Geolocation({
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+        convert: true,
+        showButton: false,
+        showMarker: false,
+        showCircle: false,
+        panToLocation: false,
+        zoomToAccuracy: false,
+        noGeoLocation: 0,
+        geoLocationFirst: true,
+        useNative: true
+      })
+      map.addControl(geolocationControl)
+
+      map.on('indoor_create', () => {
+        console.log('室内地图图层已创建')
+        if (currentIndoorPoiId.value) {
+          map.indoorMap.showIndoorMap(currentIndoorPoiId.value, 1)
+        }
+        map.indoorMap.on('click', (result) => {
+          console.log('=== 室内地图商铺点击 ===')
+          console.log('商铺ID:', result.shop?.id)
+          console.log('商铺名称:', result.shop?.name)
+          console.log('完整结果:', result)
+        })
+      })
+
       mapLoading.value = false
 
-      if (props.searchPlace) {
+      const savedRoute = restoreRouteFromStorage()
+      if (savedRoute) {
+        console.log('发现已保存路线，正在恢复...')
+        currentPosition.value = {
+          lng: savedRoute.userLocation[0],
+          lat: savedRoute.userLocation[1]
+        }
+        routeDestination.value = {
+          name: savedRoute.targetName,
+          location: {
+            lng: savedRoute.targetLocation[0],
+            lat: savedRoute.targetLocation[1]
+          }
+        }
+        selectedRouteMode.value = savedRoute.routeMode || 'driving'
+
+        if (userLocationMarker) {
+          userLocationMarker.setMap(null)
+        }
+        userLocationMarker = new AMap.Marker({
+          position: savedRoute.userLocation,
+          content: createUserLocationContent(),
+          offset: new AMap.Pixel(-10, -10),
+          zIndex: 9999
+        })
+        userLocationMarker.setMap(map)
+
+        drawRouteOnMap()
+
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+        startAutoRefresh()
+      } else if (props.searchPlace) {
         searchKeyword.value = props.searchPlace
         handleSearch()
       } else {
-        requestLocation()
+        updateRouteStatusText()
       }
     })
     .catch((e) => {
@@ -471,28 +699,135 @@ const initFullscreenMap = () => {
     showLabel: true,
     touchZoom: true,
     touchZoomCenter: 1,
-    dragEnable: true
+    dragEnable: true,
+    showIndoorMap: true
   })
 
   fullscreenMap.addControl(new AMap.Scale())
 
-  const controlBar = new AMap.ControlBar({
-    showZoomBar: false,
-    showControlButton: true,
-    position: {
-      right: '10px',
-      top: '60px'
-    }
+  fullscreenGeolocationControl = new AMap.Geolocation({
+    enableHighAccuracy: true,
+    timeout: 15000,
+    maximumAge: 0,
+    convert: true,
+    showButton: false,
+    showMarker: true,
+    showCircle: true,
+    panToLocation: true,
+    zoomToAccuracy: true,
+    noGeoLocation: 0,
+    geoLocationFirst: true,
+    useNative: true
   })
-  fullscreenMap.addControl(controlBar)
+  fullscreenMap.addControl(fullscreenGeolocationControl)
 
-  if (marker && map) {
+  if (hasRoute.value && currentPosition.value && routeDestination.value) {
+    syncRouteToFullscreen()
+  } else if (marker && map) {
     fullscreenMarker = new AMap.Marker({
-      position: map.getCenter(),
-      title: marker.getTitle()
+      position: marker.getPosition(),
+      title: marker.getTitle(),
+      content: createMarkerContent(),
+      offset: new AMap.Pixel(-16, -32)
     })
     fullscreenMarker.setMap(fullscreenMap)
+    fullscreenMap.setCenter(marker.getPosition())
+    fullscreenMap.setZoom(map.getZoom())
   }
+}
+
+const syncRouteToFullscreen = () => {
+  if (!fullscreenMap || !AMap || !currentPosition.value || !routeDestination.value) return
+
+  const start = [currentPosition.value.lng, currentPosition.value.lat]
+  const end = [routeDestination.value.location.lng, routeDestination.value.location.lat]
+
+  const routePlugin = selectedRouteMode.value === 'driving'
+    ? driving
+    : selectedRouteMode.value === 'riding'
+      ? riding
+      : walking
+
+  if (!routePlugin) return
+
+  routePlugin.search(start, end, (status, result) => {
+    if (!fullscreenMap) return
+    if (status !== 'complete' || !result.routes || result.routes.length === 0) return
+
+    const route = result.routes[0]
+    const path = []
+
+    if (selectedRouteMode.value === 'driving' && route.steps) {
+      route.steps.forEach(step => {
+        if (step.path) {
+          step.path.forEach(point => path.push([point.lng, point.lat]))
+        }
+      })
+    } else if (selectedRouteMode.value === 'riding' && route.rides) {
+      route.rides.forEach(ride => {
+        if (ride.path) {
+          ride.path.forEach(point => path.push([point.lng, point.lat]))
+        }
+      })
+    } else if (selectedRouteMode.value === 'walking' && route.steps) {
+      route.steps.forEach(step => {
+        if (step.path) {
+          step.path.forEach(point => path.push([point.lng, point.lat]))
+        }
+      })
+    }
+
+    if (path.length === 0) return
+
+    if (fullscreenRoutePolyline) {
+      fullscreenRoutePolyline.setMap(null)
+    }
+    if (fullscreenStartMarker) {
+      fullscreenStartMarker.setMap(null)
+    }
+    if (fullscreenEndMarker) {
+      fullscreenEndMarker.setMap(null)
+    }
+    if (fullscreenUserLocationMarker) {
+      fullscreenUserLocationMarker.setMap(null)
+    }
+
+    fullscreenUserLocationMarker = new AMap.Marker({
+      position: start,
+      content: createUserLocationContent(),
+      offset: new AMap.Pixel(-10, -10),
+      zIndex: 9999
+    })
+    fullscreenUserLocationMarker.setMap(fullscreenMap)
+
+    fullscreenRoutePolyline = new AMap.Polyline({
+      path,
+      strokeColor: '#3b82f6',
+      strokeWeight: 6,
+      strokeOpacity: 0.8,
+      lineJoin: 'round',
+      lineCap: 'round'
+    })
+    fullscreenRoutePolyline.setMap(fullscreenMap)
+
+    fullscreenStartMarker = new AMap.Marker({
+      position: start,
+      title: '起点',
+      content: '<div style="background:#22c55e;color:white;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;">起</div>',
+      offset: new AMap.Pixel(-12, -12)
+    })
+    fullscreenStartMarker.setMap(fullscreenMap)
+
+    fullscreenEndMarker = new AMap.Marker({
+      position: end,
+      title: routeDestination.value.name,
+      content: '<div style="background:#ef4444;color:white;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;">终</div>',
+      offset: new AMap.Pixel(-12, -12)
+    })
+    fullscreenEndMarker.setMap(fullscreenMap)
+
+    fullscreenMap.setFitView([fullscreenRoutePolyline], false, [50, 50, 50, 50])
+  })
 }
 
 const openFullscreen = () => {
@@ -510,7 +845,14 @@ const closeFullscreen = () => {
     fullscreenMap.destroy()
     fullscreenMap = null
     fullscreenMarker = null
+    fullscreenGeolocationControl = null
+    fullscreenRoutePolyline = null
+    fullscreenStartMarker = null
+    fullscreenEndMarker = null
+    fullscreenUserLocationMarker = null
   }
+  fullscreenSearchKeyword.value = ''
+  fullscreenSearchResults.value = []
 }
 
 const handleSearch = () => {
@@ -544,21 +886,58 @@ const handleFullscreenSearch = () => {
   placeSearch.search(fullscreenSearchKeyword.value, (status, result) => {
     if (!fullscreenMap) return
     if (status === 'complete' && result.poiList && result.poiList.pois.length > 0) {
-      const poi = result.poiList.pois[0]
-      fullscreenMap.setCenter([poi.location.lng, poi.location.lat])
-      fullscreenMap.setZoom(15)
+      fullscreenSearchResults.value = result.poiList.pois.map(poi => ({
+        id: poi.id,
+        name: poi.name,
+        address: poi.address,
+        district: poi.pname + poi.cityname + poi.adname,
+        location: {
+          lng: poi.location.lng,
+          lat: poi.location.lat
+        }
+      }))
 
-      if (fullscreenMarker) {
-        fullscreenMarker.setMap(null)
+      if (fullscreenSearchResults.value.length === 1) {
+        selectFullscreenResult(fullscreenSearchResults.value[0])
       }
-
-      fullscreenMarker = new AMap.Marker({
-        position: [poi.location.lng, poi.location.lat],
-        title: poi.name
-      })
-      fullscreenMarker.setMap(fullscreenMap)
+    } else {
+      fullscreenSearchResults.value = []
     }
   })
+}
+
+const clearFullscreenSearch = () => {
+  fullscreenSearchKeyword.value = ''
+  fullscreenSearchResults.value = []
+}
+
+const selectFullscreenResult = (item) => {
+  if (!fullscreenMap || !item.location) return
+
+  fullscreenSearchResults.value = []
+
+  fullscreenMap.setCenter([item.location.lng, item.location.lat])
+  fullscreenMap.setZoom(18)
+
+  if (fullscreenMarker) {
+    fullscreenMarker.setMap(null)
+  }
+
+  fullscreenMarker = new AMap.Marker({
+    position: [item.location.lng, item.location.lat],
+    title: item.name,
+    content: createMarkerContent(),
+    offset: new AMap.Pixel(-16, -32)
+  })
+  fullscreenMarker.setMap(fullscreenMap)
+
+  routeDestination.value = {
+    name: item.name,
+    location: {
+      lng: item.location.lng,
+      lat: item.location.lat
+    }
+  }
 }
 
 const selectResult = (item) => {
@@ -567,7 +946,7 @@ const selectResult = (item) => {
   searchResults.value = []
 
   map.setCenter([item.location.lng, item.location.lat])
-  map.setZoom(15)
+  map.setZoom(18)
 
   if (marker) {
     marker.setMap(null)
@@ -575,7 +954,9 @@ const selectResult = (item) => {
 
   marker = new AMap.Marker({
     position: [item.location.lng, item.location.lat],
-    title: item.name
+    title: item.name,
+    content: createMarkerContent(),
+    offset: new AMap.Pixel(-16, -32)
   })
   marker.setMap(map)
 
@@ -585,6 +966,12 @@ const selectResult = (item) => {
       lng: item.location.lng,
       lat: item.location.lat
     }
+  }
+
+  currentIndoorPoiId.value = item.id
+  if (map.indoorMap) {
+    console.log('尝试显示室内地图, POI ID: B0FFGF6XB3 (斗南花市)')
+    map.indoorMap.showIndoorMap('B0FFGF6XB3', 4)
   }
 
   emit('search-complete', item)
@@ -600,7 +987,7 @@ const goToLocation = (loc) => {
 
   searchKeyword.value = loc.name
   map.setCenter(loc.lnglat)
-  map.setZoom(14)
+  map.setZoom(18)
 
   if (marker) {
     marker.setMap(null)
@@ -608,7 +995,9 @@ const goToLocation = (loc) => {
 
   marker = new AMap.Marker({
     position: loc.lnglat,
-    title: loc.name
+    title: loc.name,
+    content: createMarkerContent(),
+    offset: new AMap.Pixel(-16, -32)
   })
   marker.setMap(map)
 
@@ -618,6 +1007,12 @@ const goToLocation = (loc) => {
       lng: loc.lnglat[0],
       lat: loc.lnglat[1]
     }
+  }
+
+  if (loc.indoorPoiId && map.indoorMap) {
+    console.log('显示室内地图, POI ID:', loc.indoorPoiId, loc.name)
+    map.indoorMap.showIndoorMap(loc.indoorPoiId, 1)
+    currentIndoorPoiId.value = loc.indoorPoiId
   }
 }
 
@@ -647,7 +1042,7 @@ const getMobileEnvInfo = () => {
 }
 
 const requestLocation = () => {
-  if (!map || !AMap) return
+  if (!map || !AMap || !geolocationControl) return
 
   const env = getMobileEnvInfo()
 
@@ -664,23 +1059,7 @@ const requestLocation = () => {
   isLocating.value = true
   locatingStatus.value = '正在获取当前位置...'
 
-  const geolocation = new AMap.Geolocation({
-    enableHighAccuracy: true,
-    timeout: 15000,
-    maximumAge: 0,
-    convert: true,
-    showButton: false,
-    showMarker: true,
-    showCircle: true,
-    panToLocation: true,
-    zoomToAccuracy: true,
-    noGeoLocation: 0,
-    geoLocationFirst: true,
-    useNative: true,
-    buttonPosition: 'RB'
-  })
-
-  geolocation.getCurrentPosition((status, result) => {
+  geolocationControl.getCurrentPosition((status, result) => {
     isLocating.value = false
     locatingStatus.value = ''
 
@@ -757,8 +1136,6 @@ const requestLocation = () => {
       currentPosition.value = null
     }
   })
-
-  map.addControl(geolocation)
 }
 
 const closeLocationDialog = () => {
@@ -800,7 +1177,7 @@ const locateMe = () => {
 }
 
 const fullscreenLocateMe = () => {
-  if (!fullscreenMap || !AMap) return
+  if (!fullscreenMap || !AMap || !fullscreenGeolocationControl) return
 
   const env = getMobileEnvInfo()
 
@@ -810,22 +1187,7 @@ const fullscreenLocateMe = () => {
 
   isLocating.value = true
 
-  const geolocation = new AMap.Geolocation({
-    enableHighAccuracy: true,
-    timeout: 15000,
-    maximumAge: 0,
-    convert: true,
-    showButton: false,
-    showMarker: true,
-    showCircle: true,
-    panToLocation: true,
-    zoomToAccuracy: true,
-    noGeoLocation: 0,
-    geoLocationFirst: true,
-    useNative: true
-  })
-
-  geolocation.getCurrentPosition((status, result) => {
+  fullscreenGeolocationControl.getCurrentPosition((status, result) => {
     isLocating.value = false
 
     if (!fullscreenMap) return
@@ -862,8 +1224,6 @@ const fullscreenLocateMe = () => {
       }
     }
   })
-
-  fullscreenMap.addControl(geolocation)
 }
 
 const resetMap = () => {
@@ -874,17 +1234,19 @@ const resetMap = () => {
     marker = null
   }
 
-  if (routePolyline) {
-    routePolyline.setMap(null)
-    routePolyline = null
-  }
+  clearRoute()
 
   searchKeyword.value = ''
   searchResults.value = []
-  map.setCenter([100.267, 25.6])
-  map.setZoom(11)
   map.setRotation(0)
   map.setPitch(35)
+
+  if (currentPosition.value) {
+    map.setCenter([currentPosition.value.lng, currentPosition.value.lat])
+    map.setZoom(14)
+  } else {
+    requestLocation()
+  }
 }
 
 const fullscreenReset = () => {
@@ -896,10 +1258,15 @@ const fullscreenReset = () => {
   }
 
   fullscreenSearchKeyword.value = ''
-  fullscreenMap.setCenter([100.267, 25.6])
-  fullscreenMap.setZoom(11)
   fullscreenMap.setRotation(0)
   fullscreenMap.setPitch(35)
+
+  if (currentPosition.value) {
+    fullscreenMap.setCenter([currentPosition.value.lng, currentPosition.value.lat])
+    fullscreenMap.setZoom(14)
+  } else {
+    fullscreenLocateMe()
+  }
 }
 
 const openRoutePanel = async (destination) => {
@@ -1146,6 +1513,10 @@ const showRouteOnMap = () => {
   const start = [currentPosition.value.lng, currentPosition.value.lat]
   const end = [routeDestination.value.location.lng, routeDestination.value.location.lat]
 
+  drawRouteWithPath(start, end)
+}
+
+const drawRouteWithPath = (start, end) => {
   const routePlugin = selectedRouteMode.value === 'driving'
     ? driving
     : selectedRouteMode.value === 'riding'
@@ -1155,7 +1526,7 @@ const showRouteOnMap = () => {
   if (!routePlugin) return
 
   routePlugin.search(start, end, (status, result) => {
-    console.log('showRouteOnMap 结果:', status, result)
+    console.log('路线规划结果:', status, result)
 
     if (!map) return
     if (status !== 'complete' || !result.routes || result.routes.length === 0) {
@@ -1200,6 +1571,12 @@ const showRouteOnMap = () => {
     if (routePolyline) {
       routePolyline.setMap(null)
     }
+    if (startMarker) {
+      startMarker.setMap(null)
+    }
+    if (endMarker) {
+      endMarker.setMap(null)
+    }
 
     routePolyline = new AMap.Polyline({
       path,
@@ -1211,24 +1588,66 @@ const showRouteOnMap = () => {
     })
     routePolyline.setMap(map)
 
-    const startMarker = new AMap.Marker({
+    startMarker = new AMap.Marker({
       position: start,
       title: '起点',
-      content: '<div style="background:#22c55e;color:white;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;">起</div>'
+      content: '<div style="background:#22c55e;color:white;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;">起</div>',
+      offset: new AMap.Pixel(-12, -12)
     })
     startMarker.setMap(map)
 
-    const endMarker = new AMap.Marker({
+    endMarker = new AMap.Marker({
       position: end,
-      title: routeDestination.value.name,
-      content: '<div style="background:#ef4444;color:white;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;">终</div>'
+      title: routeDestination.value?.name || '终点',
+      content: '<div style="background:#ef4444;color:white;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;">终</div>',
+      offset: new AMap.Pixel(-12, -12)
     })
     endMarker.setMap(map)
 
     map.setFitView([routePolyline], false, [50, 50, 50, 50])
 
+    saveRouteToStorage()
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    startAutoRefresh()
+
     closeRoutePanel()
   })
+}
+
+const drawRouteOnMap = () => {
+  if (!currentPosition.value || !routeDestination.value || !map || !AMap) return
+
+  const start = [currentPosition.value.lng, currentPosition.value.lat]
+  const end = [routeDestination.value.location.lng, routeDestination.value.location.lat]
+
+  drawRouteWithPath(start, end)
+}
+
+const clearRoute = () => {
+  if (routePolyline) {
+    routePolyline.setMap(null)
+    routePolyline = null
+  }
+  if (startMarker) {
+    startMarker.setMap(null)
+    startMarker = null
+  }
+  if (endMarker) {
+    endMarker.setMap(null)
+    endMarker = null
+  }
+  if (userLocationMarker) {
+    userLocationMarker.setMap(null)
+    userLocationMarker = null
+  }
+
+  routeDestination.value = null
+  routeResult.value = null
+
+  stopAutoRefresh()
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  clearRouteFromStorage()
 }
 
 watch(() => props.searchPlace, (newVal) => {
@@ -1240,6 +1659,20 @@ watch(() => props.searchPlace, (newVal) => {
   }
 })
 
+const refreshLocation = () => {
+  if (isLocating.value) return
+
+  isLocating.value = true
+  locatingStatus.value = '正在获取位置...'
+
+  updateUserLocation()
+
+  setTimeout(() => {
+    isLocating.value = false
+    locatingStatus.value = ''
+  }, 3000)
+}
+
 onMounted(() => {
   initMap()
   if (safeStorage.getItem('mapGestureTipSeen') !== 'true') {
@@ -1250,6 +1683,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  stopAutoRefresh()
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
   if (map) {
     map.destroy()
   }
@@ -1776,6 +2211,35 @@ onUnmounted(() => {
 .map-action-btn span {
   font-size: var(--text-xs);
   color: var(--text);
+  font-weight: 600;
+}
+
+.map-action-btn.danger svg {
+  color: var(--sunset);
+}
+
+.map-action-btn.danger:hover:not(:disabled) {
+  background: var(--sunset-soft);
+}
+
+.map-route-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--forest-light);
+  border-radius: var(--space-md);
+  border: 1px solid var(--forest);
+}
+
+.map-route-status-icon {
+  font-size: 1rem;
+}
+
+.map-route-status-text {
+  font-size: var(--text-xs);
+  color: var(--forest);
+  font-weight: 500;
 }
 
 .map-quick-locations {
@@ -1806,6 +2270,16 @@ onUnmounted(() => {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xs);
+}
+
+.map-quick-category {
+  width: 100%;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--forest);
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-xs);
 }
 
 .map-quick-item {
@@ -1962,6 +2436,19 @@ onUnmounted(() => {
   height: 100%;
 }
 
+.map-fullscreen-results {
+  position: absolute;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  right: var(--space-sm);
+  max-height: 50%;
+  background: var(--card);
+  border-radius: var(--space-md);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 10;
+}
+
 .map-fullscreen-toolbar {
   display: flex;
   gap: var(--space-sm);
@@ -1974,21 +2461,57 @@ onUnmounted(() => {
 .map-fullscreen-search {
   flex: 1;
   display: flex;
+  align-items: center;
   gap: var(--space-xs);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--space-sm);
+  padding: 0 var(--space-xs);
+}
+
+.map-fullscreen-search .search-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .map-fullscreen-search input {
   flex: 1;
-  padding: var(--space-sm);
-  border: 1px solid var(--border);
-  border-radius: var(--space-sm);
+  padding: var(--space-sm) var(--space-xs);
+  border: none;
   font-size: var(--text-sm);
   font-family: inherit;
-  background: var(--bg);
+  background: transparent;
   color: var(--text);
+  min-width: 0;
 }
 
-.map-fullscreen-search button {
+.map-fullscreen-search input:focus {
+  outline: none;
+}
+
+.map-fullscreen-search .search-clear {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: var(--border);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.map-fullscreen-search .search-clear svg {
+  width: 12px;
+  height: 12px;
+  color: var(--text-muted);
+}
+
+.map-fullscreen-search .search-btn {
   padding: var(--space-sm) var(--space-md);
   background: var(--forest);
   color: white;
@@ -1998,6 +2521,8 @@ onUnmounted(() => {
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
+  white-space: nowrap;
+  margin-right: calc(var(--space-xs) * -1);
 }
 
 .map-fullscreen-actions {
@@ -2428,4 +2953,5 @@ onUnmounted(() => {
     border-radius: var(--space-lg);
   }
 }
+
 </style>

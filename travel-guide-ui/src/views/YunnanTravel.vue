@@ -425,7 +425,7 @@ const setSlideRef = (el, index) => {
 
 const containerStyle = computed(() => {
   return {
-    height: `${currentSlideHeight.value}px`,
+    minHeight: `${currentSlideHeight.value}px`,
     overflowY: 'hidden',
     overflowX: 'auto'
   }
@@ -473,7 +473,11 @@ const startResizeObserver = (index) => {
 
   const { stop } = useResizeObserver(slide, () => {
     if (index === currentIndex.value) {
-      refreshCurrentSlideHeight()
+      requestAnimationFrame(() => {
+        try {
+          refreshCurrentSlideHeight()
+        } catch (e) {}
+      })
     }
   })
 
@@ -806,9 +810,9 @@ const goToSlide = (index, direction = null) => {
 const handleNavigate = (payload) => {
   const index = typeof payload === 'object' ? payload.index : payload
   const scrollTo = typeof payload === 'object' ? payload.scrollTo : null
-  
+
   goToSlide(index, index > currentIndex.value ? 'right' : 'left')
-  
+
   if (scrollTo) {
     setTimeout(() => {
       const element = document.querySelector(`[data-card-id="${scrollTo}"]`)
@@ -1074,14 +1078,12 @@ onMounted(() => {
   }
   window.scrollTo(0, 0)
 
-  setTimeout(() => {
-    preloadAllSlideHeights()
-    startResizeObserver(currentIndex.value)
-  }, 200)
-
-  setTimeout(() => {
-    refreshCurrentSlideHeight()
-  }, 1000)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      preloadAllSlideHeights()
+      startResizeObserver(currentIndex.value)
+    })
+  })
 })
 
 onUnmounted(() => {
@@ -1181,20 +1183,6 @@ const handleLightboxKeydown = (e) => {
   transform: translateY(16px);
 }
 
-.hero::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--forest), var(--sunset));
-  border-radius: 2px;
-  animation: heroLineIn 0.6s var(--ease-out-quart) 0.5s forwards;
-  opacity: 0;
-  transform: translateX(-50%) scaleX(0);
-}
-
 @keyframes heroTitleIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -1203,11 +1191,6 @@ const handleLightboxKeydown = (e) => {
 @keyframes heroSubtitleIn {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes heroLineIn {
-  from { opacity: 0; transform: translateX(-50%) scaleX(0); }
-  to { opacity: 1; transform: translateX(-50%) scaleX(1); }
 }
 
 @media (min-width: 768px) {
@@ -1271,33 +1254,6 @@ const handleLightboxKeydown = (e) => {
   -webkit-tap-highlight-color: transparent;
 }
 
-.nav-tab::before {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: var(--forest);
-  border-radius: 1px;
-  transform: translateX(-50%);
-  transition: width var(--duration-normal) var(--ease-out-quart);
-}
-
-.nav-tab:hover::before {
-  width: 20px;
-}
-
-.nav-tab::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: white;
-  opacity: 0;
-  transition: opacity var(--duration-fast) var(--ease-out-quart);
-  pointer-events: none;
-}
-
 .nav-tab:hover {
   background: var(--earth-light);
   color: var(--text);
@@ -1307,19 +1263,11 @@ const handleLightboxKeydown = (e) => {
   transform: scale(0.94);
 }
 
-.nav-tab:active::after {
-  opacity: 0.15;
-}
-
 .nav-tab.active {
   background: var(--forest);
   color: white;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   animation: tabActivate 0.35s var(--ease-out-quart);
-}
-
-.nav-tab.active::before {
-  display: none;
 }
 
 @keyframes tabActivate {

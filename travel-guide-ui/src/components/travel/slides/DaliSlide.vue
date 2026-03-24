@@ -1,18 +1,29 @@
 <template>
-  <section class="section">
-      <div class="section-header">
-        <div class="section-number">{{ data.number }}</div>
-        <h2 class="section-title title-style-petal">{{ data.title }}</h2>
-        <p class="section-desc">{{ data.desc }}</p>
+  <section class="section dali-section">
+    <!-- 快速导航栏 -->
+    <nav class="quick-nav-bar" ref="quickNavBar">
+      <div class="quick-nav-inner">
+        <button
+          v-for="module in modules"
+          :key="module.id"
+          :class="['quick-nav-btn', { active: activeModule === module.id }]"
+          @click="scrollToModule(module.id)"
+        >
+          {{ module.shortTitle || module.title }}
+        </button>
       </div>
+    </nav>
 
-      <InfoCard
-        card-id="dali-route-overview"
-        card-name="大理路线总览"
-        :hidden-cards="hiddenCards"
-        @hide="(id, name) => $emit('hide-card', id, name)"
-      >
-        <div class="route-overview fade-in">
+    <!-- 区域1：大理总览区（默认展开，不折叠） -->
+    <div id="dali-guide-area-overview" class="guide-module guide-module-expanded" ref="module-overview">
+      <div class="guide-module-header guide-module-header-static">
+        <div class="section-number">{{ data.number }}</div>
+        <h2 class="guide-module-title guide-module-title-large">{{ data.title }}</h2>
+      </div>
+      <div class="guide-module-content-wrapper">
+        <p class="section-desc">{{ data.desc }}</p>
+
+        <div class="route-overview">
           <div class="route-overview-title">
             <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
@@ -46,160 +57,180 @@
             </div>
           </div>
         </div>
-      </InfoCard>
+      </div>
+    </div>
 
-      <InfoCard
-        card-id="dali-route-detail"
-        card-name="大理详细路线"
-        :hidden-cards="hiddenCards"
-        @hide="(id, name) => $emit('hide-card', id, name)"
-      >
-        <div class="route-detail" :class="{ collapsed: routeDetailCollapsed }">
-          <button class="route-detail-toggle" @click="toggleRouteDetail" :aria-expanded="!routeDetailCollapsed">
-            <span class="route-detail-toggle-icon">📅</span>
-            <span class="route-detail-toggle-text">{{ routeDetailCollapsed ? '展开详细时间线' : '收起详细时间线' }}</span>
-            <svg class="route-detail-toggle-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-
-          <div class="route-detail-content">
-            <div class="route-detail-inner">
-              <div class="route-day-section">
-                <div class="route-day-header">
-                  <span class="route-day-badge day1">Day1</span>
-                  <h4 class="route-day-title">{{ data.routeDetail?.day1?.title || '海西精华线' }}</h4>
-                </div>
-                <div class="route-timeline">
-                  <div
-                    class="route-timeline-item"
-                    v-for="(item, idx) in data.routeDetail?.day1?.items"
-                    :key="idx"
-                    :class="{ optional: item.optional }"
-                  >
-                    <span class="timeline-time">{{ item.time }}</span>
-                    <span class="timeline-dot"></span>
-                    <span class="timeline-event" v-html="item.event"></span>
+    <!-- 区域2：行程详细时间线区 -->
+    <div id="dali-guide-area-itinerary" class="guide-module" :class="{ expanded: expandedModules.itinerary }" ref="module-itinerary">
+      <div class="guide-module-header guide-module-collapsible" @click="toggleModule('itinerary')">
+        <h3 class="guide-module-title">详细行程时间线</h3>
+        <span class="guide-module-toggle" :class="{ expanded: expandedModules.itinerary }">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 9l-7 7-7-7"/>
+          </svg>
+        </span>
+      </div>
+      <div class="guide-module-content">
+        <div class="guide-module-content-inner">
+          <InfoCard
+            card-id="dali-route-detail"
+            card-name="大理详细路线"
+            :hidden-cards="hiddenCards"
+            :closable="false"
+            @hide="(id, name) => $emit('hide-card', id, name)"
+          >
+            <div class="route-detail">
+              <div class="route-detail-inner">
+                <div class="route-day-section">
+                  <div class="route-day-header">
+                    <span class="route-day-badge day1">Day1</span>
+                    <h4 class="route-day-title">{{ data.routeDetail?.day1?.title || '海西精华线' }}</h4>
                   </div>
-                </div>
-              </div>
-
-              <div class="route-day-section">
-                <div class="route-day-header">
-                  <span class="route-day-badge day2">Day2</span>
-                  <h4 class="route-day-title">{{ data.routeDetail?.day2?.title || '海东慢游线' }}</h4>
-                </div>
-                <div class="route-timeline">
-                  <div
-                    class="route-timeline-item"
-                    v-for="(item, idx) in data.routeDetail?.day2?.items"
-                    :key="idx"
-                  >
-                    <span class="timeline-time">{{ item.time }}</span>
-                    <span class="timeline-dot"></span>
-                    <span class="timeline-event" v-html="item.event"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </InfoCard>
-
-      <div class="spot-group">
-        <div
-          class="spot-with-route fade-in"
-          v-for="(spot, idx) in data.spots"
-          :key="spot.name"
-          :style="{ '--delay': idx * 50 }"
-        >
-          <div class="spot" @mousedown="createRipple">
-            <h3 class="spot-name">
-              <span class="spot-dot"></span>
-              {{ spot.name }}
-              <span class="spot-highlight-tag">{{ spot.tag || '免费' }}</span>
-              <button
-                class="spot-map-btn"
-                @click.stop="$emit('open-map', spot.name)"
-                :aria-label="'在地图上查看' + spot.name"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-              </button>
-            </h3>
-            <p class="spot-highlight">{{ spot.highlight }}</p>
-            <div class="spot-meta">
-              <span class="spot-transport">{{ spot.transport }}</span>
-              <span class="spot-time" v-if="spot.openTime">{{ spot.openTime }}</span>
-            </div>
-          </div>
-
-          <div class="spot-photo-grid">
-            <div
-              class="photo-item"
-              :class="{ 'img-loaded': loadedImages[photo.src], 'img-error': imgErrors[photo.src] }"
-              v-for="photo in spot.photos"
-              :key="photo.label"
-              @click="$emit('open-lightbox', photo.src, photo.label)"
-              @mousedown="createRipple"
-            >
-              <img
-                :src="photo.src"
-                :alt="photo.label"
-                loading="lazy"
-                referrerpolicy="no-referrer"
-                @load="handleImageLoad(photo.src)"
-                @error="handleImageError(photo.src)"
-              >
-              <span class="photo-label">{{ photo.label }}</span>
-              <div class="img-fallback" v-if="imgErrors[photo.src]">
-                <span>🖼️</span>
-                <span>图片加载失败</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="spot-cycling" v-if="spot.cycling">
-            <button class="expandable-toggle" @click="toggleSpotDetail('cycling-' + idx)" :aria-expanded="isSpotDetailExpanded('cycling-' + idx)">
-              <span class="expandable-icon">🚴</span>
-              <span>骑行分段</span>
-              <svg class="expandable-arrow" :class="{ collapsed: !isSpotDetailExpanded('cycling-' + idx) }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 9l-7 7-7-7"/>
-              </svg>
-            </button>
-            <div class="expandable-content" :class="{ collapsed: !isSpotDetailExpanded('cycling-' + idx) }">
-              <div>
-                <div class="cycling-routes">
-                  <div class="cycling-route" v-for="route in spot.cycling.routes" :key="route.name">
-                    <div class="cycling-route-name">{{ route.name }}</div>
-                    <div class="cycling-route-info">
-                      <span>{{ route.distance }}</span>
-                      <span>{{ route.time }}</span>
+                  <div class="route-timeline">
+                    <div
+                      class="route-timeline-item"
+                      v-for="(item, idx) in data.routeDetail?.day1?.items"
+                      :key="idx"
+                      :class="{ optional: item.optional }"
+                    >
+                      <span class="timeline-time">{{ item.time }}</span>
+                      <span class="timeline-dot"></span>
+                      <span class="timeline-event" v-html="item.event"></span>
                     </div>
-                    <div class="cycling-route-tip">{{ route.tip }}</div>
                   </div>
                 </div>
-                <div class="cycling-tips">{{ spot.cycling.tips }}</div>
+
+                <div class="route-day-section">
+                  <div class="route-day-header">
+                    <span class="route-day-badge day2">Day2</span>
+                    <h4 class="route-day-title">{{ data.routeDetail?.day2?.title || '海东慢游线' }}</h4>
+                  </div>
+                  <div class="route-timeline">
+                    <div
+                      class="route-timeline-item"
+                      v-for="(item, idx) in data.routeDetail?.day2?.items"
+                      :key="idx"
+                    >
+                      <span class="timeline-time">{{ item.time }}</span>
+                      <span class="timeline-dot"></span>
+                      <span class="timeline-event" v-html="item.event"></span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </InfoCard>
+        </div>
+      </div>
+    </div>
 
-          <div class="spot-photo-spots" v-if="spot.photoSpots">
-            <button class="expandable-toggle" @click="toggleSpotDetail('photo-' + idx)" :aria-expanded="isSpotDetailExpanded('photo-' + idx)">
-              <span class="expandable-icon">📷</span>
-              <span>打卡机位</span>
-              <svg class="expandable-arrow" :class="{ collapsed: !isSpotDetailExpanded('photo-' + idx) }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 9l-7 7-7-7"/>
-              </svg>
-            </button>
-            <div class="expandable-content" :class="{ collapsed: !isSpotDetailExpanded('photo-' + idx) }">
-              <div>
-                <div class="photo-spots-list">
-                  <div class="photo-spot-item" v-for="ps in spot.photoSpots" :key="ps.name">
-                    <span class="photo-spot-name">{{ ps.name }}</span>
-                    <span class="photo-spot-tip" v-if="ps.tip">{{ ps.tip }}</span>
+    <!-- 区域3：核心景点详解区 -->
+    <div id="dali-guide-area-scenic" class="guide-module" :class="{ expanded: expandedModules.scenic }" ref="module-scenic">
+      <div class="guide-module-header guide-module-collapsible" @click="toggleModule('scenic')">
+        <h3 class="guide-module-title">核心景点详解</h3>
+        <span class="guide-module-toggle" :class="{ expanded: expandedModules.scenic }">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 9l-7 7-7-7"/>
+          </svg>
+        </span>
+      </div>
+      <div class="guide-module-content">
+        <div class="guide-module-content-inner">
+          <div class="spot-group">
+            <div
+              class="spot-with-route"
+              v-for="(spot, idx) in data.spots"
+              :key="spot.name"
+              :style="{ '--delay': idx * 50 }"
+            >
+              <div class="spot" :class="['spot-item-' + spot.name.replace(/\s/g, '-')]">
+                <h3 class="spot-name">
+                  <span class="spot-dot"></span>
+                  {{ spot.name }}
+                  <span class="spot-highlight-tag">{{ spot.tag || '免费' }}</span>
+                  <button
+                    class="spot-map-btn"
+                    @click.stop="$emit('open-map', spot.name)"
+                    :aria-label="'在地图上查看' + spot.name"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                  </button>
+                </h3>
+                <p class="spot-highlight">{{ spot.highlight }}</p>
+                <div class="spot-meta">
+                  <span class="spot-transport">{{ spot.transport }}</span>
+                  <span class="spot-time" v-if="spot.openTime">{{ spot.openTime }}</span>
+                </div>
+              </div>
+
+              <div class="spot-photo-grid">
+                <div
+                  class="photo-item"
+                  :class="{ 'img-loaded': loadedImages[photo.src], 'img-error': imgErrors[photo.src] }"
+                  v-for="photo in spot.photos"
+                  :key="photo.label"
+                  @click="$emit('open-lightbox', photo.src, photo.label)"
+                >
+                  <img
+                    :src="photo.src"
+                    :alt="photo.label"
+                    loading="lazy"
+                    referrerpolicy="no-referrer"
+                    @load="handleImageLoad(photo.src)"
+                    @error="handleImageError(photo.src)"
+                  >
+                  <span class="photo-label">{{ photo.label }}</span>
+                  <div class="img-fallback" v-if="imgErrors[photo.src]">
+                    <span>🖼️</span>
+                    <span>图片加载失败</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="spot-cycling" v-if="spot.cycling">
+                <button class="expandable-toggle" @click="toggleSpotDetail('cycling-' + idx)" :aria-expanded="isSpotDetailExpanded('cycling-' + idx)">
+                  <span class="expandable-icon">🚴</span>
+                  <span>骑行分段</span>
+                  <svg class="expandable-arrow" :class="{ collapsed: !isSpotDetailExpanded('cycling-' + idx) }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <div class="expandable-content" :class="{ collapsed: !isSpotDetailExpanded('cycling-' + idx) }">
+                  <div>
+                    <div class="cycling-routes">
+                      <div class="cycling-route" v-for="route in spot.cycling.routes" :key="route.name">
+                        <div class="cycling-route-name">{{ route.name }}</div>
+                        <div class="cycling-route-info">
+                          <span>{{ route.distance }}</span>
+                          <span>{{ route.time }}</span>
+                        </div>
+                        <div class="cycling-route-tip">{{ route.tip }}</div>
+                      </div>
+                    </div>
+                    <div class="cycling-tips">{{ spot.cycling.tips }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="spot-photo-spots" v-if="spot.photoSpots">
+                <button class="expandable-toggle" @click="toggleSpotDetail('photo-' + idx)" :aria-expanded="isSpotDetailExpanded('photo-' + idx)">
+                  <span class="expandable-icon">📷</span>
+                  <span>打卡机位</span>
+                  <svg class="expandable-arrow" :class="{ collapsed: !isSpotDetailExpanded('photo-' + idx) }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <div class="expandable-content" :class="{ collapsed: !isSpotDetailExpanded('photo-' + idx) }">
+                  <div>
+                    <div class="photo-spots-list">
+                      <div class="photo-spot-item" v-for="ps in spot.photoSpots" :key="ps.name">
+                        <span class="photo-spot-name">{{ ps.name }}</span>
+                        <span class="photo-spot-tip" v-if="ps.tip">{{ ps.tip }}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -207,36 +238,74 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <InfoCard
-        card-id="dali-practical"
-        card-name="大理住宿美食"
-        :hidden-cards="hiddenCards"
-        @hide="(id, name) => $emit('hide-card', id, name)"
-      >
-        <div class="practical-section fade-in">
-          <div class="practical-Stay">
-            <div class="practical-section-title">🏨 住宿推荐</div>
-            <div class="stay-groups">
-              <div class="stay-group" v-for="group in data.accommodations" :key="group.category">
-                <div class="stay-group-label">{{ group.category }}</div>
-                <div class="stay-items">
-                  <div class="stay-item" v-for="item in group.items" :key="item.name">
-                    <div class="stay-item-header">
-                      <span class="stay-item-name">{{ item.name }}</span>
-                      <span class="stay-item-price">{{ item.price }}</span>
+    <!-- 区域4：住宿推荐区 -->
+    <div id="dali-guide-area-hotel" class="guide-module" :class="{ expanded: expandedModules.hotel }" ref="module-hotel">
+      <div class="guide-module-header guide-module-collapsible" @click="toggleModule('hotel')">
+        <h3 class="guide-module-title">住宿推荐</h3>
+        <span class="guide-module-toggle" :class="{ expanded: expandedModules.hotel }">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 9l-7 7-7-7"/>
+          </svg>
+        </span>
+      </div>
+      <div class="guide-module-content">
+        <div class="guide-module-content-inner">
+          <InfoCard
+            card-id="dali-hotel"
+            card-name="大理住宿推荐"
+            :hidden-cards="hiddenCards"
+            @hide="(id, name) => $emit('hide-card', id, name)"
+          >
+            <div class="practical-stay">
+              <div class="stay-groups">
+                <div class="stay-group" v-for="group in data.accommodations" :key="group.category">
+                  <div class="stay-group-label">{{ group.category }}</div>
+                  <div class="stay-items">
+                    <div class="stay-item" v-for="item in group.items" :key="item.name">
+                      <div class="stay-item-header">
+                        <span class="stay-item-name">{{ item.name }}</span>
+                        <span class="stay-item-price">{{ item.price }}</span>
+                      </div>
+                      <div class="stay-item-location">{{ item.location }}</div>
+                      <div class="stay-item-highlights">{{ item.highlights }}</div>
                     </div>
-                    <div class="stay-item-location">{{ item.location }}</div>
-                    <div class="stay-item-highlights">{{ item.highlights }}</div>
                   </div>
                 </div>
               </div>
+              <div class="stay-tips" v-if="data.accommodationTips">
+                <div class="stay-tips-title">住宿小贴士</div>
+                <div class="stay-tips-list">
+                  <div class="stay-tips-item" v-for="(tip, idx) in data.accommodationTips" :key="idx">{{ tip }}</div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="practical-food">
-            <div class="practical-section-title">🍜 必吃美食</div>
+          </InfoCard>
+        </div>
+      </div>
+    </div>
+
+    <!-- 区域5：美食推荐区 -->
+    <div id="dali-guide-area-food" class="guide-module" :class="{ expanded: expandedModules.food }" ref="module-food">
+      <div class="guide-module-header guide-module-collapsible" @click="toggleModule('food')">
+        <h3 class="guide-module-title">必吃美食</h3>
+        <span class="guide-module-toggle" :class="{ expanded: expandedModules.food }">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 9l-7 7-7-7"/>
+          </svg>
+        </span>
+      </div>
+      <div class="guide-module-content">
+        <div class="guide-module-content-inner">
+          <InfoCard
+            card-id="dali-food"
+            card-name="大理必吃美食"
+            :hidden-cards="hiddenCards"
+            @hide="(id, name) => $emit('hide-card', id, name)"
+          >
             <div class="food-items">
-              <div class="food-item-compact" v-for="food in data.foods" :key="food.name">
+              <div class="food-item" v-for="food in data.foods" :key="food.name">
                 <div class="food-item-header">
                   <span class="food-item-name">{{ food.name }}</span>
                   <span class="food-item-price">{{ food.price }}</span>
@@ -245,66 +314,98 @@
                 <div class="food-item-tip" v-if="food.tip">{{ food.tip }}</div>
               </div>
             </div>
-          </div>
+          </InfoCard>
         </div>
-      </InfoCard>
-
-      <InfoCard
-        card-id="dali-ticket"
-        card-name="大理门票&预约"
-        :hidden-cards="hiddenCards"
-        @hide="(id, name) => $emit('hide-card', id, name)"
-      >
-        <div class="ticket-section fade-in">
-          <div class="ticket-header">
-            <span class="ticket-label">🎫 学生票（持学生证）</span>
-          </div>
-          <div class="ticket-list">
-            <div class="ticket-item-detail" v-for="item in data.studentDiscounts" :key="item.spot">
-              <div class="ticket-item-row">
-                <span class="ticket-spot-name">{{ item.spot }}</span>
-                <span class="ticket-price-row">
-                  <span class="ticket-full">{{ item.fullPrice }}</span>
-                  <span class="ticket-arrow">→</span>
-                  <span class="ticket-student">{{ item.studentPrice }}</span>
-                </span>
-              </div>
-              <div class="ticket-item-note" v-if="item.note">{{ item.note }}</div>
-            </div>
-          </div>
-          <div class="ticket-booking">
-            <div class="ticket-booking-title">📅 预约信息</div>
-            <div class="ticket-booking-item" v-for="item in data.bookingInfo" :key="item.spot" :class="{ important: item.important }">
-              <strong>{{ item.spot }}</strong>：{{ item.note }}
-            </div>
-          </div>
-          <div class="ticket-note">大理古城、洱海廊道、喜洲古镇免费开放</div>
-        </div>
-      </InfoCard>
-
-      <InfoCard
-        card-id="dali-budget"
-        card-name="大理预算参考"
-        :hidden-cards="hiddenCards"
-        @hide="(id, name) => $emit('hide-card', id, name)"
-      >
-        <div class="simple-info fade-in">
-          <div class="simple-info-title"><span class="emoji" aria-hidden="true">💰</span> 预算参考（2天）</div>
-          <div class="simple-info-content">
-            <strong>常规版约600元：</strong>住宿150元+餐饮150元+环湖交通100元+体验项目100元<br>
-            <strong>经济版约250元：</strong>青旅住宿+公交出行+只逛免费景点
-          </div>
-        </div>
-      </InfoCard>
-
-      <div class="warning-box fade-in">
-        <strong>避坑：</strong>别信"50元环洱海一日游"；别买古城银饰玉石；租车问清续航和隐藏费用。
       </div>
-    </section>
+    </div>
+
+    <!-- 区域6：门票优惠与预约区 -->
+    <div id="dali-guide-area-ticket" class="guide-module" :class="{ expanded: expandedModules.ticket }" ref="module-ticket">
+      <div class="guide-module-header guide-module-collapsible" @click="toggleModule('ticket')">
+        <h3 class="guide-module-title">门票优惠 & 预约指南</h3>
+        <span class="guide-module-toggle" :class="{ expanded: expandedModules.ticket }">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 9l-7 7-7-7"/>
+          </svg>
+        </span>
+      </div>
+      <div class="guide-module-content">
+        <div class="guide-module-content-inner">
+          <InfoCard
+            card-id="dali-ticket"
+            card-name="大理门票&预约"
+            :hidden-cards="hiddenCards"
+            :closable="false"
+            @hide="(id, name) => $emit('hide-card', id, name)"
+          >
+            <div class="ticket-section">
+              <div class="ticket-header">
+                <span class="ticket-label">🎫 学生票（持学生证）</span>
+              </div>
+              <div class="ticket-list">
+                <div class="ticket-item" v-for="item in data.studentDiscounts" :key="item.spot">
+                  <div class="ticket-item-row">
+                    <span class="ticket-spot-name">{{ item.spot }}</span>
+                    <span class="ticket-price-row">
+                      <span class="ticket-full">{{ item.fullPrice }}</span>
+                      <span class="ticket-arrow">→</span>
+                      <span class="ticket-student">{{ item.studentPrice }}</span>
+                    </span>
+                  </div>
+                  <div class="ticket-item-note" v-if="item.note">{{ item.note }}</div>
+                </div>
+              </div>
+              <div class="ticket-booking">
+                <div class="ticket-booking-title">📅 预约信息</div>
+                <div class="ticket-booking-item" v-for="item in data.bookingInfo" :key="item.spot" :class="{ important: item.important }">
+                  <strong>{{ item.spot }}</strong>：{{ item.note }}
+                </div>
+              </div>
+              <div class="ticket-note">大理古城、洱海廊道、喜洲古镇免费开放</div>
+            </div>
+          </InfoCard>
+        </div>
+      </div>
+    </div>
+
+    <!-- 区域7：预算与避坑区 -->
+    <div id="dali-guide-area-budget" class="guide-module" :class="{ expanded: expandedModules.budget }" ref="module-budget">
+      <div class="guide-module-header guide-module-collapsible" @click="toggleModule('budget')">
+        <h3 class="guide-module-title">预算参考 & 避坑指南</h3>
+        <span class="guide-module-toggle" :class="{ expanded: expandedModules.budget }">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 9l-7 7-7-7"/>
+          </svg>
+        </span>
+      </div>
+      <div class="guide-module-content">
+        <div class="guide-module-content-inner">
+          <InfoCard
+            card-id="dali-budget"
+            card-name="大理预算参考"
+            :hidden-cards="hiddenCards"
+            @hide="(id, name) => $emit('hide-card', id, name)"
+          >
+            <div class="simple-info">
+              <div class="simple-info-title"><span class="emoji" aria-hidden="true">💰</span> 预算参考（2天）</div>
+              <div class="simple-info-content">
+                <strong>常规版约600元：</strong>住宿150元+餐饮150元+环湖交通100元+体验项目100元<br>
+                <strong>经济版约250元：</strong>青旅住宿+公交出行+只逛免费景点
+              </div>
+            </div>
+          </InfoCard>
+
+          <div class="warning-box">
+            <strong>避坑：</strong>别信"50元环洱海一日游"；别买古城银饰玉石；租车问清续航和隐藏费用。
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, nextTick } from 'vue'
 import InfoCard from '../InfoCard.vue'
 
 defineProps({
@@ -314,23 +415,40 @@ defineProps({
 
 defineEmits(['hide-card', 'open-lightbox', 'open-map'])
 
-const routeDetailCollapsed = ref(true)
-const spotDetailCollapsed = reactive({})
 const imgErrors = reactive({})
 const loadedImages = reactive({})
+const spotDetailCollapsed = reactive({})
 
-const safeStorage = {
-  getItem (key) {
-    try { return localStorage.getItem(key) } catch (e) { return null }
-  },
-  setItem (key, value) {
-    try { localStorage.setItem(key, value) } catch (e) {}
-  }
+const modules = [
+  { id: 'overview', title: '大理·苍山洱海', shortTitle: '总览' },
+  { id: 'itinerary', title: '详细行程时间线', shortTitle: '时间线' },
+  { id: 'scenic', title: '核心景点详解', shortTitle: '景点详解' },
+  { id: 'hotel', title: '住宿推荐', shortTitle: '住宿' },
+  { id: 'food', title: '必吃美食', shortTitle: '美食' },
+  { id: 'ticket', title: '门票优惠 & 预约指南', shortTitle: '门票预约' },
+  { id: 'budget', title: '预算参考 & 避坑指南', shortTitle: '预算避坑' }
+]
+
+const expandedModules = reactive({
+  itinerary: false,
+  scenic: false,
+  hotel: false,
+  food: false,
+  ticket: false,
+  budget: false
+})
+
+const activeModule = ref('overview')
+const quickNavBar = ref(null)
+
+const toggleModule = (moduleId) => {
+  expandedModules[moduleId] = !expandedModules[moduleId]
 }
 
-const toggleRouteDetail = () => {
-  routeDetailCollapsed.value = !routeDetailCollapsed.value
-  safeStorage.setItem('routeDetailCollapsed', routeDetailCollapsed.value)
+const expandModule = (moduleId) => {
+  if (moduleId !== 'overview') {
+    expandedModules[moduleId] = true
+  }
 }
 
 const toggleSpotDetail = (key) => {
@@ -341,24 +459,21 @@ const isSpotDetailExpanded = (key) => {
   return spotDetailCollapsed[key] === true
 }
 
-const initRouteDetailState = () => {
-  const saved = safeStorage.getItem('routeDetailCollapsed')
-  if (saved === 'true') {
-    routeDetailCollapsed.value = true
-  }
-}
+const scrollToModule = (moduleId) => {
+  const element = document.getElementById(`dali-guide-area-${moduleId}`)
+  if (element) {
+    expandModule(moduleId)
+    nextTick(() => {
+      const navHeight = quickNavBar.value ? quickNavBar.value.offsetHeight : 0
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+      const offsetPosition = elementPosition - navHeight - 20
 
-const createRipple = (event) => {
-  const element = event.currentTarget
-  const ripple = document.createElement('span')
-  ripple.classList.add('ripple')
-  const rect = element.getBoundingClientRect()
-  const size = Math.max(rect.width, rect.height)
-  ripple.style.width = ripple.style.height = size + 'px'
-  ripple.style.left = (event.clientX || rect.left + rect.width / 2) - rect.left - size / 2 + 'px'
-  ripple.style.top = (event.clientY || rect.top + rect.height / 2) - rect.top - size / 2 + 'px'
-  element.appendChild(ripple)
-  setTimeout(() => ripple.remove(), 500)
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+    })
+  }
 }
 
 const handleImageLoad = (src) => {
@@ -369,30 +484,214 @@ const handleImageError = (src) => {
   imgErrors[src] = true
 }
 
-onMounted(() => {
-  initRouteDetailState()
+defineExpose({
+  expandModule,
+  scrollToModule
+})
 
+onMounted(() => {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible')
+        const id = entry.target.id.replace('dali-guide-area-', '')
+        activeModule.value = id
       }
     })
-  }, { threshold: 0.1, rootMargin: '50px' })
+  }, {
+    threshold: 0.3,
+    rootMargin: '-100px 0px -50% 0px'
+  })
 
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el))
+  nextTick(() => {
+    document.querySelectorAll('.guide-module[id^="dali-guide-area"]').forEach(el => {
+      observer.observe(el)
+    })
+  })
 })
 </script>
 
 <style scoped>
 @import '../slides-common.css';
 
+.dali-section {
+  padding-top: 0;
+}
+
+.quick-nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-xs) 0;
+  margin: 0 calc(-1 * var(--space-md));
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
+}
+
+.quick-nav-inner {
+  display: flex;
+  gap: var(--space-xs);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+
+.quick-nav-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.quick-nav-btn {
+  flex-shrink: 0;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--earth-light);
+  border: 1px solid var(--border);
+  border-radius: var(--space-sm);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  font-family: inherit;
+  min-height: 36px;
+}
+
+.quick-nav-btn:hover {
+  background: var(--forest-light);
+  border-color: var(--forest);
+  color: var(--forest);
+}
+
+.quick-nav-btn:active {
+  transform: scale(0.96);
+}
+
+.quick-nav-btn.active {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: white;
+}
+
+.guide-module {
+  position: relative;
+  padding-top: var(--space-lg);
+}
+
+.guide-module + .guide-module::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border) 20%, var(--border) 80%, transparent 100%);
+}
+
+.guide-module-header {
+  margin-bottom: var(--space-md);
+}
+
+.guide-module-header-static {
+  cursor: default;
+}
+
+.guide-module-collapsible {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm);
+  background: var(--earth-light);
+  border-radius: var(--space-sm);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out-quart);
+  user-select: none;
+  min-height: 48px;
+}
+
+.guide-module-collapsible:hover {
+  background: var(--forest-light);
+}
+
+.guide-module-collapsible:active {
+  transform: scale(0.99);
+}
+
+.guide-module-title {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: var(--text-lg);
+  font-weight: 400;
+  color: var(--forest);
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.guide-module-title-large {
+  font-size: clamp(1.25rem, 5vw, 1.5rem);
+}
+
+.guide-module-toggle {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--forest);
+  transition: transform var(--duration-normal) var(--ease-out-quart);
+}
+
+.guide-module-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.guide-module-toggle.expanded {
+  transform: rotate(180deg);
+}
+
+.guide-module-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s var(--ease-out-quart);
+}
+
+.guide-module-content-wrapper {
+  min-height: 0;
+}
+
+.guide-module-content-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.guide-module-expanded .guide-module-content-wrapper {
+  display: block;
+}
+
+.guide-module.expanded .guide-module-content {
+  grid-template-rows: 1fr;
+}
+
+.section-number {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 0.75rem;
+  color: var(--sunset);
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-xs);
+}
+
+.section-desc {
+  font-size: calc(var(--text-sm) * var(--text-scale, 1));
+  color: var(--text);
+  line-height: 1.8;
+  margin-bottom: var(--space-lg);
+}
+
 .route-overview {
   background: var(--card);
   border: 2px solid var(--forest);
   border-radius: var(--space-md);
   padding: var(--space-md);
-  margin-bottom: var(--space-lg);
 }
 
 .route-overview-title {
@@ -471,76 +770,15 @@ onMounted(() => {
 }
 
 .route-detail {
-  background: var(--forest-light);
-  border-radius: var(--space-md);
-  overflow: hidden;
-}
-
-.route-detail-toggle {
-  width: 100%;
   padding: var(--space-md);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  font-family: inherit;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--forest);
-  transition: background var(--duration-normal) var(--ease-out-quart), color var(--duration-normal) var(--ease-out-quart);
-  min-height: 44px;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.route-detail-toggle:hover {
-  background: var(--forest);
-  color: white;
-}
-
-.route-detail-toggle:active {
-  transform: scale(0.98);
-}
-
-.route-detail-toggle-icon {
-  font-size: 1.2rem;
-}
-
-.route-detail-toggle-text {
-  flex: 1;
-  text-align: left;
-}
-
-.route-detail-toggle-arrow {
-  width: 20px;
-  height: 20px;
-  transition: transform 0.3s var(--ease-out-quart);
-}
-
-.route-detail.collapsed .route-detail-toggle-arrow {
-  transform: rotate(-90deg);
-}
-
-.route-detail-content {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition: grid-template-rows 0.35s var(--ease-out-quart), opacity 0.3s var(--ease-out-quart);
-  opacity: 1;
-}
-
-.route-detail.collapsed .route-detail-content {
-  grid-template-rows: 0fr;
-  opacity: 0;
-}
-
-.route-detail-inner {
-  overflow: hidden;
-  min-height: 0;
 }
 
 .route-day-section {
-  padding: 0 var(--space-md) var(--space-md);
+  padding-bottom: var(--space-md);
+}
+
+.route-day-section:last-child {
+  padding-bottom: 0;
 }
 
 .route-day-header {
@@ -552,7 +790,7 @@ onMounted(() => {
 
 .route-day-badge {
   font-size: calc(0.7rem * var(--text-scale, 1));
-  font-weight: calc(700 + var(--text-weight-boost, 0));
+  font-weight: 700;
   padding: 0.2rem 0.5rem;
   border-radius: 0.25rem;
   color: white;
@@ -580,7 +818,6 @@ onMounted(() => {
   align-items: flex-start;
   gap: var(--space-sm);
   padding: var(--space-xs) 0;
-  position: relative;
 }
 
 .route-timeline-item.optional {
@@ -596,7 +833,7 @@ onMounted(() => {
 
 .timeline-time {
   font-size: calc(0.75rem * var(--text-scale, 1));
-  font-weight: calc(600 + var(--text-weight-boost, 0));
+  font-weight: 600;
   color: var(--sunset);
   min-width: 2.5rem;
   flex-shrink: 0;
@@ -615,7 +852,6 @@ onMounted(() => {
   font-size: calc(var(--text-sm) * var(--text-scale, 1));
   color: var(--text);
   line-height: 1.6;
-  font-weight: calc(400 + var(--text-weight-boost, 0));
 }
 
 .timeline-event :deep(strong) {
@@ -623,35 +859,26 @@ onMounted(() => {
 }
 
 .spot-group {
-  margin: var(--space-lg) 0;
+  padding: var(--space-md);
 }
 
 .spot-with-route {
   position: relative;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.spot-with-route:last-child {
+  margin-bottom: 0;
 }
 
 .spot {
-  margin-bottom: var(--space-lg);
-  padding-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
   border-bottom: 1px dashed var(--border);
-  position: relative;
-  overflow: hidden;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .spot:last-child {
   border-bottom: none;
-  margin-bottom: 0;
   padding-bottom: 0;
-}
-
-.spot:active {
-  background: var(--forest-light);
-  border-radius: 0.5rem;
-  margin-left: -0.5rem;
-  margin-right: -0.5rem;
-  padding: 0.5rem;
 }
 
 .spot-name {
@@ -662,7 +889,6 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
-  letter-spacing: 0.01em;
 }
 
 .spot-dot {
@@ -671,16 +897,6 @@ onMounted(() => {
   background: var(--sunset);
   border-radius: 50%;
   flex-shrink: 0;
-  transition: transform var(--duration-normal) var(--ease-out-quart);
-}
-
-.spot:hover .spot-dot {
-  animation: spotDotPulse 0.4s var(--ease-out-quart);
-}
-
-@keyframes spotDotPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.5); }
 }
 
 .spot-highlight-tag {
@@ -691,9 +907,6 @@ onMounted(() => {
   font-weight: 600;
   padding: 0.2rem 0.5rem;
   border-radius: 0.3rem;
-  margin-left: var(--space-xs);
-  vertical-align: middle;
-  letter-spacing: 0.02em;
 }
 
 .spot-map-btn {
@@ -713,7 +926,10 @@ onMounted(() => {
 
 .spot-map-btn:hover {
   background: var(--forest);
-  border-color: var(--forest);
+}
+
+.spot-map-btn:hover svg {
+  color: white;
 }
 
 .spot-map-btn:active {
@@ -727,10 +943,6 @@ onMounted(() => {
   transition: color var(--duration-fast) var(--ease-out-quart);
 }
 
-.spot-map-btn:hover svg {
-  color: white;
-}
-
 .spot-highlight {
   font-size: var(--text-sm);
   color: var(--text-muted);
@@ -738,23 +950,33 @@ onMounted(() => {
   line-height: 1.75;
 }
 
+.spot-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
 .spot-transport {
   font-size: calc(0.75rem * var(--text-scale, 1));
-  font-weight: calc(400 + var(--text-weight-boost, 0));
   color: var(--sky);
   background: var(--sky-light);
   padding: var(--space-2xs) var(--space-xs);
   border-radius: var(--space-2xs);
-  display: inline-block;
-  margin-top: var(--space-2xs);
+}
+
+.spot-time {
+  font-size: calc(0.7rem * var(--text-scale, 1));
+  color: var(--text-muted);
+  background: var(--earth-light);
+  padding: 2px 6px;
+  border-radius: var(--space-2xs);
 }
 
 .spot-photo-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-xs);
-  margin-top: var(--space-xs);
-  padding: 0 var(--space-xs);
+  margin-top: var(--space-sm);
 }
 
 .photo-item {
@@ -763,7 +985,6 @@ onMounted(() => {
   overflow: hidden;
   aspect-ratio: 1 / 1;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
   transition: transform var(--duration-fast) var(--ease-out-quart);
 }
 
@@ -784,10 +1005,6 @@ onMounted(() => {
 
 .photo-item:hover img {
   transform: scale(1.08);
-}
-
-.photo-item:active img {
-  transform: scale(1.05);
 }
 
 .photo-label {
@@ -816,145 +1033,6 @@ onMounted(() => {
   color: var(--text-muted);
 }
 
-@media (max-width: 480px) {
-  .route-curve {
-    width: 0.8rem;
-    height: 1.2rem;
-  }
-}
-
-.key-info {
-  background: var(--card);
-  border: 2px solid var(--forest);
-  border-radius: var(--space-md);
-  padding: var(--space-md);
-}
-
-.key-info-title {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--forest);
-  margin-bottom: var(--space-sm);
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.key-info-grid {
-  display: grid;
-  gap: var(--space-sm);
-}
-
-.key-info-row {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-sm);
-  font-size: var(--text-sm);
-  line-height: 1.6;
-}
-
-.key-info-row-icon {
-  color: var(--sunset);
-  flex-shrink: 0;
-}
-
-.key-info-row-text {
-  color: var(--text);
-}
-
-.key-info-row-text strong {
-  color: var(--forest);
-  font-weight: 600;
-}
-
-.key-info-price {
-  color: var(--sunset);
-  font-weight: 600;
-  margin-left: var(--space-xs);
-}
-
-.key-info-note {
-  display: block;
-  font-size: calc(0.75rem * var(--text-scale, 1));
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-.key-info-footer {
-  margin-top: var(--space-sm);
-  padding-top: var(--space-sm);
-  border-top: 1px dashed var(--border);
-  text-align: center;
-}
-
-.key-info-footer-note {
-  font-size: calc(0.75rem * var(--text-scale, 1));
-  color: var(--text-muted);
-}
-
-.booking-section {
-  background: var(--card);
-  border: 2px solid var(--forest);
-  border-radius: var(--space-md);
-  padding: var(--space-md);
-}
-
-.booking-title {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--forest);
-  margin-bottom: var(--space-sm);
-  text-align: center;
-}
-
-.booking-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-}
-
-.booking-item {
-  background: var(--forest-light);
-  border-radius: var(--space-sm);
-  padding: var(--space-sm);
-}
-
-.booking-item.important {
-  border: 2px solid var(--sunset);
-  background: var(--sunset-soft);
-}
-
-.booking-spot {
-  font-size: calc(0.8rem * var(--text-scale, 1));
-  font-weight: calc(700 + var(--text-weight-boost, 0));
-  color: var(--forest);
-}
-
-.booking-item.important .booking-spot {
-  color: var(--sunset);
-}
-
-.booking-note {
-  font-size: calc(0.75rem * var(--text-scale, 1));
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-.spot-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
-  margin-top: var(--space-2xs);
-}
-
-.spot-time {
-  font-size: calc(0.7rem * var(--text-scale, 1));
-  color: var(--text-muted);
-  background: var(--earth-light);
-  padding: 2px 6px;
-  border-radius: var(--space-2xs);
-}
-
 .spot-cycling {
   background: var(--sky-light);
   border-radius: var(--space-sm);
@@ -976,16 +1054,11 @@ onMounted(() => {
   font-weight: 600;
   color: var(--sky);
   min-height: 44px;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .expandable-toggle:hover {
   background: var(--sky);
   color: white;
-}
-
-.expandable-toggle:active {
-  transform: scale(0.98);
 }
 
 .expandable-icon {
@@ -1015,7 +1088,7 @@ onMounted(() => {
   padding-bottom: 0;
 }
 
-.expandable-content > * {
+.expandable-content > div {
   min-height: 0;
   overflow: hidden;
 }
@@ -1034,7 +1107,7 @@ onMounted(() => {
 
 .cycling-route-name {
   font-size: calc(0.8rem * var(--text-scale, 1));
-  font-weight: calc(600 + var(--text-weight-boost, 0));
+  font-weight: 600;
   color: var(--text);
 }
 
@@ -1090,7 +1163,7 @@ onMounted(() => {
 
 .photo-spot-name {
   font-size: calc(0.8rem * var(--text-scale, 1));
-  font-weight: calc(600 + var(--text-weight-boost, 0));
+  font-weight: 600;
   color: var(--text);
 }
 
@@ -1099,21 +1172,8 @@ onMounted(() => {
   color: var(--text-muted);
 }
 
-.practical-section {
-  padding: var(--space-md);
-}
-
-.practical-section-title {
-  font-size: calc(0.9rem * var(--text-scale, 1));
-  font-weight: calc(700 + var(--text-weight-boost, 0));
-  color: var(--forest);
-  margin-bottom: var(--space-md);
-  padding-bottom: var(--space-xs);
-  border-bottom: 2px solid var(--forest-light);
-}
-
 .practical-stay {
-  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
 }
 
 .stay-groups {
@@ -1124,7 +1184,7 @@ onMounted(() => {
 
 .stay-group-label {
   font-size: calc(0.7rem * var(--text-scale, 1));
-  font-weight: calc(600 + var(--text-weight-boost, 0));
+  font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1152,7 +1212,7 @@ onMounted(() => {
 
 .stay-item-name {
   font-size: calc(0.85rem * var(--text-scale, 1));
-  font-weight: calc(700 + var(--text-weight-boost, 0));
+  font-weight: 700;
   color: var(--forest);
 }
 
@@ -1176,46 +1236,80 @@ onMounted(() => {
   line-height: 1.4;
 }
 
+.stay-tips {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px dashed var(--border);
+}
+
+.stay-tips-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--forest);
+  margin-bottom: var(--space-sm);
+}
+
+.stay-tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.stay-tips-item {
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  color: var(--text-muted);
+  padding-left: var(--space-sm);
+  position: relative;
+}
+
+.stay-tips-item::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--forest);
+}
+
 .food-items {
+  padding: var(--space-md);
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
 }
 
-.food-item-compact {
+.food-item {
   background: var(--forest-light);
   border-radius: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
   border-left: 3px solid var(--sunset);
 }
 
-.food-item-compact .food-item-header {
+.food-item-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 4px;
 }
 
-.food-item-compact .food-item-name {
+.food-item-name {
   font-size: calc(0.85rem * var(--text-scale, 1));
-  font-weight: calc(700 + var(--text-weight-boost, 0));
+  font-weight: 700;
   color: var(--forest);
 }
 
-.food-item-compact .food-item-price {
+.food-item-price {
   font-size: calc(0.8rem * var(--text-scale, 1));
   font-weight: 600;
   color: var(--sunset);
   white-space: nowrap;
 }
 
-.food-item-compact .food-item-shops {
+.food-item-shops {
   font-size: calc(0.75rem * var(--text-scale, 1));
   color: var(--text);
   line-height: 1.4;
 }
 
-.food-item-compact .food-item-tip {
+.food-item-tip {
   font-size: calc(0.7rem * var(--text-scale, 1));
   color: var(--text-muted);
   margin-top: 4px;
@@ -1234,7 +1328,7 @@ onMounted(() => {
 
 .ticket-label {
   font-size: calc(0.9rem * var(--text-scale, 1));
-  font-weight: calc(700 + var(--text-weight-boost, 0));
+  font-weight: 700;
   color: var(--forest);
 }
 
@@ -1245,7 +1339,7 @@ onMounted(() => {
   margin-bottom: var(--space-md);
 }
 
-.ticket-item-detail {
+.ticket-item {
   background: var(--forest-light);
   border-radius: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
@@ -1260,7 +1354,7 @@ onMounted(() => {
 
 .ticket-spot-name {
   font-size: calc(0.85rem * var(--text-scale, 1));
-  font-weight: calc(600 + var(--text-weight-boost, 0));
+  font-weight: 600;
   color: var(--text);
 }
 
@@ -1299,7 +1393,7 @@ onMounted(() => {
 
 .ticket-booking-title {
   font-size: calc(0.8rem * var(--text-scale, 1));
-  font-weight: calc(600 + var(--text-weight-boost, 0));
+  font-weight: 600;
   color: var(--text);
   margin-bottom: var(--space-sm);
 }
@@ -1336,22 +1430,28 @@ onMounted(() => {
   border-top: 1px dashed var(--border);
 }
 
-@media (min-width: 480px) {
-  .stay-items {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.simple-info {
+  padding: var(--space-md);
 }
 
-.info-note {
-  font-size: calc(0.85rem * var(--text-scale, 1));
-  color: var(--text-muted);
-  margin-top: var(--space-sm);
+.simple-info-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--forest);
+  margin-bottom: var(--space-sm);
+}
+
+.simple-info-content {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  line-height: 1.8;
+  color: var(--text);
 }
 
 .warning-box {
+  margin: var(--space-md);
+  padding: var(--space-md);
   background: var(--sunset-soft);
   border-radius: var(--space-md);
-  padding: var(--space-md);
   font-size: var(--text-sm);
   color: var(--text);
   line-height: 1.6;
@@ -1362,22 +1462,20 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
-  .practical-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-sm);
-  }
-  .ticket-grid {
-    grid-template-columns: 1fr;
-  }
-  .ticket-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
+  .quick-nav-btn {
+    font-size: 0.7rem;
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 40px;
   }
   .spot-photo-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-2xs);
+  }
+}
+
+@media (min-width: 480px) {
+  .stay-items {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -1388,20 +1486,12 @@ onMounted(() => {
   }
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .photo-item:hover img {
-    transform: scale(1.08);
-  }
-  .spot:hover {
-    background: transparent;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .fade-in,
-  .route-detail-content,
-  .route-detail-toggle-arrow {
-    transition-duration: 0.01ms !important;
+  .guide-module-content,
+  .guide-module-toggle,
+  .expandable-arrow,
+  .expandable-content {
+    transition: none;
   }
 }
 </style>

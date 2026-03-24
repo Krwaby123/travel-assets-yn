@@ -99,7 +99,7 @@ export const itineraryOptions = {
 
 export const navTabs = [
   { id: 'home', label: '首页' },
-  { id: 'dounan', label: '斗南' },
+  { id: 'dounan', label: '昆明' },
   { id: 'dali', label: '大理' },
   { id: 'lijiang', label: '丽江' },
   { id: 'shangri', label: '香格里拉' },
@@ -107,7 +107,7 @@ export const navTabs = [
 ]
 
 export const dounanData = {
-  title: '斗南花市 · 昆明',
+  title: '昆明 · 斗南花市',
   number: '壹',
   desc: '亚洲最大鲜花交易市场，全国80%鲜切花来自这里。5元一把玫瑰，10块钱实现鲜花自由。',
   quickTips: [

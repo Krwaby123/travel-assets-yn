@@ -1,38 +1,57 @@
 <template>
   <section class="section home-section">
-      <div class="home-intro fade-in" style="--delay: 0">
-        <p class="home-intro-text">3月云南，晴天为主，气温舒适。<br>昆明斗南→大理洱海，核心两地深度游，慢玩不赶路。</p>
+    <!-- 区域1：行程总览区 -->
+    <div id="home-guide-area-overview" class="guide-module">
+      <div class="guide-module-header">
+        <h2 class="guide-module-title">行程总览</h2>
       </div>
-
-      <div class="pre-trip-checklist fade-in" style="--delay: 50">
-        <div class="checklist-header">
-          <svg class="checklist-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 11l3 3L22 4"/>
-            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-          </svg>
-          <span class="checklist-title">出发前检查清单</span>
-          <span class="checklist-progress">{{ checkedItems.length }}/{{ checklistItems.length }}</span>
-        </div>
-        <div class="checklist-items">
-          <label v-for="(item, idx) in checklistItems" :key="idx" class="checklist-item" :class="{ checked: checkedItems.includes(idx) }">
-            <input 
-              type="checkbox" 
-              :checked="checkedItems.includes(idx)"
-              @change="toggleCheckItem(idx)"
-              class="checklist-checkbox"
-            >
-            <span class="checklist-checkbox-custom"></span>
-            <span class="checklist-item-text">{{ item }}</span>
-          </label>
-        </div>
-        <div class="checklist-tip" v-if="checkedItems.length === checklistItems.length">
-          <span class="checklist-tip-icon">✓</span>
-          准备就绪！祝你旅途愉快 🎉
+      <div class="guide-module-content">
+        <div class="home-intro">
+          <p class="home-intro-text">3月云南，晴天为主，气温舒适。<br>昆明斗南→大理洱海，核心两地深度游，慢玩不赶路。</p>
         </div>
       </div>
+    </div>
 
-      <div class="quick-start fade-in" style="--delay: 100">
-        <div class="quick-start-label">第一次来？推荐路线</div>
+    <!-- 区域2：出行检查区 -->
+    <div id="home-guide-area-checklist" class="guide-module">
+      <div class="guide-module-header">
+        <h2 class="guide-module-title">出发前检查清单</h2>
+      </div>
+      <div class="guide-module-content">
+        <div class="pre-trip-checklist">
+          <div class="checklist-header">
+            <svg class="checklist-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            </svg>
+            <span class="checklist-progress">{{ checkedItems.length }}/{{ checklistItems.length }}</span>
+          </div>
+          <div class="checklist-items">
+            <label v-for="(item, idx) in checklistItems" :key="idx" class="checklist-item" :class="{ checked: checkedItems.includes(idx) }">
+              <input
+                type="checkbox"
+                :checked="checkedItems.includes(idx)"
+                @change="toggleCheckItem(idx)"
+                class="checklist-checkbox"
+              >
+              <span class="checklist-checkbox-custom"></span>
+              <span class="checklist-item-text">{{ item }}</span>
+            </label>
+          </div>
+          <div class="checklist-tip" v-if="checkedItems.length === checklistItems.length">
+            <span class="checklist-tip-icon">✓</span>
+            准备就绪！祝你旅途愉快 🎉
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 区域3：路线推荐区 -->
+    <div id="home-guide-area-routes" class="guide-module">
+      <div class="guide-module-header">
+        <h2 class="guide-module-title">第一次来？推荐路线</h2>
+      </div>
+      <div class="guide-module-content">
         <div class="quick-start-cards">
           <div class="quick-start-card" @click.stop="$emit('navigate', 1)" @mousedown="createRipple">
             <span class="quick-start-emoji">🌸</span>
@@ -52,178 +71,200 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="quick-nav-card fade-in" style="--delay: 150">
-        <div class="quick-nav-header">
-          <svg class="quick-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-            <circle cx="12" cy="10" r="3"/>
-          </svg>
-          <div class="quick-nav-info">
-            <span class="quick-nav-title">地图导航</span>
-            <span class="quick-nav-desc">查看路线 · 规划行程</span>
-          </div>
-        </div>
-        <button class="quick-nav-btn" @click="$emit('navigate', 5)">
-          <span>打开地图</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
-        </button>
+    <!-- 区域4：地图入口区 -->
+    <div id="home-guide-area-map" class="guide-module">
+      <div class="guide-module-header">
+        <h2 class="guide-module-title">地图导航</h2>
       </div>
-
-      <div class="student-discount-card fade-in" style="--delay: 200">
-        <div class="student-discount-badge">
-          <span class="student-discount-badge-icon">🎓</span>
-          <span class="student-discount-badge-text">学生专属</span>
-        </div>
-        <div class="student-discount-content">
-          <div class="student-discount-title">持学生证享半价优惠</div>
-          <div class="student-discount-list">
-            <div class="student-discount-item">
-              <span class="student-discount-spot">崇圣寺三塔</span>
-              <span class="student-discount-save">省37.5元</span>
-            </div>
-            <div class="student-discount-item">
-              <span class="student-discount-spot">苍山索道</span>
-              <span class="student-discount-save">半价优惠</span>
-            </div>
-            <div class="student-discount-item">
-              <span class="student-discount-spot">蝴蝶泉</span>
-              <span class="student-discount-save">省20元</span>
+      <div class="guide-module-content">
+        <div class="quick-nav-card">
+          <div class="quick-nav-header">
+            <svg class="quick-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <div class="quick-nav-info">
+              <span class="quick-nav-desc">查看路线 · 规划行程</span>
             </div>
           </div>
-          <button class="student-discount-more" @click="$emit('navigate', { index: 2, scrollTo: 'dali-ticket' })">
-            查看全部优惠
+          <button class="quick-nav-btn" @click="$emit('navigate', 5)">
+            <span>打开地图</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 18l6-6-6-6"/>
             </svg>
           </button>
         </div>
       </div>
+    </div>
 
-      <InfoCard
-        card-id="home-itinerary"
-        card-name="推荐行程"
-        :hidden-cards="hiddenCards"
-        :closable="false"
-        @hide="(id, name) => $emit('hide-card', id, name)"
-      >
-        <div class="home-itinerary">
-          <div class="home-itinerary-header">
-            <span class="home-itinerary-title">
-              <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-              </svg>
-              推荐行程（斗南+大理）
-            </span>
-            <div class="itinerary-tabs" role="tablist" aria-label="行程选择" ref="tabsRef">
-              <button
-                v-for="(option, key) in itineraryOptions"
-                :key="key"
-                ref="tabButtons"
-                :class="['itinerary-tab', { active: activeItinerary === key }]"
-                role="tab"
-                :aria-selected="activeItinerary === key"
-                :aria-controls="'itinerary-' + key"
-                @click="activeItinerary = key"
-              >
-                {{ option.label }}
-                <span v-if="option.badge" class="tab-badge">{{ option.badge }}</span>
-              </button>
-              <div class="tab-indicator" :style="indicatorStyle"></div>
-            </div>
-          </div>
-
-          <div
-            v-for="(option, key) in itineraryOptions"
-            :key="key"
-            :id="'itinerary-' + key"
-            :class="['itinerary-content', { active: activeItinerary === key }]"
-            role="tabpanel"
-          >
-            <div class="itinerary-flow">
-              <template v-for="(day, index) in option.days" :key="day.num">
-                <div class="itinerary-day">
-                  <span class="itinerary-day-num">{{ day.num }}</span>
-                  <span class="itinerary-day-place">{{ day.place }}</span>
-                  <span class="itinerary-day-activity">{{ day.activity }}</span>
-                </div>
-                <span v-if="index < option.days.length - 1" class="itinerary-arrow">→</span>
-              </template>
-            </div>
-            <div class="itinerary-budget">
-              <span class="budget-label">人均预算：</span>
-              <span class="budget-value">{{ option.budget }}</span>
-              <span class="budget-note">{{ option.note }}</span>
-            </div>
-          </div>
-        </div>
-      </InfoCard>
-
-      <div class="destinations-grid">
-        <DestinationCard
-          v-for="(dest, idx) in destinations"
-          :key="dest.id"
-          v-bind="dest"
-          :reveal-delay="(idx * 100) + 'ms'"
-          @click="handleDestClick($event, dest.goto)"
-          @mousedown="createRipple"
-        />
+    <!-- 区域5：优惠汇总区 -->
+    <div id="home-guide-area-discounts" class="guide-module">
+      <div class="guide-module-header">
+        <h2 class="guide-module-title">学生专属优惠</h2>
       </div>
+      <div class="guide-module-content">
+        <div class="student-discount-card">
+          <div class="student-discount-badge">
+            <span class="student-discount-badge-icon">🎓</span>
+            <span class="student-discount-badge-text">学生专属</span>
+          </div>
+          <div class="student-discount-content">
+            <div class="student-discount-title">持学生证享半价优惠</div>
+            <div class="student-discount-list">
+              <div class="student-discount-item">
+                <span class="student-discount-spot">崇圣寺三塔</span>
+                <span class="student-discount-save">省37.5元</span>
+              </div>
+              <div class="student-discount-item">
+                <span class="student-discount-spot">苍山索道</span>
+                <span class="student-discount-save">半价优惠</span>
+              </div>
+              <div class="student-discount-item">
+                <span class="student-discount-spot">蝴蝶泉</span>
+                <span class="student-discount-save">省20元</span>
+              </div>
+            </div>
+            <button class="student-discount-more" @click="$emit('navigate', { index: 2, scrollTo: 'dali-ticket' })">
+              查看全部优惠
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <InfoCard
-        card-id="home-travel-tips"
-        card-name="出行须知"
-        :hidden-cards="hiddenCards"
-        @hide="(id, name) => $emit('hide-card', id, name)"
-      >
-        <div class="home-travel-tips fade-in" style="--delay: 500">
-          <div class="home-tips-grid">
-            <div class="home-tips-item" v-for="tip in travelTips" :key="tip.title">
-              <span class="home-tips-icon">{{ tip.icon }}</span>
-              <div class="home-tips-content">
-                <strong>{{ tip.title }}</strong>
-                <span>{{ tip.desc }}</span>
+    <!-- 区域6：行程规划区 -->
+    <div id="home-guide-area-itinerary" class="guide-module">
+      <div class="guide-module-header">
+        <h2 class="guide-module-title">推荐行程</h2>
+      </div>
+      <div class="guide-module-content">
+        <InfoCard
+          card-id="home-itinerary"
+          card-name="推荐行程"
+          :hidden-cards="hiddenCards"
+          :closable="false"
+          @hide="(id, name) => $emit('hide-card', id, name)"
+        >
+          <div class="home-itinerary">
+            <div class="home-itinerary-header">
+              <div class="itinerary-tabs" role="tablist" aria-label="行程选择" ref="tabsRef">
+                <button
+                  v-for="(option, key) in itineraryOptions"
+                  :key="key"
+                  ref="tabButtons"
+                  :class="['itinerary-tab', { active: activeItinerary === key }]"
+                  role="tab"
+                  :aria-selected="activeItinerary === key"
+                  :aria-controls="'itinerary-' + key"
+                  @click="activeItinerary = key"
+                >
+                  {{ option.label }}
+                  <span v-if="option.badge" class="tab-badge">{{ option.badge }}</span>
+                </button>
+                <div class="tab-indicator" :style="indicatorStyle"></div>
+              </div>
+            </div>
+
+            <div
+              v-for="(option, key) in itineraryOptions"
+              :key="key"
+              :id="'itinerary-' + key"
+              :class="['itinerary-content', { active: activeItinerary === key }]"
+              role="tabpanel"
+            >
+              <div class="itinerary-flow">
+                <template v-for="(day, index) in option.days" :key="day.num">
+                  <div class="itinerary-day">
+                    <span class="itinerary-day-num">{{ day.num }}</span>
+                    <span class="itinerary-day-place">{{ day.place }}</span>
+                    <span class="itinerary-day-activity">{{ day.activity }}</span>
+                  </div>
+                  <span v-if="index < option.days.length - 1" class="itinerary-arrow">→</span>
+                </template>
+              </div>
+              <div class="itinerary-budget">
+                <span class="budget-label">人均预算：</span>
+                <span class="budget-value">{{ option.budget }}</span>
+                <span class="budget-note">{{ option.note }}</span>
               </div>
             </div>
           </div>
-          <div class="home-checklist-inline">
-            <span class="checklist-label">必备：</span>
-            <span class="checklist-tag" v-for="item in checklistItems" :key="item">{{ item }}</span>
+        </InfoCard>
+      </div>
+    </div>
+
+    <!-- 区域7：攻略入口区 -->
+    <div id="home-guide-area-guides" class="guide-module">
+      <div class="guide-module-header">
+        <h2 class="guide-module-title">目的地攻略</h2>
+      </div>
+      <div class="guide-module-content">
+        <div class="destinations-grid">
+          <DestinationCard
+            v-for="dest in destinations"
+            :key="dest.id"
+            v-bind="dest"
+            @click="handleDestClick($event, dest.goto)"
+            @mousedown="createRipple"
+          />
+        </div>
+        <div class="guide-tips-footer">
+          <div class="guide-tips-inline">
+            <span class="guide-tips-label">出行贴士：</span>
+            <span class="guide-tips-item" v-for="tip in travelTips" :key="tip.title">
+              <span class="guide-tips-icon">{{ tip.icon }}</span>
+              {{ tip.title }}
+            </span>
+          </div>
+          <div class="guide-checklist-inline">
+            <span class="guide-checklist-label">必备物品：</span>
+            <span class="guide-checklist-tag" v-for="item in checklistItems" :key="item">{{ item }}</span>
           </div>
         </div>
-      </InfoCard>
+      </div>
+    </div>
 
-      <InfoCard
-        card-id="home-transport"
-        card-name="省内高铁交通"
-        :hidden-cards="hiddenCards"
-        @hide="(id, name) => $emit('hide-card', id, name)"
-      >
-        <div class="home-transport fade-in" style="--delay: 600">
-          <div class="home-transport-title"><span class="emoji" aria-hidden="true">🚄</span> 省内高铁交通</div>
-          <div class="home-transport-grid">
-            <div class="transport-card" v-for="t in transportInfo" :key="t.from + t.to">
-              <div class="transport-route">
-                <span class="transport-from">{{ t.from }}</span>
-                <span class="transport-arrow">→</span>
-                <span class="transport-to">{{ t.to }}</span>
-              </div>
-              <div class="transport-info">
-                <span class="transport-price">{{ t.price }}</span>
-                <span class="transport-time">{{ t.time }}</span>
+    <!-- 区域8：交通指南区 -->
+    <div id="home-guide-area-traffic" class="guide-module">
+      <div class="guide-module-header">
+        <h2 class="guide-module-title">省内高铁交通</h2>
+      </div>
+      <div class="guide-module-content">
+        <InfoCard
+          card-id="home-transport"
+          card-name="省内高铁交通"
+          :hidden-cards="hiddenCards"
+          @hide="(id, name) => $emit('hide-card', id, name)"
+        >
+          <div class="home-transport">
+            <div class="home-transport-grid">
+              <div class="transport-card" v-for="t in transportInfo" :key="t.from + t.to">
+                <div class="transport-route">
+                  <span class="transport-from">{{ t.from }}</span>
+                  <span class="transport-arrow">→</span>
+                  <span class="transport-to">{{ t.to }}</span>
+                </div>
+                <div class="transport-info">
+                  <span class="transport-price">{{ t.price }}</span>
+                  <span class="transport-time">{{ t.time }}</span>
+                </div>
               </div>
             </div>
+            <div class="home-transport-note">数据来源：12306官方 | 早班/晚班车次有更低折扣</div>
           </div>
-          <div class="home-transport-note">数据来源：12306官方 | 早班/晚班车次有更低折扣</div>
-        </div>
-      </InfoCard>
-    </section>
+        </InfoCard>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch, computed } from 'vue'
+import { ref, onMounted, nextTick, watch } from 'vue'
 import DestinationCard from '../DestinationCard.vue'
 import InfoCard from '../InfoCard.vue'
 import { destinations, transportInfo, checklistItems, travelTips, itineraryOptions } from '@/data/travelData'
@@ -314,18 +355,6 @@ const handleDestClick = (event, goto) => {
   }
   emit('navigate', goto)
 }
-
-onMounted(() => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible')
-      }
-    })
-  }, { threshold: 0.1, rootMargin: '50px' })
-
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el))
-})
 </script>
 
 <style scoped>
@@ -342,11 +371,58 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   padding-top: var(--space-xs);
-  gap: var(--space-sm);
+  gap: 0;
   min-height: 0;
   padding-bottom: var(--space-xl);
   padding-left: max(var(--space-md), env(safe-area-inset-left));
   padding-right: max(var(--space-md), env(safe-area-inset-right));
+}
+
+.guide-module {
+  position: relative;
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-md);
+}
+
+.guide-module + .guide-module::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border) 20%, var(--border) 80%, transparent 100%);
+}
+
+.guide-module-header {
+  margin-bottom: var(--space-md);
+}
+
+.guide-module-title {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: var(--text-lg);
+  font-weight: 400;
+  color: var(--forest);
+  letter-spacing: 0.05em;
+  margin: 0;
+  padding-bottom: var(--space-xs);
+  position: relative;
+  display: inline-block;
+}
+
+.guide-module-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 2rem;
+  height: 2px;
+  background: var(--sunset);
+  border-radius: 1px;
+}
+
+.guide-module-content {
+  position: relative;
 }
 
 .home-intro {
@@ -368,7 +444,6 @@ onMounted(() => {
   border: 2px solid var(--forest);
   border-radius: var(--space-md);
   padding: var(--space-md);
-  margin: var(--space-md) 0;
 }
 
 .checklist-header {
@@ -387,14 +462,8 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
-.checklist-title {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--forest);
-  flex: 1;
-}
-
 .checklist-progress {
+  margin-left: auto;
   font-size: var(--text-xs);
   color: white;
   background: var(--sunset);
@@ -521,17 +590,6 @@ onMounted(() => {
   font-weight: 700;
 }
 
-.quick-start {
-  margin: var(--space-lg) 0;
-}
-
-.quick-start-label {
-  font-size: calc(var(--text-sm) * var(--text-scale, 1));
-  color: var(--text-muted);
-  margin-bottom: var(--space-sm);
-  text-align: center;
-}
-
 .quick-start-cards {
   display: flex;
   gap: var(--space-sm);
@@ -652,7 +710,6 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
-  margin: var(--space-md) 0;
 }
 
 .quick-nav-header {
@@ -673,12 +730,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 2px;
-}
-
-.quick-nav-title {
-  font-size: var(--text-base);
-  font-weight: 700;
-  color: var(--text);
 }
 
 .quick-nav-desc {
@@ -728,7 +779,6 @@ onMounted(() => {
   border: 2px solid var(--sunset);
   border-radius: var(--space-md);
   padding: var(--space-md);
-  margin: var(--space-md) 0;
   position: relative;
   overflow: hidden;
 }
@@ -841,8 +891,62 @@ onMounted(() => {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-sm);
-  margin-top: var(--space-xs);
   align-content: start;
+}
+
+.guide-tips-footer {
+  margin-top: var(--space-md);
+  padding: var(--space-md);
+  background: var(--earth-light);
+  border-radius: var(--space-sm);
+}
+
+.guide-tips-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.guide-tips-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.guide-tips-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.75rem;
+  color: var(--text);
+}
+
+.guide-tips-icon {
+  font-size: 0.9rem;
+}
+
+.guide-checklist-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.guide-checklist-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.guide-checklist-tag {
+  background: var(--forest-light);
+  color: var(--forest);
+  font-size: 0.7rem;
+  padding: var(--space-2xs) var(--space-xs);
+  border-radius: 1rem;
+  font-weight: 500;
 }
 
 .home-itinerary {
@@ -852,28 +956,11 @@ onMounted(() => {
 
 .home-itinerary-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: var(--space-sm);
   flex-wrap: wrap;
   gap: var(--space-xs);
-  padding-left: calc(var(--space-md) + 24px);
-}
-
-.home-itinerary-title {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--forest);
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.home-itinerary-title .title-icon {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  color: var(--forest);
 }
 
 .itinerary-tabs {
@@ -1024,85 +1111,8 @@ onMounted(() => {
   color: var(--text-muted);
 }
 
-.home-travel-tips {
-  padding: var(--space-md);
-}
-
-.home-tips-title {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--forest);
-  margin-bottom: var(--space-sm);
-  text-align: center;
-}
-
-.home-tips-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-sm);
-}
-
-.home-tips-item {
-  display: flex;
-  gap: var(--space-xs);
-  align-items: flex-start;
-}
-
-.home-tips-icon {
-  font-size: 1.1rem;
-  flex-shrink: 0;
-}
-
-.home-tips-content {
-  font-size: calc(var(--text-xs) * var(--text-scale, 1));
-  line-height: 1.5;
-}
-
-.home-tips-content strong {
-  display: block;
-  color: var(--text);
-  font-weight: calc(600 + var(--text-weight-boost, 0));
-}
-
-.home-tips-content span {
-  color: var(--text-muted);
-}
-
-.home-checklist-inline {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-xs);
-  margin-top: var(--space-md);
-  padding-top: var(--space-md);
-  border-top: 1px dashed var(--border);
-}
-
-.checklist-label {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.checklist-tag {
-  background: var(--forest-light);
-  color: var(--forest);
-  font-size: 0.7rem;
-  padding: var(--space-2xs) var(--space-xs);
-  border-radius: 1rem;
-  font-weight: 500;
-}
-
 .home-transport {
   padding: var(--space-md);
-}
-
-.home-transport-title {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--forest);
-  margin-bottom: var(--space-sm);
-  text-align: center;
 }
 
 .home-transport-grid {
@@ -1158,7 +1168,7 @@ onMounted(() => {
   font-size: calc(0.65rem * var(--text-scale, 1));
   color: var(--text-muted);
   text-align: center;
-  margin-top: var(--space-xs);
+  margin-top: var(--space-sm);
 }
 
 .ripple {
@@ -1240,42 +1250,9 @@ onMounted(() => {
     padding: 1px 4px;
     margin-left: 2px;
   }
-  .home-checklist-items {
-    justify-content: flex-start;
-    gap: var(--space-2xs);
-  }
-  .checklist-tag {
+  .guide-checklist-tag {
     font-size: 0.7rem;
     padding: var(--space-2xs) var(--space-xs);
-  }
-  .quick-tips {
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-2xs);
-  }
-  .quick-tip {
-    padding: var(--space-sm) var(--space-2xs);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .quick-tip-icon {
-    font-size: 1rem;
-    margin-bottom: 2px;
-  }
-  .quick-tip-label {
-    font-size: 0.6rem;
-  }
-  .quick-tip-value {
-    font-size: 0.65rem;
-    margin-top: 2px;
-    font-weight: 700;
-    color: var(--sunset-soft);
-  }
-}
-
-@media (min-width: 480px) {
-  .home-tips-grid {
-    grid-template-columns: repeat(4, 1fr);
   }
 }
 

@@ -1,15 +1,12 @@
 <template>
   <div
     class="dest-card"
-    ref="cardRef"
-    :class="{ 'dest-revealed': isRevealed }"
     @click="(e) => $emit('click', e)"
     @keydown.enter="(e) => $emit('click', e)"
     @keydown.space.prevent="(e) => $emit('click', e)"
     tabindex="0"
     role="button"
     :aria-label="`查看${name}攻略`"
-    :style="{ '--reveal-delay': revealDelay }"
   >
     <div class="dest-card-image">
       <img :src="image" :alt="name" referrerpolicy="no-referrer" loading="lazy">
@@ -26,47 +23,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-
-const props = defineProps({
+defineProps({
   number: String,
   name: String,
   location: String,
   desc: String,
-  image: String,
-  revealDelay: {
-    type: String,
-    default: '0ms'
-  }
+  image: String
 })
 
 defineEmits(['click'])
-
-const cardRef = ref(null)
-const isRevealed = ref(false)
-
-let observer = null
-
-onMounted(() => {
-  if (!cardRef.value) return
-
-  observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        setTimeout(() => {
-          isRevealed.value = true
-        }, parseInt(props.revealDelay, 10) || 0)
-        observer?.disconnect()
-      }
-    })
-  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' })
-
-  observer.observe(cardRef.value)
-})
-
-onUnmounted(() => {
-  observer?.disconnect()
-})
 </script>
 
 <style scoped>
@@ -79,8 +44,8 @@ onUnmounted(() => {
   background: var(--earth-light);
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  opacity: 0;
-  transform: translateY(28px) scale(0.96);
+  opacity: 1;
+  transform: none;
   transition: opacity var(--duration-slow, 400ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)),
               transform var(--duration-slow, 400ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)),
               box-shadow var(--duration-normal, 250ms) var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1));
@@ -169,19 +134,6 @@ onUnmounted(() => {
   transition: opacity 0.3s var(--ease-out-quart);
 }
 
-.dest-card.dest-revealed .dest-number {
-  animation: numberReveal 0.5s var(--ease-out-quart) 0.1s forwards;
-  opacity: 0;
-  transform: translateY(-8px);
-}
-
-@keyframes numberReveal {
-  to {
-    opacity: 0.7;
-    transform: translateY(0);
-  }
-}
-
 .dest-name {
   font-family: 'ZCOOL XiaoWei', serif;
   font-size: 1.25rem;
@@ -194,19 +146,6 @@ onUnmounted(() => {
   transition: transform 0.3s var(--ease-out-quart);
 }
 
-.dest-card.dest-revealed .dest-name {
-  animation: nameReveal 0.5s var(--ease-out-quart) 0.15s forwards;
-  opacity: 0;
-  transform: translateY(8px);
-}
-
-@keyframes nameReveal {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .dest-location {
   font-size: 0.75rem;
   opacity: 0.8;
@@ -215,17 +154,6 @@ onUnmounted(() => {
   text-overflow: ellipsis;
   white-space: nowrap;
   transition: opacity 0.3s var(--ease-out-quart);
-}
-
-.dest-card.dest-revealed .dest-location {
-  animation: locationReveal 0.5s var(--ease-out-quart) 0.2s forwards;
-  opacity: 0;
-}
-
-@keyframes locationReveal {
-  to {
-    opacity: 0.8;
-  }
 }
 
 .dest-desc {
