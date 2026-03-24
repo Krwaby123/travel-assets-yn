@@ -1284,7 +1284,6 @@ const handleLightboxKeydown = (e) => {
   scrollbar-width: none;
   width: 100%;
   overscroll-behavior-x: contain;
-  transition: height 0.35s var(--ease-out-quart);
 }
 
 .slides-container::-webkit-scrollbar {

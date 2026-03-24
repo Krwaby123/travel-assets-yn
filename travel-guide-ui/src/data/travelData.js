@@ -52,13 +52,6 @@ export const travelTips = [
   { icon: '🚗', title: '交通', desc: '选正规平台，不坐黑车不参低价团' }
 ]
 
-export const weatherGuide = {
-  kunming: { temp: '9-26℃', tip: '干燥，备润唇膏护手霜' },
-  dali: { temp: '5-24℃', tip: '洱海边体感低3-5℃' },
-  lijiang: { temp: '4-22℃', tip: '雪山山顶约0℃' },
-  shangri: { temp: '-5~15℃', tip: '夜间最低-5℃，防寒优先' }
-}
-
 export const itineraryOptions = {
   core4: {
     label: '4天3晚',

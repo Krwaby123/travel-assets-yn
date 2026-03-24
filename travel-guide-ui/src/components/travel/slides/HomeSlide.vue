@@ -594,6 +594,7 @@ const handleDestClick = (event, goto) => {
   display: flex;
   gap: var(--space-sm);
   width: 100%;
+  align-items: flex-start;
 }
 
 .quick-start-card {
@@ -610,12 +611,12 @@ const handleDestClick = (event, goto) => {
   cursor: pointer;
   transition: box-shadow var(--duration-normal, 250ms) var(--ease-out-quart),
               border-color var(--duration-normal, 250ms) var(--ease-out-quart),
-              transform var(--duration-fast, 150ms) var(--ease-out-quart),
               background var(--duration-normal, 250ms) var(--ease-out-quart);
   position: relative;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .quick-start-card::before {
