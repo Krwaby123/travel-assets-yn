@@ -270,7 +270,7 @@ defineProps({
   hiddenCards: Set
 })
 
-defineEmits(['hide-card', 'open-lightbox', 'open-map'])
+const emit = defineEmits(['hide-card', 'open-lightbox', 'open-map', 'module-toggle'])
 
 const modules = [
   { id: 'overview', title: '香格里拉·藏地风光', shortTitle: '总览' },
@@ -296,11 +296,13 @@ const quickNavBar = ref(null)
 
 const toggleModule = (moduleId) => {
   expandedModules[moduleId] = !expandedModules[moduleId]
+  emit('module-toggle')
 }
 
 const expandModule = (moduleId) => {
   if (moduleId !== 'overview') {
     expandedModules[moduleId] = true
+    emit('module-toggle')
   }
 }
 

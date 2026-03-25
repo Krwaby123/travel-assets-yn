@@ -285,7 +285,7 @@ defineProps({
   hiddenCards: Set
 })
 
-defineEmits(['hide-card', 'open-lightbox', 'open-map'])
+const emit = defineEmits(['hide-card', 'open-lightbox', 'open-map', 'module-toggle'])
 
 const imgErrors = reactive({})
 const loadedImages = reactive({})
@@ -320,11 +320,13 @@ const handleImageError = (src) => {
 
 const toggleModule = (moduleId) => {
   expandedModules[moduleId] = !expandedModules[moduleId]
+  emit('module-toggle')
 }
 
 const expandModule = (moduleId) => {
   if (moduleId !== 'overview') {
     expandedModules[moduleId] = true
+    emit('module-toggle')
   }
 }
 

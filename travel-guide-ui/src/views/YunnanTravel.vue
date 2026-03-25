@@ -12,11 +12,11 @@
     <nav class="nav-tabs" role="navigation" aria-label="目的地导航">
       <div class="nav-tabs-inner" ref="navInner">
         <button
-          v-for="(tab, index) in navTabs"
+          v-for="(tab, index) in visibleNavTabs"
           :key="tab.id"
           ref="tabButtons"
-          :class="['nav-tab', { active: index === currentIndex }]"
-          @click="goToSlide(index, index > currentIndex ? 'right' : 'left')"
+          :class="['nav-tab', { active: tabToSlideIndex(tab.id) === currentIndex }]"
+          @click="handleTabClick(tab, index)"
         >
           {{ tab.label }}
         </button>
@@ -39,6 +39,7 @@
           @navigate="handleNavigate"
           @open-lightbox="openLightbox"
           @open-map="openMapSearch"
+          @module-toggle="onModuleToggle"
         />
       </div>
     </main>
@@ -65,7 +66,7 @@
         </button>
       </div>
 
-      <div class="settings-section">
+      <div class="settings-section" data-onboarding="theme">
         <div class="settings-section-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="5"/>
@@ -87,6 +88,13 @@
             </svg>
             暗色
           </button>
+          <button :class="['theme-option', { active: themeMode === 'eye-care' }]" @click="setTheme('eye-care')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            护眼
+          </button>
           <button :class="['theme-option', { active: themeMode === 'auto' }]" @click="setTheme('auto')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
@@ -97,7 +105,7 @@
         </div>
       </div>
 
-      <div class="settings-section">
+      <div class="settings-section" data-onboarding="font">
         <div class="settings-section-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
@@ -121,7 +129,7 @@
         </div>
       </div>
 
-      <div class="settings-section">
+      <div class="settings-section" data-onboarding="hidden-content">
         <div class="settings-section-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
@@ -134,6 +142,176 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M9 18l6-6-6-6"/>
           </svg>
+        </button>
+      </div>
+
+      <div class="settings-section" data-onboarding="hidden-tabs" v-if="hiddenTabList.length > 0">
+        <div class="settings-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10H3M21 6H3M21 14H3M21 18H3"/>
+          </svg>
+          隐藏地点管理
+          <span class="hidden-count">{{ hiddenTabList.length }}</span>
+        </div>
+        <div class="hidden-tabs-list">
+          <div v-for="tab in hiddenTabList" :key="tab.id" class="hidden-tab-item">
+            <span>{{ tab.label }}</span>
+            <button class="restore-tab-btn" @click="handleRestoreTab(tab.id)">恢复</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section" data-onboarding="add-hide-location">
+        <div class="settings-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          添加地点隐藏
+        </div>
+        <button class="add-hide-location-btn" @click="showAddHideLocation = !showAddHideLocation">
+          <span>{{ showAddHideLocation ? '收起' : '展开' }}</span>
+          <svg :class="{ rotated: showAddHideLocation }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+
+        <Transition name="slide-down">
+          <div v-if="showAddHideLocation" class="add-hide-location-panel">
+            <div class="add-hide-location-tip">点击可隐藏对应地点的Tab</div>
+            <div class="add-hide-location-list">
+              <div
+                v-for="tab in visibleDestinationTabs"
+                :key="tab.id"
+                class="add-hide-location-item"
+                @click="handleHideTab(tab.id)"
+              >
+                <span class="add-hide-location-name">{{ tab.label }}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="add-hide-location-icon">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              </div>
+              <div v-if="visibleDestinationTabs.length === 0" class="add-hide-location-empty">
+                所有地点已隐藏
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </div>
+
+      <div class="settings-section music-section" data-onboarding="music">
+        <div class="settings-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18V5l12-2v13"/>
+            <circle cx="6" cy="18" r="3"/>
+            <circle cx="18" cy="16" r="3"/>
+          </svg>
+          背景音乐
+        </div>
+
+        <div class="music-toggle-wrapper">
+          <button
+            class="music-toggle-in-settings"
+            :class="{ playing: isMusicPlaying, expanded: showMusicPlaylist }"
+            @click="showMusicPlaylist = !showMusicPlaylist"
+          >
+            <svg v-if="!isMusicPlaying" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18V5l12-2v13"/>
+              <circle cx="6" cy="18" r="3"/>
+              <circle cx="18" cy="16" r="3"/>
+            </svg>
+            <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="6" y="4" width="4" height="16"/>
+              <rect x="14" y="4" width="4" height="16"/>
+            </svg>
+          </button>
+          <span class="music-toggle-label">{{ isMusicPlaying ? '播放中' : '已暂停' }}</span>
+        </div>
+
+        <Transition name="music-drawer">
+          <div v-if="showMusicPlaylist" class="music-drawer-panel">
+            <div class="music-drawer-content">
+              <div class="music-current-song" v-if="currentSong">
+                <div class="music-disc-small" :class="{ 'is-playing': isMusicPlaying }">
+                  <img
+                    v-if="currentSong?.cover"
+                    :src="`/images/music-covers/${currentSong.cover}`"
+                    :alt="currentSong.name"
+                    class="music-cover-small"
+                  >
+                  <img
+                    v-else
+                    src="/images/music-covers/spring-flowers-cover.jpg"
+                    alt="春花"
+                    class="music-cover-small"
+                  >
+                </div>
+                <div class="music-current-info">
+                  <div class="music-current-name">{{ currentSong.name }}</div>
+                  <div class="music-current-artist">{{ currentSong.artist }}</div>
+                </div>
+              </div>
+
+              <div class="music-drawer-controls">
+                <button class="drawer-btn prev" @click="prevSong" :disabled="playlist.length <= 1">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                </button>
+                <button class="drawer-btn play" @click="togglePlay">
+                  <svg v-if="!isMusicPlaying" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  <svg v-else viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+                <button class="drawer-btn next" @click="nextSong" :disabled="playlist.length <= 1">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </button>
+                <button class="drawer-btn mode" @click="cyclePlayMode">
+                  <svg v-if="playMode === 'list'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+                  <svg v-else-if="playMode === 'single'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/><circle cx="12" cy="12" r="2.5" fill="var(--sunset)"/></svg>
+                  <svg v-else viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+                </button>
+              </div>
+
+              <div class="music-drawer-volume">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                </svg>
+                <input type="range" min="0" max="100" :value="volume" @input="setVolume" class="volume-slider">
+              </div>
+
+              <div class="music-drawer-playlist">
+                <div class="drawer-playlist-title">播放列表</div>
+                <div class="drawer-playlist-items">
+                  <div
+                    v-for="(song, index) in playlist"
+                    :key="song.id"
+                    :class="['drawer-playlist-item', { active: index === currentSongIndex }]"
+                    @click="playSong(index)"
+                  >
+                    <span class="drawer-item-index">{{ index + 1 }}</span>
+                    <div class="drawer-item-info">
+                      <span class="drawer-item-name">{{ song.name }}</span>
+                      <span class="drawer-item-artist">{{ song.artist }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/>
+          </svg>
+          新手引导
+        </div>
+        <button class="restart-onboarding-btn" @click="handleRestartOnboarding">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 4v6h6M23 20v-6h-6"/>
+            <path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/>
+          </svg>
+          重新体验新手引导
         </button>
       </div>
     </div>
@@ -169,158 +347,12 @@
       </div>
     </Teleport>
 
-    <div class="music-player">
-      <button class="music-toggle" :class="{ playing: isMusicPlaying }" @click="toggleMusicPanel" aria-label="音乐播放器">
-        <svg v-if="!isMusicPlaying" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 18V5l12-2v13"/>
-          <circle cx="6" cy="18" r="3"/>
-          <circle cx="18" cy="16" r="3"/>
-        </svg>
-        <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="6" y="4" width="4" height="16"/>
-          <rect x="14" y="4" width="4" height="16"/>
-        </svg>
-      </button>
-
-      <div class="music-panel" :class="{ show: showMusicPanel }">
-        <div class="music-panel-header">
-          <span class="music-panel-title">背景音乐</span>
-          <button class="music-panel-close" @click="showMusicPanel = false" aria-label="关闭">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 6L6 18M6 6l12 12"/>
-            </svg>
-          </button>
-        </div>
-
-        <div class="music-now-playing">
-          <div class="music-disc" :class="{ 'is-playing': isMusicPlaying }">
-            <div class="music-disc-grooves"></div>
-            <img
-              v-if="currentSong?.cover"
-              :src="`/images/music-covers/${currentSong.cover}`"
-              :alt="currentSong.name"
-              class="music-disc-cover"
-              @click="openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)"
-            >
-            <img
-              v-else
-              src="/images/music-covers/spring-flowers-cover.jpg"
-              alt="春花"
-              class="music-disc-cover"
-              @click="openLightbox('/images/music-covers/spring-flowers-cover.jpg', '春花')"
-            >
-          </div>
-          <div class="music-info">
-            <div class="music-song-name">{{ currentSong?.name || '未选择歌曲' }}</div>
-            <div class="music-artist">{{ currentSong?.artist || '' }}</div>
-          </div>
-        </div>
-
-        <div class="music-progress" v-if="duration > 0">
-          <div
-            class="music-progress-bar"
-            ref="progressBar"
-            tabindex="0"
-            role="slider"
-            :aria-label="'播放进度'"
-            :aria-valuemin="0"
-            :aria-valuemax="Math.round(duration)"
-            :aria-valuenow="Math.round(currentTime)"
-            :aria-valuetext="`${formatTime(currentTime)} / ${formatTime(duration)}`"
-            @click="seekProgress"
-            @keydown="handleProgressKeydown"
-            @touchstart.passive="handleProgressTouchStart"
-            @touchmove.prevent="handleProgressTouchMove"
-            @touchend="handleProgressTouchEnd"
-          >
-            <div class="music-progress-fill" :style="{ width: musicProgress + '%' }"></div>
-            <div class="music-progress-thumb" :style="{ left: musicProgress + '%' }"></div>
-          </div>
-          <div class="music-time">
-            <span>{{ formatTime(currentTime) }}</span>
-            <span>{{ formatTime(duration) }}</span>
-          </div>
-        </div>
-
-        <div class="music-controls">
-          <button class="music-btn mode" @click="cyclePlayMode" :aria-label="'播放模式: ' + (playMode === 'list' ? '列表循环' : playMode === 'single' ? '单曲循环' : '随机播放')">
-            <svg v-if="playMode === 'list'" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
-            </svg>
-            <svg v-else-if="playMode === 'single'" viewBox="0 0 24 24">
-              <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" fill="currentColor"/>
-              <circle cx="12" cy="12" r="2.5" fill="var(--sunset)"/>
-            </svg>
-            <svg v-else viewBox="0 0 24 24" fill="currentColor">
-              <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
-            </svg>
-          </button>
-          <button class="music-btn prev" @click="prevSong" :disabled="playlist.length <= 1" aria-label="上一首">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
-            </svg>
-          </button>
-          <button class="music-btn play" @click="togglePlay" aria-label="播放/暂停">
-            <svg v-if="!isMusicPlaying" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-            <svg v-else viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-            </svg>
-          </button>
-          <button class="music-btn next" @click="nextSong" :disabled="playlist.length <= 1" aria-label="下一首">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
-            </svg>
-          </button>
-        </div>
-
-        <div class="music-volume">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-            <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>
-          </svg>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            :value="volume"
-            @input="setVolume"
-            class="volume-slider"
-            aria-label="音量控制"
-          >
-        </div>
-
-        <div class="music-playlist">
-          <div class="music-playlist-title">播放列表</div>
-          <div class="music-playlist-items">
-            <div
-              v-for="(song, index) in playlist"
-              :key="song.id"
-              :class="['music-playlist-item', { active: index === currentSongIndex }]"
-              :style="{ '--playlist-index': index }"
-              @click="playSong(index)"
-            >
-              <span class="music-playlist-index">{{ index + 1 }}</span>
-              <div class="music-playlist-info">
-                <span class="music-playlist-name">{{ song.name }}</span>
-                <span class="music-playlist-artist">{{ song.artist }}</span>
-              </div>
-              <svg v-if="index === currentSongIndex && isMusicPlaying" class="music-playing-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <button class="nav-arrow prev" :style="{ opacity: currentIndex === 0 ? 0.3 : 1 }" @click="goToSlide(currentIndex - 1, 'left')" aria-label="上一页">
+    <button class="nav-arrow prev" :style="{ opacity: isFirstVisibleSlide ? 0.3 : 1 }" @click="goToSlide(getPrevVisibleSlideIndex(), 'left')" aria-label="上一页">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M15 18l-6-6 6-6"/>
       </svg>
     </button>
-    <button class="nav-arrow next" :style="{ opacity: currentIndex === 5 ? 0.3 : 1 }" @click="goToSlide(currentIndex + 1, 'right')" aria-label="下一页">
+    <button class="nav-arrow next" :style="{ opacity: isLastVisibleSlide ? 0.3 : 1 }" @click="goToSlide(getNextVisibleSlideIndex(), 'right')" aria-label="下一页">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M9 18l6-6-6-6"/>
       </svg>
@@ -359,29 +391,106 @@
       <span class="toast-action restore" @click="restoreLastHidden">点击恢复</span>
     </div>
 
-    <div class="first-visit-tip" :class="{ show: firstVisitTipVisible }">
-      点击卡片右上角 × 可隐藏内容
-      <button class="first-visit-close" @click="dismissFirstVisitTip">知道了</button>
-    </div>
-
     <audio ref="bgMusic" preload="auto" @timeupdate="updateProgress" @loadedmetadata="onAudioLoaded" @ended="onSongEnded">
       <source v-if="currentSong" :src="`./music/${currentSong.file}`" type="audio/mpeg">
     </audio>
 
     <div id="a11yAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <OnboardingOverlay
+      :is-active="onboardingActive"
+      :current-step="currentStep"
+      :total-steps="totalSteps"
+      :selected-tabs="selectedTabs"
+      :all-tabs="allTabs"
+      :settings-visible="settingsVisible"
+      @next="onboardingNext"
+      @prev="onboardingPrev"
+      @skip="skipOnboarding"
+      @complete="handleOnboardingComplete"
+      @toggle-tab="toggleTab"
+      @select-all="selectAllTabs"
+      @clear-all="clearAllTabs"
+      @open-settings="handleOpenSettings"
+      @close-settings="handleCloseSettings"
+      @go-to-map="handleGoToMap"
+      @go-to-home="handleGoToHome"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch, nextTick, computed } from 'vue'
-import { useResizeObserver, useWindowSize, useDebounceFn } from '@vueuse/core'
+import { ref, onMounted, onUnmounted, watch, nextTick, computed, provide } from 'vue'
+import { useResizeObserver, useWindowSize } from '@vueuse/core'
 import HomeSlide from '@/components/travel/slides/HomeSlide.vue'
 import DounanSlide from '@/components/travel/slides/DounanSlide.vue'
 import DaliSlide from '@/components/travel/slides/DaliSlide.vue'
 import LijiangSlide from '@/components/travel/slides/LijiangSlide.vue'
 import ShangriSlide from '@/components/travel/slides/ShangriSlide.vue'
 import MapSlide from '@/components/travel/slides/MapSlide.vue'
+import OnboardingOverlay from '@/components/onboarding/OnboardingOverlay.vue'
 import { navTabs, dounanData, daliData, lijiangData, shangriData } from '@/data/travelData'
+import { useOnboarding } from '@/composables/useOnboarding'
+
+const {
+  completed: onboardingCompleted,
+  mapCompleted,
+  currentStep,
+  mapCurrentStep,
+  isActive: onboardingActive,
+  isMapActive,
+  selectedTabs,
+  hiddenTabs,
+  totalSteps,
+  mapTotalSteps,
+  allTabs,
+  hiddenTabList,
+  initOnboarding,
+  startOnboarding,
+  startMapOnboarding,
+  skipOnboarding,
+  skipMapOnboarding,
+  completeOnboarding,
+  completeMapOnboarding,
+  resetOnboarding,
+  nextStep: onboardingNext,
+  nextMapStep,
+  prevStep: onboardingPrev,
+  prevMapStep,
+  toggleTab,
+  selectAllTabs,
+  clearAllTabs,
+  restoreTab,
+  hideTab
+} = useOnboarding()
+
+provide('onboarding', {
+  isActive: onboardingActive,
+  isMapActive,
+  currentStep,
+  mapCurrentStep,
+  selectedTabs,
+  hiddenTabs
+})
+
+provide('mapOnboarding', {
+  isMapActive,
+  mapCurrentStep,
+  mapTotalSteps,
+  startMapOnboarding,
+  skipMapOnboarding,
+  completeMapOnboarding,
+  nextMapStep,
+  prevMapStep
+})
+
+provide('tabManagement', {
+  selectedTabs,
+  hiddenTabs,
+  toggleTab,
+  restoreTab,
+  hideTab
+})
 
 const mapSearchPlace = ref('')
 
@@ -393,6 +502,67 @@ const slides = [
   { component: ShangriSlide, data: shangriData },
   { component: MapSlide, data: computed(() => ({ searchPlace: mapSearchPlace.value })) }
 ]
+
+const visibleNavTabs = computed(() => {
+  const fixedTabs = ['home', 'map']
+  return navTabs.filter(tab => {
+    if (fixedTabs.includes(tab.id)) return true
+    if (tab.id === 'dounan') return selectedTabs.value.has('dounan')
+    if (tab.id === 'dali') return selectedTabs.value.has('dali')
+    if (tab.id === 'lijiang') return selectedTabs.value.has('lijiang')
+    if (tab.id === 'shangri') return selectedTabs.value.has('shangri')
+    return true
+  })
+})
+
+const tabToSlideIndex = (tabId) => {
+  const indexMap = {
+    home: 0,
+    dounan: 1,
+    dali: 2,
+    lijiang: 3,
+    shangri: 4,
+    map: 5
+  }
+  return indexMap[tabId] ?? 0
+}
+
+const getVisibleSlideIndexes = () => {
+  return visibleNavTabs.value.map(tab => tabToSlideIndex(tab.id))
+}
+
+const getNextVisibleSlideIndex = () => {
+  const visibleIndexes = getVisibleSlideIndexes()
+  const currentPos = visibleIndexes.indexOf(currentIndex.value)
+  if (currentPos < visibleIndexes.length - 1) {
+    return visibleIndexes[currentPos + 1]
+  }
+  return currentIndex.value
+}
+
+const getPrevVisibleSlideIndex = () => {
+  const visibleIndexes = getVisibleSlideIndexes()
+  const currentPos = visibleIndexes.indexOf(currentIndex.value)
+  if (currentPos > 0) {
+    return visibleIndexes[currentPos - 1]
+  }
+  return currentIndex.value
+}
+
+const isFirstVisibleSlide = computed(() => {
+  const visibleIndexes = getVisibleSlideIndexes()
+  return currentIndex.value === visibleIndexes[0]
+})
+
+const isLastVisibleSlide = computed(() => {
+  const visibleIndexes = getVisibleSlideIndexes()
+  return currentIndex.value === visibleIndexes[visibleIndexes.length - 1]
+})
+
+const handleTabClick = (tab, visibleIndex) => {
+  const slideIndex = tabToSlideIndex(tab.id)
+  goToSlide(slideIndex, slideIndex > currentIndex.value ? 'right' : 'left')
+}
 
 const appContainer = ref(null)
 const slidesContainer = ref(null)
@@ -416,6 +586,7 @@ const { width: windowWidth } = useWindowSize()
 
 let resizeObserverCleanup = null
 let isScrolling = false
+let sectionObserverCleanup = null
 
 const setSlideRef = (el, index) => {
   if (el) {
@@ -424,64 +595,228 @@ const setSlideRef = (el, index) => {
 }
 
 const containerStyle = computed(() => {
-  return {
-    minHeight: `${currentSlideHeight.value}px`,
+  const height = currentSlideHeight.value
+  const result = {
+    height: height > 0 ? `${height}px` : 'auto',
     overflowY: 'hidden',
     overflowX: 'auto'
   }
+  console.log('[containerStyle] 计算样式', {
+    currentSlideHeight: height,
+    currentIndex: currentIndex.value,
+    result
+  })
+  return result
 })
 
-const preloadAllSlideHeights = () => {
-  slideRefs.value.forEach((slide, index) => {
-    if (slide) {
-      const section = slide.querySelector('.section')
-      slideHeights.value[index] = section ? section.scrollHeight : slide.scrollHeight
-    }
+let heightUpdateTimer = null
+
+const calculateSlideFullHeight = (slide, slideIndex = -1) => {
+  if (!slide) {
+    console.log('[calculateSlideFullHeight] slide is null', slideIndex)
+    return 0
+  }
+
+  const section = slide.querySelector('.section')
+  const slideDataIndex = slide.getAttribute('data-index')
+
+  console.log('[calculateSlideFullHeight] start measuring', {
+    paramSlideIndex: slideIndex,
+    domDataIndex: slideDataIndex,
+    slideClassList: slide.className,
+    hasMeasuringClass: slide.classList.contains('measuring'),
+    hasActiveClass: slide.classList.contains('active')
   })
-  currentSlideHeight.value = slideHeights.value[currentIndex.value] || 0
+
+  if (!section) {
+    console.log('[calculateSlideFullHeight] section not found, using scrollHeight', slide.scrollHeight)
+    return slide.scrollHeight
+  }
+
+  const height = section.offsetHeight
+  console.log('[calculateSlideFullHeight] result', {
+    paramSlideIndex: slideIndex,
+    domDataIndex: slideDataIndex,
+    sectionOffsetHeight: height
+  })
+  return height
 }
 
-const refreshCurrentSlideHeight = () => {
-  nextTick(() => {
-    const currentSlide = slideRefs.value[currentIndex.value]
-    if (!currentSlide) return
+const updateSlideHeight = (immediate = false) => {
+  if (heightUpdateTimer) {
+    clearTimeout(heightUpdateTimer)
+    heightUpdateTimer = null
+  }
 
-    const section = currentSlide.querySelector('.section')
-    const newHeight = section ? section.scrollHeight : currentSlide.scrollHeight
+  const doUpdate = () => {
+    const currentSlide = slideRefs.value[currentIndex.value]
+    if (!currentSlide) {
+      console.log('[updateSlideHeight] currentSlide is null')
+      return
+    }
+
+    const cachedHeight = slideHeights.value[currentIndex.value]
+
+    currentSlide.classList.add('measuring')
+    const newHeight = calculateSlideFullHeight(currentSlide, currentIndex.value)
+    currentSlide.classList.remove('measuring')
+
+    console.log('[updateSlideHeight] update', {
+      immediate,
+      currentIndex: currentIndex.value,
+      newHeight,
+      cachedHeight,
+      oldHeight: currentSlideHeight.value
+    })
 
     if (newHeight > 0) {
-      slideHeights.value[currentIndex.value] = newHeight
-      if (Math.abs(newHeight - currentSlideHeight.value) > 10) {
+      if (cachedHeight > 0 && newHeight < cachedHeight) {
+        console.log('[updateSlideHeight] measured height smaller than cache, keep cache', { newHeight, cachedHeight })
+        currentSlideHeight.value = cachedHeight
+      } else {
+        slideHeights.value[currentIndex.value] = newHeight
         currentSlideHeight.value = newHeight
       }
     }
-  })
+  }
+
+  if (immediate) {
+    doUpdate()
+  } else {
+    heightUpdateTimer = setTimeout(doUpdate, 150)
+  }
 }
 
-const debouncedUpdateSlideHeight = useDebounceFn(() => {
-  refreshCurrentSlideHeight()
-}, 100, { leading: true, trailing: false })
+const onModuleToggle = () => {
+  if (heightUpdateTimer) {
+    clearTimeout(heightUpdateTimer)
+    heightUpdateTimer = null
+  }
+
+  const updateWithRetry = (retriesLeft = 5, delay = 100) => {
+    if (retriesLeft <= 0) return
+
+    heightUpdateTimer = setTimeout(() => {
+      const currentSlide = slideRefs.value[currentIndex.value]
+      if (!currentSlide) return
+
+      const prevHeight = currentSlideHeight.value
+      updateSlideHeight(true)
+
+      const modules = currentSlide.querySelectorAll('.guide-module.expanded')
+      let stillAnimating = false
+
+      modules.forEach(module => {
+        const content = module.querySelector('.guide-module-content')
+        if (content) {
+          const style = getComputedStyle(content)
+          const rows = style.gridTemplateRows
+          if (rows && rows !== '0fr' && rows !== 'none') {
+            const inner = content.querySelector('.guide-module-content-inner')
+            if (inner && content.scrollHeight > inner.scrollHeight * 0.1) {
+              stillAnimating = true
+            }
+          }
+        }
+      })
+
+      if (stillAnimating || currentSlideHeight.value !== prevHeight) {
+        updateWithRetry(retriesLeft - 1, 150)
+      }
+    }, delay)
+  }
+
+  updateWithRetry()
+}
+
+const preloadAllSlideHeights = () => {
+  console.log('[preloadAllSlideHeights] start preload')
+
+  const calculateAndSet = () => {
+    slideRefs.value.forEach((slide, index) => {
+      if (slide) {
+        slide.classList.add('measuring')
+
+        requestAnimationFrame(() => {
+          const height = calculateSlideFullHeight(slide, index)
+          slide.classList.remove('measuring')
+
+          if (height > 0) {
+            const cachedHeight = slideHeights.value[index]
+            if (!cachedHeight || height > cachedHeight) {
+              slideHeights.value[index] = height
+              console.log('[preloadAllSlideHeights] cache height', index, height)
+            } else {
+              console.log('[preloadAllSlideHeights] skip smaller height', index, height, 'cached:', cachedHeight)
+            }
+          }
+        })
+      }
+    })
+
+    setTimeout(() => {
+      const currentHeight = slideHeights.value[currentIndex.value] || 0
+      if (currentHeight > 0) {
+        currentSlideHeight.value = currentHeight
+        console.log('[preloadAllSlideHeights] set current height', currentHeight)
+      }
+    }, 100)
+  }
+
+  calculateAndSet()
+}
 
 const startResizeObserver = (index) => {
+  console.log('[startResizeObserver] 启动监听', index)
+
   if (resizeObserverCleanup) {
     resizeObserverCleanup()
     resizeObserverCleanup = null
   }
 
+  if (sectionObserverCleanup) {
+    sectionObserverCleanup()
+    sectionObserverCleanup = null
+  }
+
   const slide = slideRefs.value[index]
-  if (!slide) return
+  if (!slide) {
+    console.log('[startResizeObserver] slide 为空')
+    return
+  }
 
-  const { stop } = useResizeObserver(slide, () => {
-    if (index === currentIndex.value) {
-      requestAnimationFrame(() => {
-        try {
-          refreshCurrentSlideHeight()
-        } catch (e) {}
+  let resizeDebounceTimer = null
+
+  const { stop } = useResizeObserver(
+    slide,
+    () => {
+      console.log('[ResizeObserver] 触发', {
+        observedIndex: index,
+        currentIndex: currentIndex.value
       })
-    }
-  })
 
-  resizeObserverCleanup = stop
+      if (index !== currentIndex.value) return
+
+      if (resizeDebounceTimer) {
+        clearTimeout(resizeDebounceTimer)
+      }
+
+      resizeDebounceTimer = setTimeout(() => {
+        if (index === currentIndex.value) {
+          console.log('[ResizeObserver] 执行更新')
+          updateSlideHeight(true)
+        }
+      }, 100)
+    },
+    { box: 'border-box' }
+  )
+
+  resizeObserverCleanup = () => {
+    if (resizeDebounceTimer) {
+      clearTimeout(resizeDebounceTimer)
+    }
+    stop()
+  }
 }
 
 const lightboxVisible = ref(false)
@@ -492,10 +827,14 @@ const toastVisible = ref(false)
 const toastMessage = ref('')
 const lastHiddenCard = ref(null)
 
-const firstVisitTipVisible = ref(false)
+const showAddHideLocation = ref(false)
+
+const visibleDestinationTabs = computed(() => {
+  return allTabs.filter(tab => selectedTabs.value.has(tab.id))
+})
 
 const isMusicPlaying = ref(false)
-const showMusicPanel = ref(false)
+const showMusicPlaylist = ref(false)
 const currentTime = ref(0)
 const duration = ref(0)
 const volume = ref(80)
@@ -522,15 +861,6 @@ const loadPlaylist = async () => {
     playlist.value = []
   } finally {
     isLoadingPlaylist.value = false
-  }
-}
-
-const toggleMusicPanel = () => {
-  if (isMusicPlaying.value) {
-    bgMusic.value?.pause()
-    isMusicPlaying.value = false
-  } else {
-    showMusicPanel.value = !showMusicPanel.value
   }
 }
 
@@ -784,27 +1114,78 @@ const goToSlide = (index, direction = null) => {
   if (index < 0 || index >= 6) return
   if (index === currentIndex.value) return
 
+  console.log('[goToSlide] 开始切换', {
+    from: currentIndex.value,
+    to: index,
+    currentHeight: currentSlideHeight.value,
+    cachedHeight: slideHeights.value[index]
+  })
+
   if (direction) {
     slideDirection.value = direction
   } else {
     slideDirection.value = index > currentIndex.value ? 'right' : 'left'
   }
 
-  currentSlideHeight.value = slideHeights.value[index] || 0
-  currentIndex.value = index
-
   isScrolling = true
-  nextTick(() => {
-    if (slidesContainer.value) {
-      slidesContainer.value.scrollTo({
-        left: index * window.innerWidth,
-        behavior: 'instant'
+
+  const targetSlide = slideRefs.value[index]
+  const cachedHeight = slideHeights.value[index]
+
+  if (cachedHeight > 0) {
+    currentSlideHeight.value = cachedHeight
+    console.log('[goToSlide] 使用缓存高度', cachedHeight)
+  }
+
+  currentIndex.value = index
+  console.log('[goToSlide] currentIndex 已更新为', index)
+
+  if (slidesContainer.value) {
+    slidesContainer.value.scrollTo({
+      left: index * window.innerWidth,
+      behavior: 'instant'
+    })
+  }
+
+  startResizeObserver(index)
+
+  if (targetSlide) {
+    nextTick(() => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          targetSlide.classList.add('measuring')
+
+          requestAnimationFrame(() => {
+            const targetHeight = calculateSlideFullHeight(targetSlide, index)
+            targetSlide.classList.remove('measuring')
+
+console.log('[goToSlide] 测量高度', {
+              index,
+              targetHeight,
+              cachedHeight: slideHeights.value[index],
+              currentSlideHeight: currentSlideHeight.value
+            })
+            
+            if (targetHeight > 0) {
+              if (cachedHeight > 0 && targetHeight < cachedHeight) {
+                console.log('[goToSlide] measured height smaller than cache, keep cache', { targetHeight, cachedHeight })
+                currentSlideHeight.value = cachedHeight
+              } else {
+                slideHeights.value[index] = targetHeight
+                currentSlideHeight.value = targetHeight
+                console.log('[goToSlide] update height to', targetHeight)
+              }
+            }
+          })
+        })
       })
-    }
-    setTimeout(() => {
-      isScrolling = false
-    }, 100)
-  })
+    })
+  }
+
+  setTimeout(() => {
+    updateSlideHeight(true)
+    isScrolling = false
+  }, 200)
 }
 
 const handleNavigate = (payload) => {
@@ -832,29 +1213,38 @@ const setTheme = (mode) => {
   themeMode.value = mode
   safeStorage.setItem('themeMode', mode)
 
+  document.documentElement.removeAttribute('data-theme')
+  document.documentElement.classList.remove('eye-care-theme')
+
   if (mode === 'dark') {
     isDark.value = true
     document.documentElement.setAttribute('data-theme', 'dark')
+  } else if (mode === 'eye-care') {
+    isDark.value = false
+    document.documentElement.classList.add('eye-care-theme')
   } else if (mode === 'light') {
     isDark.value = false
-    document.documentElement.removeAttribute('data-theme')
   } else {
     isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
     if (isDark.value) {
       document.documentElement.setAttribute('data-theme', 'dark')
-    } else {
-      document.documentElement.removeAttribute('data-theme')
     }
   }
 }
 
 const initTheme = () => {
-  const savedMode = safeStorage.getItem('themeMode') || 'auto'
+  const savedMode = safeStorage.getItem('themeMode') || 'light'
   themeMode.value = savedMode
+
+  document.documentElement.removeAttribute('data-theme')
+  document.documentElement.classList.remove('eye-care-theme')
 
   if (savedMode === 'dark') {
     isDark.value = true
     document.documentElement.setAttribute('data-theme', 'dark')
+  } else if (savedMode === 'eye-care') {
+    isDark.value = false
+    document.documentElement.classList.add('eye-care-theme')
   } else if (savedMode === 'light') {
     isDark.value = false
   } else {
@@ -917,6 +1307,7 @@ const hideCard = (cardId, cardName) => {
   setTimeout(() => {
     toastVisible.value = false
   }, 3000)
+  onModuleToggle()
 }
 
 const restoreLastHidden = () => {
@@ -925,6 +1316,7 @@ const restoreLastHidden = () => {
     safeStorage.setItem('hiddenCards', JSON.stringify([...hiddenCards.value]))
     toastVisible.value = false
     lastHiddenCard.value = null
+    onModuleToggle()
   }
 }
 
@@ -934,12 +1326,14 @@ const showCard = (cardId) => {
   if (lastHiddenCard.value === cardId) {
     lastHiddenCard.value = null
   }
+  onModuleToggle()
 }
 
 const showAllCards = () => {
   hiddenCards.value.clear()
   safeStorage.setItem('hiddenCards', JSON.stringify([]))
   hiddenModalVisible.value = false
+  onModuleToggle()
 }
 
 const getCardName = (cardId) => cardNames[cardId] || cardId
@@ -1019,9 +1413,84 @@ const handleKeydown = (e) => {
   }
 }
 
-const dismissFirstVisitTip = () => {
-  firstVisitTipVisible.value = false
-  safeStorage.setItem('seenCardTip', 'true')
+const handleScroll = () => {
+  if (!slidesContainer.value || isScrolling) return
+  const scrollLeft = slidesContainer.value.scrollLeft
+  const newIndex = Math.round(scrollLeft / window.innerWidth)
+  if (newIndex !== currentIndex.value && newIndex >= 0 && newIndex < 6) {
+    currentIndex.value = newIndex
+
+    nextTick(() => {
+      const targetSlide = slideRefs.value[newIndex]
+      if (targetSlide) {
+        const cachedHeight = slideHeights.value[newIndex]
+        
+        targetSlide.classList.add('measuring')
+        const targetHeight = calculateSlideFullHeight(targetSlide, newIndex)
+        targetSlide.classList.remove('measuring')
+
+        if (targetHeight > 0) {
+          if (cachedHeight > 0 && targetHeight < cachedHeight) {
+            console.log('[handleScroll] measured height smaller than cache, keep cache', { targetHeight, cachedHeight })
+            currentSlideHeight.value = cachedHeight
+          } else {
+            slideHeights.value[newIndex] = targetHeight
+            currentSlideHeight.value = targetHeight
+          }
+        }
+      }
+      startResizeObserver(newIndex)
+    })
+  }
+}
+
+const handleRestoreTab = (tabId) => {
+  restoreTab(tabId)
+  showToast(`已恢复「${allTabs.find(t => t.id === tabId)?.label || tabId}」`)
+}
+
+const handleHideTab = (tabId) => {
+  hideTab(tabId)
+  showToast(`已隐藏「${allTabs.find(t => t.id === tabId)?.label || tabId}」`)
+}
+
+const handleRestartOnboarding = () => {
+  resetOnboarding()
+  settingsVisible.value = false
+  nextTick(() => {
+    startOnboarding()
+  })
+}
+
+const handleOpenSettings = () => {
+  settingsVisible.value = true
+}
+
+const handleCloseSettings = () => {
+  settingsVisible.value = false
+}
+
+const handleGoToMap = () => {
+  goToSlide(5, 'right')
+}
+
+const handleGoToHome = () => {
+  goToSlide(0, 'left')
+}
+
+const handleOnboardingComplete = () => {
+  completeOnboarding()
+  setTimeout(() => {
+    preloadAllSlideHeights()
+  }, 200)
+}
+
+const showToast = (message) => {
+  toastMessage.value = message
+  toastVisible.value = true
+  setTimeout(() => {
+    toastVisible.value = false
+  }, 3000)
 }
 
 const initHiddenCards = () => {
@@ -1033,34 +1502,20 @@ const initHiddenCards = () => {
   }
 }
 
-const initFirstVisitTip = () => {
-  if (safeStorage.getItem('seenCardTip') !== 'true') {
-    setTimeout(() => {
-      firstVisitTipVisible.value = true
-    }, 2000)
-    setTimeout(() => {
-      firstVisitTipVisible.value = false
-      safeStorage.setItem('seenCardTip', 'true')
-    }, 8000)
-  }
-}
-
-const handleScroll = () => {
-  if (!slidesContainer.value || isScrolling) return
-  const scrollLeft = slidesContainer.value.scrollLeft
-  const newIndex = Math.round(scrollLeft / window.innerWidth)
-  if (newIndex !== currentIndex.value && newIndex >= 0 && newIndex < 6) {
-    currentSlideHeight.value = slideHeights.value[newIndex] || 0
-    currentIndex.value = newIndex
-  }
-}
-
 onMounted(() => {
   initTheme()
   initFontSettings()
   initHiddenCards()
-  initFirstVisitTip()
+  initOnboarding()
   loadPlaylist()
+
+  nextTick(() => {
+    if (!onboardingCompleted.value) {
+      setTimeout(() => {
+        startOnboarding()
+      }, 500)
+    }
+  })
 
   if (slidesContainer.value) {
     slidesContainer.value.style.cursor = 'grab'
@@ -1100,14 +1555,47 @@ onUnmounted(() => {
     resizeObserverCleanup()
     resizeObserverCleanup = null
   }
+  if (sectionObserverCleanup) {
+    sectionObserverCleanup()
+    sectionObserverCleanup = null
+  }
+  if (heightUpdateTimer) {
+    clearTimeout(heightUpdateTimer)
+    heightUpdateTimer = null
+  }
 })
 
 watch(currentIndex, (newIndex) => {
   startResizeObserver(newIndex)
+  if (newIndex === 5 && !mapCompleted.value) {
+    setTimeout(() => {
+      startMapOnboarding()
+    }, 500)
+  }
 })
 
 watch(windowWidth, () => {
-  debouncedUpdateSlideHeight()
+  preloadAllSlideHeights()
+})
+
+watch(hiddenCards, () => {
+  setTimeout(() => {
+    updateSlideHeight(true)
+  }, 150)
+}, { deep: true })
+
+watch(onboardingActive, (active) => {
+  if (!active) {
+    setTimeout(() => {
+      updateSlideHeight(true)
+    }, 250)
+  }
+})
+
+watch(currentStep, () => {
+  setTimeout(() => {
+    updateSlideHeight(true)
+  }, 150)
 })
 
 watch(lightboxVisible, (val) => {
@@ -1131,7 +1619,7 @@ const handleLightboxKeydown = (e) => {
 @import '@/styles/travel.css';
 
 .travel-app {
-  min-height: 100vh;
+  min-height: auto;
   max-width: 100vw;
   overflow-x: hidden;
 }
@@ -1279,11 +1767,13 @@ const handleLightboxKeydown = (e) => {
 .slides-container {
   display: flex;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   width: 100%;
   overscroll-behavior-x: contain;
+  transition: height 0.35s var(--ease-out-quart);
 }
 
 .slides-container::-webkit-scrollbar {
@@ -1301,14 +1791,23 @@ const handleLightboxKeydown = (e) => {
 
 .slide.active {
   opacity: 1;
-}
-
-.slide:not(.active) .section {
-  pointer-events: none;
+  height: auto;
+  min-height: auto;
+  overflow: visible;
 }
 
 .slide:not(.active) {
-  opacity: 0.95;
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.slide.measuring {
+  height: auto !important;
+  min-height: auto !important;
+  overflow: visible !important;
 }
 
 .slide.slide-in-right .section-header {
@@ -1638,6 +2137,529 @@ const handleLightboxKeydown = (e) => {
   color: var(--text-muted);
 }
 
+.hidden-tabs-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.hidden-tab-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm);
+  background: var(--earth-light);
+  border-radius: var(--space-sm);
+  font-size: var(--text-sm);
+}
+
+.hidden-tab-item span {
+  color: var(--text);
+}
+
+.restore-tab-btn {
+  background: var(--forest);
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: var(--space-xs);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.restore-tab-btn:hover {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+}
+
+.add-hide-location-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm);
+  background: var(--earth-light);
+  border: none;
+  border-radius: var(--space-sm);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.add-hide-location-btn:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.add-hide-location-btn svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s var(--ease-out-quart);
+}
+
+.add-hide-location-btn svg.rotated {
+  transform: rotate(180deg);
+}
+
+.add-hide-location-panel {
+  margin-top: var(--space-sm);
+  background: var(--earth-light);
+  border-radius: var(--space-sm);
+  overflow: hidden;
+}
+
+.add-hide-location-tip {
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.add-hide-location-list {
+  padding: var(--space-xs);
+}
+
+.add-hide-location-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm);
+  border-radius: var(--space-xs);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-hide-location-item:hover {
+  background: var(--card);
+}
+
+.add-hide-location-name {
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.add-hide-location-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.add-hide-location-item:hover .add-hide-location-icon {
+  opacity: 1;
+  color: var(--sunset);
+}
+
+.add-hide-location-empty {
+  padding: var(--space-sm);
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.3s var(--ease-out-quart);
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(-10px);
+}
+
+.slide-down-enter-to,
+.slide-down-leave-from {
+  opacity: 1;
+  max-height: 300px;
+  transform: translateY(0);
+}
+
+.restart-onboarding-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  background: var(--earth-light);
+  border: 1px dashed var(--border);
+  border-radius: var(--space-sm);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.restart-onboarding-btn:hover {
+  background: var(--forest-light);
+  border-color: var(--forest);
+  color: var(--forest);
+}
+
+.restart-onboarding-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.music-section {
+  padding-bottom: 0;
+}
+
+.music-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.music-toggle-in-settings {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--sunset-soft);
+  border: 2px solid var(--sunset);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s var(--ease-out-quart);
+  flex-shrink: 0;
+}
+
+.music-toggle-in-settings:hover {
+  background: var(--sunset);
+  transform: scale(1.05);
+}
+
+.music-toggle-in-settings:hover svg,
+.music-toggle-in-settings.playing svg {
+  color: white;
+}
+
+.music-toggle-in-settings.playing {
+  background: var(--sunset);
+  animation: musicPulseInSettings 2s ease-in-out infinite;
+}
+
+@keyframes musicPulseInSettings {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(204, 85, 51, 0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(204, 85, 51, 0); }
+}
+
+.music-toggle-in-settings.expanded {
+  background: var(--sunset);
+  transform: scale(0.95);
+}
+
+.music-toggle-in-settings svg {
+  width: 22px;
+  height: 22px;
+  color: var(--sunset);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.music-toggle-in-settings.playing svg {
+  color: white;
+}
+
+.music-toggle-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.music-drawer-panel {
+  background: var(--earth-light);
+  border-radius: 16px;
+  margin-top: 12px;
+  overflow: hidden;
+  transform-origin: top center;
+}
+
+.music-drawer-content {
+  padding: 16px;
+}
+
+.music-current-song {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.music-disc-small {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.music-disc-small.is-playing {
+  animation: discSpin 8s linear infinite;
+}
+
+.music-cover-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.music-current-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.music-current-name {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-current-artist {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.music-drawer-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.drawer-btn {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: var(--card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s var(--ease-out-quart);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.drawer-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.drawer-btn:active {
+  transform: scale(0.92);
+}
+
+.drawer-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.drawer-btn.play {
+  width: 54px;
+  height: 54px;
+  background: linear-gradient(145deg, var(--forest), oklch(32% 0.12 145));
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.drawer-btn.play svg {
+  color: white;
+}
+
+.drawer-btn.play:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+
+.drawer-btn svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text);
+}
+
+.music-drawer-volume {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  margin-bottom: 16px;
+}
+
+.music-drawer-volume svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.music-drawer-volume .volume-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.music-drawer-volume .volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--forest);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  transition: transform 0.15s ease;
+}
+
+.music-drawer-volume .volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.music-drawer-playlist {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.drawer-playlist-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+.drawer-playlist-items {
+  max-height: 180px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.drawer-playlist-items::-webkit-scrollbar {
+  width: 3px;
+}
+
+.drawer-playlist-items::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.drawer-playlist-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.drawer-playlist-item:hover {
+  background: var(--card);
+}
+
+.drawer-playlist-item.active {
+  background: var(--forest-light);
+}
+
+.drawer-item-index {
+  width: 20px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.drawer-playlist-item.active .drawer-item-index {
+  color: var(--forest);
+  font-weight: 600;
+}
+
+.drawer-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.drawer-item-name {
+  font-size: 0.85rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawer-playlist-item.active .drawer-item-name {
+  font-weight: 600;
+  color: var(--forest);
+}
+
+.drawer-item-artist {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.music-drawer-enter-active {
+  animation: drawerOpen 0.4s var(--ease-out-quart);
+}
+
+.music-drawer-leave-active {
+  animation: drawerClose 0.3s var(--ease-out-quart);
+}
+
+@keyframes drawerOpen {
+  0% {
+    opacity: 0;
+    transform: scaleY(0) translateY(-10px);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1) translateY(0);
+  }
+}
+
+@keyframes drawerClose {
+  0% {
+    opacity: 1;
+    transform: scaleY(1) translateY(0);
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(0) translateY(-10px);
+  }
+}
+
 .hidden-modal-overlay {
   position: fixed;
   inset: 0;
@@ -1806,524 +2828,6 @@ const handleLightboxKeydown = (e) => {
 
 .hidden-modal-reset-btn:hover {
   background: oklch(65% 0.18 35);
-}
-
-.music-player {
-  position: fixed;
-  bottom: 72px;
-  right: var(--space-md);
-  z-index: 85;
-  pointer-events: none;
-}
-
-.music-player > * {
-  pointer-events: auto;
-}
-
-.music-toggle {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--sunset-soft);
-  border: 2px solid var(--sunset);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.music-toggle:hover {
-  background: var(--sunset);
-}
-
-.music-toggle:hover svg,
-.music-toggle.playing svg {
-  color: white;
-}
-
-.music-toggle.playing {
-  background: var(--sunset);
-  animation: musicPulse 2s ease-in-out infinite;
-}
-
-@keyframes musicPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(204, 85, 51, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(204, 85, 51, 0); }
-}
-
-.music-toggle svg {
-  width: 20px;
-  height: 20px;
-  color: var(--sunset);
-  transition: color 0.2s ease;
-}
-
-.music-panel {
-  position: absolute;
-  bottom: 54px;
-  right: 0;
-  width: 260px;
-  background: var(--card);
-  border: 1.5px solid var(--forest);
-  border-radius: 20px;
-  box-shadow:
-    0 4px 24px rgba(0,0,0,0.1),
-    0 12px 40px rgba(0,0,0,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.1);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(12px) scale(0.92);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  overflow: hidden;
-}
-
-.music-panel::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.music-panel.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0) scale(1);
-}
-
-.music-panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 18px 10px;
-  background: transparent;
-}
-
-.music-panel-title {
-  font-weight: 700;
-  color: var(--forest);
-  font-size: 13px;
-  letter-spacing: 0.02em;
-}
-
-.music-panel-close {
-  width: 26px;
-  height: 26px;
-  border: none;
-  background: var(--earth-light);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
-
-.music-panel-close:hover {
-  background: var(--sunset-soft);
-  transform: rotate(90deg);
-}
-
-.music-panel-close svg {
-  width: 14px;
-  height: 14px;
-  color: var(--text-muted);
-}
-
-.music-now-playing {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 8px 18px 14px;
-}
-
-.music-disc {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: #1a1a1a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow:
-    0 2px 8px rgba(0,0,0,0.3),
-    inset 0 0 0 2px rgba(255,255,255,0.05);
-  position: relative;
-  transition: transform 0.3s var(--ease-out-quart);
-}
-
-.music-disc.is-playing {
-  animation: discSpin 8s linear infinite;
-}
-
-@keyframes discSpin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.music-disc-grooves {
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  background: repeating-radial-gradient(
-    circle at center,
-    transparent 0px,
-    transparent 1px,
-    rgba(255,255,255,0.03) 1px,
-    rgba(255,255,255,0.03) 2px
-  );
-  pointer-events: none;
-}
-
-.music-disc-cover {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: transform 0.2s var(--ease-out-quart);
-}
-
-.music-disc-cover:hover {
-  transform: scale(1.08);
-}
-
-.music-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.music-song-name {
-  font-weight: 600;
-  color: var(--text);
-  font-size: 13px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.music-artist {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 3px;
-}
-
-.music-progress {
-  padding: 0 18px;
-}
-
-.music-progress-bar {
-  height: 5px;
-  background: var(--earth-light);
-  border-radius: 3px;
-  cursor: pointer;
-  position: relative;
-  touch-action: none;
-}
-
-.music-progress-bar::before {
-  content: '';
-  position: absolute;
-  top: -12px;
-  left: 0;
-  right: 0;
-  bottom: -12px;
-}
-
-.music-progress-bar:focus-visible {
-  outline: 2px solid var(--forest);
-  outline-offset: 4px;
-}
-
-.music-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--forest), var(--sunset));
-  border-radius: 3px;
-  transition: width 0.1s linear;
-}
-
-.music-progress-thumb {
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 14px;
-  height: 14px;
-  background: var(--forest);
-  border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.music-progress-bar:active .music-progress-thumb {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1.2);
-}
-
-.music-time {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-top: 6px;
-  font-variant-numeric: tabular-nums;
-}
-
-.music-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 18px;
-}
-
-.music-btn {
-  width: 38px;
-  height: 38px;
-  border: none;
-  border-radius: 12px;
-  background: var(--earth-light);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.music-btn:hover {
-  background: var(--forest-light);
-  transform: translateY(-2px);
-}
-
-.music-btn:active {
-  transform: scale(0.92);
-}
-
-.music-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.music-btn.play {
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(145deg, var(--forest), oklch(32% 0.12 145));
-  border-radius: 14px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-}
-
-.music-btn.play svg {
-  color: white;
-}
-
-.music-btn.play:hover {
-  background: linear-gradient(145deg, var(--sunset), oklch(45% 0.15 25));
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-}
-
-.music-btn svg {
-  width: 16px;
-  height: 16px;
-  color: var(--text);
-}
-
-.music-btn.mode.active {
-  background: var(--forest-light);
-}
-
-.music-btn.mode svg {
-  color: var(--forest);
-}
-
-.music-volume {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 18px 12px;
-}
-
-.music-volume svg {
-  width: 16px;
-  height: 16px;
-  color: var(--text-muted);
-  flex-shrink: 0;
-}
-
-.volume-slider {
-  flex: 1;
-  height: 5px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: var(--earth-light);
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 6px;
-  background: var(--forest);
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  transition: transform 0.15s ease;
-}
-
-.volume-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-}
-
-.volume-slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 6px;
-  background: var(--forest);
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-
-.music-playlist {
-  border-top: 1px solid var(--border);
-  max-height: 160px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-}
-
-.music-playlist::-webkit-scrollbar {
-  width: 4px;
-}
-
-.music-playlist::-webkit-scrollbar-thumb {
-  background: var(--forest-light);
-  border-radius: 2px;
-}
-
-.music-playlist-title {
-  padding: 8px 18px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-muted);
-  background: var(--card);
-  position: sticky;
-  top: 0;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.music-playlist-items {
-  padding: 4px 8px;
-}
-
-.music-playlist-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin: 2px 0;
-}
-
-.music-playlist-item:hover {
-  background: var(--earth-light);
-}
-
-.music-playlist-item.active {
-  background: var(--forest-light);
-}
-
-.music-playlist-index {
-  width: 18px;
-  font-size: 11px;
-  color: var(--text-muted);
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-
-.music-playlist-item.active .music-playlist-index {
-  color: var(--forest);
-  font-weight: 600;
-}
-
-.music-playlist-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.music-playlist-name {
-  font-size: 12px;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.music-playlist-item.active .music-playlist-name {
-  font-weight: 600;
-  color: var(--forest);
-}
-
-.music-playlist-artist {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.music-playing-icon {
-  width: 12px;
-  height: 12px;
-  color: var(--forest);
-  animation: pulse 1s ease-in-out infinite;
-}
-
-.music-playlist-item {
-  animation: playlistItemIn 0.3s var(--ease-out-quart) forwards;
-  animation-delay: calc(var(--playlist-index, 0) * 40ms);
-  opacity: 0;
-  transform: translateX(-8px);
-}
-
-@keyframes playlistItemIn {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.music-playlist-item.active {
-  position: relative;
-}
-
-.music-playlist-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--forest);
-  border-radius: 0 2px 2px 0;
-  animation: activeIndicator 0.25s var(--ease-out-quart);
-}
-
-@keyframes activeIndicator {
-  from {
-    transform: scaleY(0);
-  }
-  to {
-    transform: scaleY(1);
-  }
 }
 
 .nav-arrow {
@@ -2546,56 +3050,6 @@ const handleLightboxKeydown = (e) => {
   opacity: 0.8;
 }
 
-.first-visit-tip {
-  position: fixed;
-  bottom: 80px;
-  right: var(--space-md);
-  background: var(--text);
-  color: var(--card);
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--space-md);
-  font-size: 0.75rem;
-  z-index: 95;
-  opacity: 0;
-  transform: translateY(12px) scale(0.95);
-  transition: opacity 0.35s var(--ease-out-quart),
-              transform 0.4s cubic-bezier(0.34, 1.26, 0.64, 1);
-  pointer-events: none;
-  white-space: nowrap;
-}
-
-.first-visit-tip.show {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-  animation: tipBounce 0.6s cubic-bezier(0.34, 1.26, 0.64, 1);
-}
-
-@keyframes tipBounce {
-  0% { transform: translateY(12px) scale(0.95); }
-  50% { transform: translateY(-4px) scale(1.02); }
-  100% { transform: translateY(0) scale(1); }
-}
-
-.first-visit-tip::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  right: 20px;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid var(--text);
-}
-
-.first-visit-close {
-  background: transparent;
-  border: none;
-  color: var(--sunset-soft);
-  margin-left: var(--space-xs);
-  cursor: pointer;
-  font-size: 0.7rem;
-}
-
 .sr-only {
   position: absolute;
   width: 1px;
@@ -2609,18 +3063,6 @@ const handleLightboxKeydown = (e) => {
 }
 
 @media (max-width: 480px) {
-  .music-player {
-    bottom: 72px;
-    right: var(--space-sm);
-  }
-  .music-toggle {
-    width: 44px;
-    height: 44px;
-  }
-  .music-toggle svg {
-    width: 18px;
-    height: 18px;
-  }
   .settings-toggle {
     width: 44px;
     height: 44px;
@@ -2630,12 +3072,6 @@ const handleLightboxKeydown = (e) => {
   .settings-toggle svg {
     width: 20px;
     height: 20px;
-  }
-  .first-visit-tip {
-    bottom: 80px;
-    right: var(--space-sm);
-    white-space: normal;
-    max-width: 200px;
   }
   .toast {
     right: var(--space-sm);

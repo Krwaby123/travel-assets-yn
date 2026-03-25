@@ -89,7 +89,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  height: 100%;
+  height: auto;
   scroll-padding-top: 0;
 }
 
@@ -99,7 +99,7 @@ body {
   color: var(--text);
   line-height: 1.7;
   overflow-x: hidden;
-  min-height: 100%;
+  min-height: auto;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -252,4 +252,50 @@ body {
 
 .font-adjustable-strong {
   font-weight: calc(600 + var(--text-weight-boost, 0));
+}
+
+.eye-care-theme {
+  --forest: oklch(35% 0.08 145);
+  --forest-light: oklch(88% 0.02 145);
+  --sky: oklch(50% 0.10 235);
+  --sky-light: oklch(92% 0.01 235);
+  --sunset: oklch(55% 0.14 35);
+  --sunset-soft: oklch(82% 0.06 35);
+  --earth: oklch(30% 0.03 60);
+  --earth-light: oklch(94% 0.01 60);
+  --text: oklch(25% 0.02 60);
+  --text-muted: oklch(40% 0.02 60);
+  --bg: oklch(94% 0.02 75);
+  --card: oklch(96% 0.01 75);
+  --border: oklch(85% 0.01 60);
+}
+
+.eye-care-theme .hero {
+  background: linear-gradient(180deg, oklch(92% 0.02 75) 0%, var(--bg) 100%);
+}
+
+.eye-care-theme .hero::before {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 20%, oklch(82% 0.05 55) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 30% 60%, oklch(88% 0.02 145) 0%, transparent 50%);
+}
+
+.eye-care-theme body {
+  background: var(--bg);
+}
+
+.eye-care-theme .nav-tabs {
+  background: var(--bg);
+}
+
+.eye-care-theme .settings-panel {
+  background: var(--card);
+}
+
+.eye-care-theme .hidden-modal {
+  background: var(--card);
+}
+
+.eye-care-theme .music-panel {
+  background: var(--card);
 }
