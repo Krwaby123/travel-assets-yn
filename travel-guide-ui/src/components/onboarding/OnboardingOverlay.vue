@@ -198,7 +198,6 @@ const isLastStep = computed(() => {
 })
 
 let scrollAnimationId = null
-let scrollTargetElement = null
 
 const scrollToElement = (element) => {
   const settingsPanel = element.closest('.settings-panel')
@@ -207,8 +206,6 @@ const scrollToElement = (element) => {
     cancelAnimationFrame(scrollAnimationId)
     scrollAnimationId = null
   }
-
-  scrollTargetElement = element
 
   if (settingsPanel) {
     const panelRect = settingsPanel.getBoundingClientRect()

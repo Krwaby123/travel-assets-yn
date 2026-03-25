@@ -60,7 +60,7 @@
 
     <!-- 区域2：营业时间与路线区 -->
     <div id="kunming-guide-area-time" class="guide-module" :class="{ expanded: expandedModules.time }" ref="module-time">
-      <div class="guide-module-header guide-module-collapsible" @click="toggleModule('time')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.time" @click="toggleModule('time')" @keydown.enter="toggleModule('time')" @keydown.space.prevent="toggleModule('time')">
         <h3 class="guide-module-title">营业时间 & 逛买路线</h3>
         <span class="guide-module-toggle" :class="{ expanded: expandedModules.time }">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -121,7 +121,7 @@
 
     <!-- 区域3：场馆分区详解区 -->
     <div id="kunming-guide-area-venue" class="guide-module" :class="{ expanded: expandedModules.venue }" ref="module-venue">
-      <div class="guide-module-header guide-module-collapsible" @click="toggleModule('venue')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.venue" @click="toggleModule('venue')" @keydown.enter="toggleModule('venue')" @keydown.space.prevent="toggleModule('venue')">
         <h3 class="guide-module-title">场馆分区详解</h3>
         <span class="guide-module-toggle" :class="{ expanded: expandedModules.venue }">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -158,7 +158,7 @@
 
     <!-- 区域4：鲜花物流指南区 -->
     <div id="kunming-guide-area-logistics" class="guide-module" :class="{ expanded: expandedModules.logistics }" ref="module-logistics">
-      <div class="guide-module-header guide-module-collapsible" @click="toggleModule('logistics')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.logistics" @click="toggleModule('logistics')" @keydown.enter="toggleModule('logistics')" @keydown.space.prevent="toggleModule('logistics')">
         <h3 class="guide-module-title">寄花回家物流指南</h3>
         <span class="guide-module-toggle" :class="{ expanded: expandedModules.logistics }">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -193,7 +193,7 @@
 
     <!-- 区域5：选花技巧与避坑区 -->
     <div id="kunming-guide-area-skills" class="guide-module" :class="{ expanded: expandedModules.skills }" ref="module-skills">
-      <div class="guide-module-header guide-module-collapsible" @click="toggleModule('skills')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.skills" @click="toggleModule('skills')" @keydown.enter="toggleModule('skills')" @keydown.space.prevent="toggleModule('skills')">
         <h3 class="guide-module-title">选花技巧 & 避坑指南</h3>
         <span class="guide-module-toggle" :class="{ expanded: expandedModules.skills }">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -228,7 +228,7 @@
 
     <!-- 区域6：预算与配套区 -->
     <div id="kunming-guide-area-budget" class="guide-module" :class="{ expanded: expandedModules.budget }" ref="module-budget">
-      <div class="guide-module-header guide-module-collapsible" @click="toggleModule('budget')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.budget" @click="toggleModule('budget')" @keydown.enter="toggleModule('budget')" @keydown.space.prevent="toggleModule('budget')">
         <h3 class="guide-module-title">预算参考 & 配套服务</h3>
         <span class="guide-module-toggle" :class="{ expanded: expandedModules.budget }">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -417,7 +417,7 @@ onMounted(() => {
   white-space: nowrap;
   transition: all var(--duration-fast) var(--ease-out-quart);
   font-family: inherit;
-  min-height: 36px;
+  min-height: 44px;
 }
 
 .quick-nav-btn:hover {
@@ -470,6 +470,11 @@ onMounted(() => {
   transition: background var(--duration-fast) var(--ease-out-quart);
   user-select: none;
   min-height: 48px;
+}
+
+.guide-module-collapsible:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 2px;
 }
 
 .guide-module-collapsible:hover {
@@ -925,8 +930,8 @@ onMounted(() => {
 @media (max-width: 480px) {
   .quick-nav-btn {
     font-size: 0.7rem;
-    padding: var(--space-xs) var(--space-sm);
-    min-height: 40px;
+    padding: var(--space-sm);
+    min-height: 44px;
   }
   .quick-tips {
     grid-template-columns: repeat(3, 1fr);

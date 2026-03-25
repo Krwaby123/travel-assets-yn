@@ -231,7 +231,7 @@
           <div v-if="showMusicPlaylist" class="music-drawer-panel">
             <div class="music-drawer-content">
               <div class="music-current-song" v-if="currentSong">
-                <div class="music-disc-small" :class="{ 'is-playing': isMusicPlaying }">
+                <div class="music-disc-small" :class="{ 'is-playing': isMusicPlaying }" @click="currentSong?.cover && openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)">
                   <img
                     v-if="currentSong?.cover"
                     :src="`/images/music-covers/${currentSong.cover}`"
@@ -248,6 +248,16 @@
                 <div class="music-current-info">
                   <div class="music-current-name">{{ currentSong.name }}</div>
                   <div class="music-current-artist">{{ currentSong.artist }}</div>
+                </div>
+              </div>
+
+              <div class="music-drawer-progress" @click="seekProgress">
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" :style="{ width: musicProgress + '%' }"></div>
+                </div>
+                <div class="progress-time">
+                  <span>{{ formatTime(currentTime) }}</span>
+                  <span>{{ formatTime(duration) }}</span>
                 </div>
               </div>
 
@@ -596,50 +606,22 @@ const setSlideRef = (el, index) => {
 
 const containerStyle = computed(() => {
   const height = currentSlideHeight.value
-  const result = {
+  return {
     height: height > 0 ? `${height}px` : 'auto',
     overflowY: 'hidden',
     overflowX: 'auto'
   }
-  console.log('[containerStyle] 计算样式', {
-    currentSlideHeight: height,
-    currentIndex: currentIndex.value,
-    result
-  })
-  return result
 })
 
 let heightUpdateTimer = null
 
 const calculateSlideFullHeight = (slide, slideIndex = -1) => {
-  if (!slide) {
-    console.log('[calculateSlideFullHeight] slide is null', slideIndex)
-    return 0
-  }
+  if (!slide) return 0
 
   const section = slide.querySelector('.section')
-  const slideDataIndex = slide.getAttribute('data-index')
+  if (!section) return slide.scrollHeight
 
-  console.log('[calculateSlideFullHeight] start measuring', {
-    paramSlideIndex: slideIndex,
-    domDataIndex: slideDataIndex,
-    slideClassList: slide.className,
-    hasMeasuringClass: slide.classList.contains('measuring'),
-    hasActiveClass: slide.classList.contains('active')
-  })
-
-  if (!section) {
-    console.log('[calculateSlideFullHeight] section not found, using scrollHeight', slide.scrollHeight)
-    return slide.scrollHeight
-  }
-
-  const height = section.offsetHeight
-  console.log('[calculateSlideFullHeight] result', {
-    paramSlideIndex: slideIndex,
-    domDataIndex: slideDataIndex,
-    sectionOffsetHeight: height
-  })
-  return height
+  return section.offsetHeight
 }
 
 const updateSlideHeight = (immediate = false) => {
@@ -650,10 +632,7 @@ const updateSlideHeight = (immediate = false) => {
 
   const doUpdate = () => {
     const currentSlide = slideRefs.value[currentIndex.value]
-    if (!currentSlide) {
-      console.log('[updateSlideHeight] currentSlide is null')
-      return
-    }
+    if (!currentSlide) return
 
     const cachedHeight = slideHeights.value[currentIndex.value]
 
@@ -661,17 +640,8 @@ const updateSlideHeight = (immediate = false) => {
     const newHeight = calculateSlideFullHeight(currentSlide, currentIndex.value)
     currentSlide.classList.remove('measuring')
 
-    console.log('[updateSlideHeight] update', {
-      immediate,
-      currentIndex: currentIndex.value,
-      newHeight,
-      cachedHeight,
-      oldHeight: currentSlideHeight.value
-    })
-
     if (newHeight > 0) {
       if (cachedHeight > 0 && newHeight < cachedHeight) {
-        console.log('[updateSlideHeight] measured height smaller than cache, keep cache', { newHeight, cachedHeight })
         currentSlideHeight.value = cachedHeight
       } else {
         slideHeights.value[currentIndex.value] = newHeight
@@ -730,8 +700,6 @@ const onModuleToggle = () => {
 }
 
 const preloadAllSlideHeights = () => {
-  console.log('[preloadAllSlideHeights] start preload')
-
   const calculateAndSet = () => {
     slideRefs.value.forEach((slide, index) => {
       if (slide) {
@@ -745,9 +713,6 @@ const preloadAllSlideHeights = () => {
             const cachedHeight = slideHeights.value[index]
             if (!cachedHeight || height > cachedHeight) {
               slideHeights.value[index] = height
-              console.log('[preloadAllSlideHeights] cache height', index, height)
-            } else {
-              console.log('[preloadAllSlideHeights] skip smaller height', index, height, 'cached:', cachedHeight)
             }
           }
         })
@@ -758,7 +723,6 @@ const preloadAllSlideHeights = () => {
       const currentHeight = slideHeights.value[currentIndex.value] || 0
       if (currentHeight > 0) {
         currentSlideHeight.value = currentHeight
-        console.log('[preloadAllSlideHeights] set current height', currentHeight)
       }
     }, 100)
   }
@@ -767,8 +731,6 @@ const preloadAllSlideHeights = () => {
 }
 
 const startResizeObserver = (index) => {
-  console.log('[startResizeObserver] 启动监听', index)
-
   if (resizeObserverCleanup) {
     resizeObserverCleanup()
     resizeObserverCleanup = null
@@ -780,21 +742,13 @@ const startResizeObserver = (index) => {
   }
 
   const slide = slideRefs.value[index]
-  if (!slide) {
-    console.log('[startResizeObserver] slide 为空')
-    return
-  }
+  if (!slide) return
 
   let resizeDebounceTimer = null
 
   const { stop } = useResizeObserver(
     slide,
     () => {
-      console.log('[ResizeObserver] 触发', {
-        observedIndex: index,
-        currentIndex: currentIndex.value
-      })
-
       if (index !== currentIndex.value) return
 
       if (resizeDebounceTimer) {
@@ -803,7 +757,6 @@ const startResizeObserver = (index) => {
 
       resizeDebounceTimer = setTimeout(() => {
         if (index === currentIndex.value) {
-          console.log('[ResizeObserver] 执行更新')
           updateSlideHeight(true)
         }
       }, 100)
@@ -850,6 +803,21 @@ const musicProgress = computed(() => {
   if (duration.value === 0) return 0
   return (currentTime.value / duration.value) * 100
 })
+
+const formatTime = (time) => {
+  if (!time || isNaN(time)) return '0:00'
+  const minutes = Math.floor(time / 60)
+  const seconds = Math.floor(time % 60)
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
+const seekProgress = (e) => {
+  if (!bgMusic.value || duration.value === 0) return
+  const bar = e.currentTarget
+  const rect = bar.getBoundingClientRect()
+  const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
+  bgMusic.value.currentTime = percent * duration.value
+}
 
 const loadPlaylist = async () => {
   try {
@@ -1002,65 +970,6 @@ const setVolume = (e) => {
   }
 }
 
-const seekProgress = (e) => {
-  if (!bgMusic.value || duration.value === 0) return
-  const bar = e.currentTarget
-  const rect = bar.getBoundingClientRect()
-  const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
-  bgMusic.value.currentTime = percent * duration.value
-}
-
-const progressBar = ref(null)
-const isProgressDragging = ref(false)
-
-const handleProgressTouchStart = (e) => {
-  isProgressDragging.value = true
-  seekFromTouch(e)
-}
-
-const handleProgressTouchMove = (e) => {
-  if (!isProgressDragging.value) return
-  seekFromTouch(e)
-}
-
-const handleProgressTouchEnd = () => {
-  isProgressDragging.value = false
-}
-
-const seekFromTouch = (e) => {
-  if (!bgMusic.value || duration.value === 0) return
-  const bar = progressBar.value || e.currentTarget
-  const rect = bar.getBoundingClientRect()
-  const touch = e.touches[0] || e.changedTouches[0]
-  const percent = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width))
-  bgMusic.value.currentTime = percent * duration.value
-}
-
-const handleProgressKeydown = (e) => {
-  if (!bgMusic.value || duration.value === 0) return
-  const step = 5
-  if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-    e.preventDefault()
-    bgMusic.value.currentTime = Math.min(duration.value, bgMusic.value.currentTime + step)
-  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-    e.preventDefault()
-    bgMusic.value.currentTime = Math.max(0, bgMusic.value.currentTime - step)
-  } else if (e.key === 'Home') {
-    e.preventDefault()
-    bgMusic.value.currentTime = 0
-  } else if (e.key === 'End') {
-    e.preventDefault()
-    bgMusic.value.currentTime = duration.value
-  }
-}
-
-const formatTime = (time) => {
-  if (!time || isNaN(time)) return '0:00'
-  const minutes = Math.floor(time / 60)
-  const seconds = Math.floor(time % 60)
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`
-}
-
 let touchStartX = 0
 let mouseStartX = 0
 let isDragging = false
@@ -1114,13 +1023,6 @@ const goToSlide = (index, direction = null) => {
   if (index < 0 || index >= 6) return
   if (index === currentIndex.value) return
 
-  console.log('[goToSlide] 开始切换', {
-    from: currentIndex.value,
-    to: index,
-    currentHeight: currentSlideHeight.value,
-    cachedHeight: slideHeights.value[index]
-  })
-
   if (direction) {
     slideDirection.value = direction
   } else {
@@ -1134,11 +1036,9 @@ const goToSlide = (index, direction = null) => {
 
   if (cachedHeight > 0) {
     currentSlideHeight.value = cachedHeight
-    console.log('[goToSlide] 使用缓存高度', cachedHeight)
   }
 
   currentIndex.value = index
-  console.log('[goToSlide] currentIndex 已更新为', index)
 
   if (slidesContainer.value) {
     slidesContainer.value.scrollTo({
@@ -1159,21 +1059,12 @@ const goToSlide = (index, direction = null) => {
             const targetHeight = calculateSlideFullHeight(targetSlide, index)
             targetSlide.classList.remove('measuring')
 
-console.log('[goToSlide] 测量高度', {
-              index,
-              targetHeight,
-              cachedHeight: slideHeights.value[index],
-              currentSlideHeight: currentSlideHeight.value
-            })
-            
             if (targetHeight > 0) {
               if (cachedHeight > 0 && targetHeight < cachedHeight) {
-                console.log('[goToSlide] measured height smaller than cache, keep cache', { targetHeight, cachedHeight })
                 currentSlideHeight.value = cachedHeight
               } else {
                 slideHeights.value[index] = targetHeight
                 currentSlideHeight.value = targetHeight
-                console.log('[goToSlide] update height to', targetHeight)
               }
             }
           })
@@ -1424,14 +1315,13 @@ const handleScroll = () => {
       const targetSlide = slideRefs.value[newIndex]
       if (targetSlide) {
         const cachedHeight = slideHeights.value[newIndex]
-        
+
         targetSlide.classList.add('measuring')
         const targetHeight = calculateSlideFullHeight(targetSlide, newIndex)
         targetSlide.classList.remove('measuring')
 
         if (targetHeight > 0) {
           if (cachedHeight > 0 && targetHeight < cachedHeight) {
-            console.log('[handleScroll] measured height smaller than cache, keep cache', { targetHeight, cachedHeight })
             currentSlideHeight.value = cachedHeight
           } else {
             slideHeights.value[newIndex] = targetHeight
@@ -2412,6 +2302,16 @@ const handleLightboxKeydown = (e) => {
 
 .music-disc-small.is-playing {
   animation: discSpin 8s linear infinite;
+  cursor: pointer;
+}
+
+@keyframes discSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.music-disc-small:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .music-cover-small {
@@ -2498,6 +2398,36 @@ const handleLightboxKeydown = (e) => {
   width: 18px;
   height: 18px;
   color: var(--text);
+}
+
+.music-drawer-progress {
+  padding: 0 8px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--forest), var(--sunset));
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+.progress-time {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 6px;
 }
 
 .music-drawer-volume {
