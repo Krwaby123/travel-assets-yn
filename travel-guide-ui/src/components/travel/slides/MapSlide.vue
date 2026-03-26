@@ -3245,6 +3245,9 @@ onUnmounted(() => {
 }
 
 .route-panel-overlay {
+  --amap-blue: oklch(55% 0.20 250);
+  --amap-blue-light: oklch(92% 0.04 250);
+
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
@@ -3524,6 +3527,9 @@ onUnmounted(() => {
 }
 
 .detail-panel-overlay {
+  --amap-blue: oklch(55% 0.20 250);
+  --amap-blue-light: oklch(92% 0.04 250);
+
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
