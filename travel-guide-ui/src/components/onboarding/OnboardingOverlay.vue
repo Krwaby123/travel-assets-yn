@@ -23,6 +23,16 @@
           </Transition>
         </div>
 
+        <Transition name="demo-hint">
+          <div v-if="demoHint" class="demo-hint-toast">
+            <svg class="demo-hint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4M12 8h.01"/>
+            </svg>
+            <span>{{ demoHint }}</span>
+          </div>
+        </Transition>
+
         <Transition name="tooltip">
           <div
             v-if="currentStepData && currentStepData.type === 'highlight' && tooltipPosition && !hideSpotlight && !simpleHint"
@@ -196,8 +206,6 @@
             </div>
           </div>
         </Transition>
-
-        <ConfettiEffect v-if="showConfetti" @complete="showConfetti = false" />
       </div>
     </Transition>
   </Teleport>
@@ -206,7 +214,6 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { onboardingSteps } from './onboarding-steps'
-import ConfettiEffect from './ConfettiEffect.vue'
 
 const props = defineProps({
   isActive: Boolean,
@@ -239,10 +246,10 @@ const emit = defineEmits([
 const spotlightStyle = ref({})
 const tooltipPosition = ref(null)
 const tooltipStyle = ref({})
-const showConfetti = ref(false)
 const isAnimatingAction = ref(false)
 const hideSpotlight = ref(false)
 const simpleHint = ref(null)
+const demoHint = ref(null)
 
 const currentStepData = computed(() => {
   return onboardingSteps[props.currentStep]
@@ -484,10 +491,7 @@ const handleNext = async () => {
   }
 
   if (isLastStep.value) {
-    showConfetti.value = true
-    setTimeout(() => {
-      emit('complete')
-    }, 1500)
+    emit('complete')
   } else {
     emit('next')
   }
@@ -496,17 +500,10 @@ const handleNext = async () => {
 const handleOptionClick = (option) => {
   if (isAnimatingAction.value) return
 
-  isAnimatingAction.value = true
-
   if (option.action === 'complete') {
-    showConfetti.value = true
-    setTimeout(() => {
-      emit('complete')
-      isAnimatingAction.value = false
-    }, 1500)
+    emit('complete')
   } else if (option.action === 'next') {
     emit('next')
-    isAnimatingAction.value = false
   }
 }
 
@@ -591,9 +588,11 @@ const autoToggleTheme = async () => {
     await new Promise(resolve => setTimeout(resolve, 400))
 
     hideSpotlightAndTooltip()
+    demoHint.value = '正在展示暗色模式'
 
     await new Promise(resolve => setTimeout(resolve, 2000))
 
+    demoHint.value = null
     emit('open-settings')
 
     await new Promise(resolve => setTimeout(resolve, 400))
@@ -618,13 +617,18 @@ const autoToggleTheme = async () => {
 const autoChangeFontSize = async () => {
   isAnimatingAction.value = true
 
+  emit('set-font-size', 'medium')
+  await new Promise(resolve => setTimeout(resolve, 200))
+
   emit('close-settings')
   await new Promise(resolve => setTimeout(resolve, 400))
 
   hideSpotlightAndTooltip()
+  demoHint.value = '正在展示字体设置'
 
   const menuBtn = document.querySelector('.hero-menu-btn')
   if (!menuBtn) {
+    demoHint.value = null
     emit('next')
     isAnimatingAction.value = false
     return
@@ -664,11 +668,14 @@ const autoChangeFontSize = async () => {
     venueSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
     await new Promise(resolve => setTimeout(resolve, 600))
 
+    demoHint.value = null
+
     const rect = venueSection.getBoundingClientRect()
     showSpotlightWithSimpleHint(rect, '中号字体')
     await new Promise(resolve => setTimeout(resolve, 2000))
   }
 
+  demoHint.value = null
   emit('open-settings')
   await new Promise(resolve => setTimeout(resolve, 500))
 
@@ -691,6 +698,7 @@ const autoChangeFontSize = async () => {
 
   clearSimpleHint()
   hideSpotlightAndTooltip()
+  demoHint.value = null
   emit('next')
   isAnimatingAction.value = false
 }
@@ -702,6 +710,7 @@ const autoExpandHiddenContent = async () => {
   await new Promise(resolve => setTimeout(resolve, 500))
 
   hideSpotlightAndTooltip()
+  demoHint.value = '正在演示隐藏内容管理'
 
   const menuBtn = document.querySelector('.hero-menu-btn')
   if (menuBtn) {
@@ -773,6 +782,7 @@ const autoExpandHiddenContent = async () => {
       await new Promise(resolve => setTimeout(resolve, 1500))
 
       emit('open-settings')
+      demoHint.value = null
       await new Promise(resolve => setTimeout(resolve, 800))
 
       const manageBtn = document.querySelector('.manage-hidden-btn')
@@ -805,25 +815,10 @@ const autoExpandHiddenContent = async () => {
       }
 
       await new Promise(resolve => setTimeout(resolve, 800))
-
-      emit('close-settings')
-      await new Promise(resolve => setTimeout(resolve, 600))
-
-      venueSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      await new Promise(resolve => setTimeout(resolve, 800))
-
-      const newRect = venueSection.getBoundingClientRect()
-      spotlightStyle.value = {
-        left: `${newRect.left - 8}px`,
-        top: `${newRect.top - 8}px`,
-        width: `${newRect.width + 16}px`,
-        height: `${newRect.height + 16}px`
-      }
-
-      hideSpotlight.value = false
     }
   }
 
+  demoHint.value = null
   emit('next')
   isAnimatingAction.value = false
 }
@@ -868,6 +863,9 @@ const autoSearchPlace = async () => {
   await new Promise(resolve => setTimeout(resolve, 500))
 
   emit('next')
+
+  await new Promise(resolve => setTimeout(resolve, 800))
+
   isAnimatingAction.value = false
 }
 
@@ -900,7 +898,7 @@ const handleStepChange = (newStep, oldStep) => {
   hideSpotlight.value = false
   simpleHint.value = null
 
-  const SETTINGS_STEPS = [7, 8, 9]
+  const SETTINGS_STEPS = [7, 8, 9, 10]
   const MAP_STEPS = [11, 12, 13, 14]
 
   const wasInSettings = SETTINGS_STEPS.includes(oldStep)
@@ -925,7 +923,7 @@ const handleStepChange = (newStep, oldStep) => {
 watch(() => props.currentStep, (newStep, oldStep) => {
   handleStepChange(newStep, oldStep)
 
-  const SETTINGS_STEPS = [7, 8, 9]
+  const SETTINGS_STEPS = [7, 8, 9, 10]
   const MAP_STEPS = [11, 12, 13, 14]
 
   const isInSettings = SETTINGS_STEPS.includes(newStep)
@@ -958,16 +956,16 @@ watch(() => props.isActive, (active) => {
     spotlightStyle.value = {}
     tooltipPosition.value = null
     isAnimatingAction.value = false
-    showConfetti.value = false
     hideSpotlight.value = false
     simpleHint.value = null
+    demoHint.value = null
     return
   }
 
   isAnimatingAction.value = false
-  showConfetti.value = false
   hideSpotlight.value = false
   simpleHint.value = null
+  demoHint.value = null
   nextTick(() => {
     setTimeout(() => {
       updateSpotlight()
@@ -1084,6 +1082,51 @@ onUnmounted(() => {
 .hint-leave-to {
   opacity: 0;
   transform: translateX(-50%) translateY(10px);
+}
+
+.demo-hint-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a1a1a;
+  padding: 16px 28px;
+  border-radius: 40px;
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  backdrop-filter: blur(8px);
+}
+
+.demo-hint-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--forest);
+}
+
+.demo-hint-enter-active {
+  transition: opacity 0.35s var(--ease-out-quart), transform 0.35s var(--ease-out-quart);
+}
+
+.demo-hint-leave-active {
+  transition: opacity 0.25s var(--ease-out-quart), transform 0.25s var(--ease-out-quart);
+}
+
+.demo-hint-enter-from {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.9);
+}
+
+.demo-hint-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.95);
 }
 
 .onboarding-tooltip {

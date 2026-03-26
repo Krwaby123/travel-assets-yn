@@ -493,6 +493,8 @@
       @set-theme="handleOnboardingSetTheme"
       @set-font-size="handleOnboardingSetFontSize"
     />
+
+    <ConfettiEffect v-if="showConfetti" @complete="showConfetti = false" />
   </div>
 </template>
 
@@ -506,8 +508,11 @@ import LijiangSlide from '@/components/travel/slides/LijiangSlide.vue'
 import ShangriSlide from '@/components/travel/slides/ShangriSlide.vue'
 import MapSlide from '@/components/travel/slides/MapSlide.vue'
 import OnboardingOverlay from '@/components/onboarding/OnboardingOverlay.vue'
+import ConfettiEffect from '@/components/onboarding/ConfettiEffect.vue'
 import { navTabs, dounanData, daliData, lijiangData, shangriData } from '@/data/travelData'
 import { useOnboarding } from '@/composables/useOnboarding'
+
+const showConfetti = ref(false)
 
 const {
   completed: onboardingCompleted,
@@ -1451,7 +1456,8 @@ const handleOnboardingComplete = () => {
   completeOnboarding()
   setTimeout(() => {
     preloadAllSlideHeights()
-  }, 200)
+    showConfetti.value = true
+  }, 300)
 }
 
 const handleOnboardingSetTheme = (mode) => {
