@@ -2,17 +2,55 @@
   <section class="section dali-section">
     <!-- 快速导航栏 -->
     <nav class="quick-nav-bar" ref="quickNavBar">
-      <div class="quick-nav-inner">
+      <div class="quick-nav-track">
         <button
           v-for="module in modules"
           :key="module.id"
           :class="['quick-nav-btn', { active: activeModule === module.id }]"
-          @click="scrollToModule(module.id)"
+          @click.stop="scrollToModule(module.id)"
         >
-          {{ module.shortTitle || module.title }}
+          <span class="nav-btn-text">{{ module.shortTitle || module.title }}</span>
         </button>
       </div>
+      <button class="nav-jump-btn" @click="showJumpPanel = true" aria-label="快速跳转">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
     </nav>
+
+    <!-- 跳转面板 -->
+    <Teleport to="body">
+      <Transition name="jump-panel">
+        <div v-if="showJumpPanel" class="jump-panel-overlay" @click.self="showJumpPanel = false">
+          <div class="jump-panel">
+            <div class="jump-panel-header">
+              <span class="jump-panel-title">快速跳转</span>
+              <button class="jump-panel-close" @click="showJumpPanel = false" aria-label="关闭">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+            <div class="jump-panel-body">
+              <div class="jump-section" v-for="section in jumpSections" :key="section.id">
+                <button
+                  class="jump-section-btn"
+                  :class="{ active: activeModule === section.id }"
+                  @click="handleJump(section.id)"
+                >
+                  <span class="jump-section-icon">{{ section.icon }}</span>
+                  <span class="jump-section-name">{{ section.title }}</span>
+                  <svg class="jump-section-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <!-- 区域1：大理总览区（默认展开，不折叠） -->
     <div id="dali-guide-area-overview" class="guide-module guide-module-expanded" ref="module-overview">
@@ -429,6 +467,16 @@ const modules = [
   { id: 'budget', title: '预算参考 & 避坑指南', shortTitle: '预算避坑' }
 ]
 
+const jumpSections = [
+  { id: 'overview', title: '总览', icon: '🌊' },
+  { id: 'itinerary', title: '详细行程时间线', icon: '📅' },
+  { id: 'scenic', title: '核心景点详解', icon: '🏔️' },
+  { id: 'hotel', title: '住宿推荐', icon: '🏨' },
+  { id: 'food', title: '必吃美食', icon: '🍜' },
+  { id: 'ticket', title: '门票优惠 & 预约指南', icon: '🎫' },
+  { id: 'budget', title: '预算参考 & 避坑指南', icon: '💰' }
+]
+
 const expandedModules = reactive({
   itinerary: false,
   scenic: false,
@@ -440,6 +488,7 @@ const expandedModules = reactive({
 
 const activeModule = ref('overview')
 const quickNavBar = ref(null)
+const showJumpPanel = ref(false)
 
 const toggleModule = (moduleId) => {
   expandedModules[moduleId] = !expandedModules[moduleId]
@@ -476,6 +525,14 @@ const scrollToModule = (moduleId) => {
       })
     })
   }
+}
+
+const handleJump = (moduleId) => {
+  showJumpPanel.value = false
+  expandModule(moduleId)
+  nextTick(() => {
+    scrollToModule(moduleId)
+  })
 }
 
 const handleImageLoad = (src) => {
@@ -517,62 +574,6 @@ onMounted(() => {
 
 .dali-section {
   padding-top: 0;
-}
-
-.quick-nav-bar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  padding: var(--space-xs) 0;
-  margin: 0 calc(-1 * var(--space-md));
-  padding-left: var(--space-md);
-  padding-right: var(--space-md);
-}
-
-.quick-nav-inner {
-  display: flex;
-  gap: var(--space-xs);
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 2px;
-}
-
-.quick-nav-inner::-webkit-scrollbar {
-  display: none;
-}
-
-.quick-nav-btn {
-  flex-shrink: 0;
-  padding: var(--space-xs) var(--space-sm);
-  background: var(--earth-light);
-  border: 1px solid var(--border);
-  border-radius: var(--space-sm);
-  font-size: var(--text-xs);
-  color: var(--text-muted);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all var(--duration-fast) var(--ease-out-quart);
-  font-family: inherit;
-  min-height: 44px;
-}
-
-.quick-nav-btn:hover {
-  background: var(--forest-light);
-  border-color: var(--forest);
-  color: var(--forest);
-}
-
-.quick-nav-btn:active {
-  transform: scale(0.96);
-}
-
-.quick-nav-btn.active {
-  background: var(--forest);
-  border-color: var(--forest);
-  color: white;
 }
 
 .guide-module {
@@ -625,7 +626,7 @@ onMounted(() => {
 }
 
 .guide-module-title {
-  font-family: 'ZCOOL XiaoWei', serif;
+  font-family: 'LXGW WenKai', serif;
   font-size: var(--text-lg);
   font-weight: 400;
   color: var(--forest);
@@ -680,7 +681,7 @@ onMounted(() => {
 }
 
 .section-number {
-  font-family: 'ZCOOL XiaoWei', serif;
+  font-family: 'LXGW WenKai', serif;
   font-size: 0.75rem;
   color: var(--sunset);
   letter-spacing: 0.1em;
@@ -756,7 +757,7 @@ onMounted(() => {
 }
 
 .route-overview-point {
-  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-size: 0.75rem;
   padding: 0.2rem 0.5rem;
   background: var(--earth-light);
   border-radius: var(--space-sm);
@@ -796,7 +797,7 @@ onMounted(() => {
 }
 
 .route-day-badge {
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   font-weight: 700;
   padding: 0.2rem 0.5rem;
   border-radius: 0.25rem;
@@ -833,13 +834,13 @@ onMounted(() => {
 
 .route-timeline-item.optional .timeline-time::after {
   content: '可选';
-  font-size: calc(0.6rem * var(--text-scale, 1));
+  font-size: 0.6rem;
   margin-left: var(--space-2xs);
   color: var(--text-muted);
 }
 
 .timeline-time {
-  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--sunset);
   min-width: 2.5rem;
@@ -964,7 +965,7 @@ onMounted(() => {
 }
 
 .spot-transport {
-  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-size: 0.75rem;
   color: var(--sky);
   background: var(--sky-light);
   padding: var(--space-2xs) var(--space-xs);
@@ -972,7 +973,7 @@ onMounted(() => {
 }
 
 .spot-time {
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   color: var(--text-muted);
   background: var(--earth-light);
   padding: 2px 6px;
@@ -1036,7 +1037,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: var(--space-2xs);
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   color: var(--text-muted);
 }
 
@@ -1113,7 +1114,7 @@ onMounted(() => {
 }
 
 .cycling-route-name {
-  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text);
 }
@@ -1121,19 +1122,19 @@ onMounted(() => {
 .cycling-route-info {
   display: flex;
   gap: var(--space-sm);
-  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: 2px;
 }
 
 .cycling-route-tip {
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   color: var(--sky);
   margin-top: 2px;
 }
 
 .cycling-tips {
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   color: var(--text-muted);
   margin-top: var(--space-sm);
   padding-top: var(--space-sm);
@@ -1169,13 +1170,13 @@ onMounted(() => {
 }
 
 .photo-spot-name {
-  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text);
 }
 
 .photo-spot-tip {
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   color: var(--text-muted);
 }
 
@@ -1190,7 +1191,7 @@ onMounted(() => {
 }
 
 .stay-group-label {
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -1218,26 +1219,26 @@ onMounted(() => {
 }
 
 .stay-item-name {
-  font-size: calc(0.85rem * var(--text-scale, 1));
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--forest);
 }
 
 .stay-item-price {
-  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--sunset);
   white-space: nowrap;
 }
 
 .stay-item-location {
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   color: var(--text-muted);
   line-height: 1.4;
 }
 
 .stay-item-highlights {
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   color: var(--text);
   margin-top: 4px;
   line-height: 1.4;
@@ -1263,7 +1264,7 @@ onMounted(() => {
 }
 
 .stay-tips-item {
-  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-size: 0.75rem;
   color: var(--text-muted);
   padding-left: var(--space-sm);
   position: relative;
@@ -1298,26 +1299,26 @@ onMounted(() => {
 }
 
 .food-item-name {
-  font-size: calc(0.85rem * var(--text-scale, 1));
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--forest);
 }
 
 .food-item-price {
-  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--sunset);
   white-space: nowrap;
 }
 
 .food-item-shops {
-  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-size: 0.75rem;
   color: var(--text);
   line-height: 1.4;
 }
 
 .food-item-tip {
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   color: var(--text-muted);
   margin-top: 4px;
   line-height: 1.4;
@@ -1334,7 +1335,7 @@ onMounted(() => {
 }
 
 .ticket-label {
-  font-size: calc(0.9rem * var(--text-scale, 1));
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--forest);
 }
@@ -1360,13 +1361,13 @@ onMounted(() => {
 }
 
 .ticket-spot-name {
-  font-size: calc(0.85rem * var(--text-scale, 1));
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--text);
 }
 
 .ticket-price-row {
-  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-size: 0.8rem;
   white-space: nowrap;
 }
 
@@ -1386,7 +1387,7 @@ onMounted(() => {
 }
 
 .ticket-item-note {
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   color: var(--text-muted);
   margin-top: 4px;
   line-height: 1.4;
@@ -1399,14 +1400,14 @@ onMounted(() => {
 }
 
 .ticket-booking-title {
-  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text);
   margin-bottom: var(--space-sm);
 }
 
 .ticket-booking-item {
-  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-size: 0.75rem;
   color: var(--text);
   margin-bottom: var(--space-xs);
   line-height: 1.5;
@@ -1429,7 +1430,7 @@ onMounted(() => {
 }
 
 .ticket-note {
-  font-size: calc(0.7rem * var(--text-scale, 1));
+  font-size: 0.7rem;
   color: var(--text-muted);
   text-align: center;
   margin-top: var(--space-md);
@@ -1449,7 +1450,7 @@ onMounted(() => {
 }
 
 .simple-info-content {
-  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-size: 0.8rem;
   line-height: 1.8;
   color: var(--text);
 }

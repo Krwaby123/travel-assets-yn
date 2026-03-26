@@ -2044,7 +2044,7 @@ onUnmounted(() => {
 }
 
 .guide-module-title {
-  font-family: 'ZCOOL XiaoWei', serif;
+  font-family: 'LXGW WenKai', serif;
   font-size: var(--text-lg);
   font-weight: 400;
   color: var(--forest);

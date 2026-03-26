@@ -1542,7 +1542,7 @@ const handleLightboxKeydown = (e) => {
 }
 
 .hero h1 {
-  font-family: 'ZCOOL XiaoWei', serif;
+  font-family: 'LXGW WenKai', serif;
   font-size: clamp(1.25rem, 5vw, 2rem);
   font-weight: 400;
   color: var(--forest);
@@ -1722,7 +1722,7 @@ const handleLightboxKeydown = (e) => {
   text-align: center;
   padding: var(--space-xl) var(--space-md);
   background: linear-gradient(180deg, var(--bg) 0%, var(--forest-light) 100%);
-  font-family: 'ZCOOL XiaoWei', serif;
+  font-family: 'LXGW WenKai', serif;
 }
 
 .footer-text {
@@ -2932,7 +2932,7 @@ const handleLightboxKeydown = (e) => {
   color: rgba(255, 255, 255, 0.85);
   font-size: 0.85rem;
   white-space: nowrap;
-  font-family: 'ZCOOL XiaoWei', serif;
+  font-family: 'LXGW WenKai', serif;
   letter-spacing: 0.05em;
 }
 

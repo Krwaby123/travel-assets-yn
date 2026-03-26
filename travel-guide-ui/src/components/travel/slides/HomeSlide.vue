@@ -399,7 +399,7 @@ const handleDestClick = (event, goto) => {
 }
 
 .guide-module-title {
-  font-family: 'ZCOOL XiaoWei', serif;
+  font-family: 'LXGW WenKai', serif;
   font-size: var(--text-lg);
   font-weight: 400;
   color: var(--forest);
@@ -679,7 +679,7 @@ const handleDestClick = (event, goto) => {
 }
 
 .quick-start-desc {
-  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-size: 0.75rem;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -734,7 +734,7 @@ const handleDestClick = (event, goto) => {
 }
 
 .quick-nav-desc {
-  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 
@@ -837,7 +837,7 @@ const handleDestClick = (event, goto) => {
 }
 
 .student-discount-spot {
-  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-size: 0.8rem;
   color: var(--text);
 }
 
@@ -1066,14 +1066,14 @@ const handleDestClick = (event, goto) => {
 }
 
 .itinerary-day-place {
-  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-size: 0.75rem;
   font-weight: calc(600 + var(--text-weight-boost, 0));
   color: var(--text);
   white-space: nowrap;
 }
 
 .itinerary-day-activity {
-  font-size: calc(0.65rem * var(--text-scale, 1));
+  font-size: 0.65rem;
   font-weight: calc(400 + var(--text-weight-boost, 0));
   color: var(--text-muted);
   white-space: nowrap;
@@ -1161,12 +1161,12 @@ const handleDestClick = (event, goto) => {
 }
 
 .transport-time {
-  font-size: calc(0.65rem * var(--text-scale, 1));
+  font-size: 0.65rem;
   color: var(--text-muted);
 }
 
 .home-transport-note {
-  font-size: calc(0.65rem * var(--text-scale, 1));
+  font-size: 0.65rem;
   color: var(--text-muted);
   text-align: center;
   margin-top: var(--space-sm);

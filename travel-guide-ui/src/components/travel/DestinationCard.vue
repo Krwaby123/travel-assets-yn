@@ -127,7 +127,7 @@ defineEmits(['click'])
 }
 
 .dest-number {
-  font-family: 'ZCOOL XiaoWei', serif;
+  font-family: 'LXGW WenKai', serif;
   font-size: 0.7rem;
   opacity: 0.7;
   letter-spacing: 0.1em;
@@ -135,7 +135,7 @@ defineEmits(['click'])
 }
 
 .dest-name {
-  font-family: 'ZCOOL XiaoWei', serif;
+  font-family: 'LXGW WenKai', serif;
   font-size: 1.25rem;
   font-weight: 400;
   margin: 0.25rem 0;
