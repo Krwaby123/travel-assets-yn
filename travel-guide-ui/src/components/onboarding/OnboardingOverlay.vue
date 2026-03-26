@@ -377,11 +377,11 @@ const handleNext = () => {
 
   if (step?.action === 'goToMap') {
     isAnimatingAction.value = true
-    const mapTab = document.querySelector('.nav-tab:last-child')
-    if (mapTab) {
-      mapTab.classList.add('onboarding-click-effect')
+    const menuBtn = document.querySelector('.hero-menu-btn')
+    if (menuBtn) {
+      menuBtn.classList.add('onboarding-click-effect')
       setTimeout(() => {
-        mapTab.classList.remove('onboarding-click-effect')
+        menuBtn.classList.remove('onboarding-click-effect')
         emit('next')
         isAnimatingAction.value = false
       }, 300)
@@ -439,8 +439,8 @@ const clearAllTabs = () => {
 const handleStepChange = (newStep, oldStep) => {
   if (oldStep === undefined) return
 
-  const SETTINGS_STEPS = [5, 6, 7, 8, 9]
-  const MAP_STEPS = [11, 12, 13, 14]
+  const SETTINGS_STEPS = [7, 8, 9, 10, 11, 12]
+  const MAP_STEPS = [14, 15, 16, 17]
 
   const wasInSettings = SETTINGS_STEPS.includes(oldStep)
   const isInSettings = SETTINGS_STEPS.includes(newStep)
@@ -464,8 +464,8 @@ const handleStepChange = (newStep, oldStep) => {
 watch(() => props.currentStep, (newStep, oldStep) => {
   handleStepChange(newStep, oldStep)
 
-  const SETTINGS_STEPS = [5, 6, 7, 8, 9]
-  const MAP_STEPS = [11, 12, 13, 14]
+  const SETTINGS_STEPS = [7, 8, 9, 10, 11, 12]
+  const MAP_STEPS = [14, 15, 16, 17]
 
   const isInSettings = SETTINGS_STEPS.includes(newStep)
   const isInMap = MAP_STEPS.includes(newStep)

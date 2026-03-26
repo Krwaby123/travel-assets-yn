@@ -102,11 +102,18 @@
     <div id="dali-guide-area-itinerary" class="guide-module" :class="{ expanded: expandedModules.itinerary }" ref="module-itinerary">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.itinerary" @click="toggleModule('itinerary')" @keydown.enter="toggleModule('itinerary')" @keydown.space.prevent="toggleModule('itinerary')">
         <h3 class="guide-module-title">详细行程时间线</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules.itinerary }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.itinerary }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
@@ -166,11 +173,18 @@
     <div id="dali-guide-area-scenic" class="guide-module" :class="{ expanded: expandedModules.scenic }" ref="module-scenic">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.scenic" @click="toggleModule('scenic')" @keydown.enter="toggleModule('scenic')" @keydown.space.prevent="toggleModule('scenic')">
         <h3 class="guide-module-title">核心景点详解</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules.scenic }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.scenic }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
@@ -282,11 +296,18 @@
     <div id="dali-guide-area-hotel" class="guide-module" :class="{ expanded: expandedModules.hotel }" ref="module-hotel">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.hotel" @click="toggleModule('hotel')" @keydown.enter="toggleModule('hotel')" @keydown.space.prevent="toggleModule('hotel')">
         <h3 class="guide-module-title">住宿推荐</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules.hotel }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.hotel }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
@@ -328,11 +349,18 @@
     <div id="dali-guide-area-food" class="guide-module" :class="{ expanded: expandedModules.food }" ref="module-food">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.food" @click="toggleModule('food')" @keydown.enter="toggleModule('food')" @keydown.space.prevent="toggleModule('food')">
         <h3 class="guide-module-title">必吃美食</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules.food }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.food }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
@@ -361,11 +389,18 @@
     <div id="dali-guide-area-ticket" class="guide-module" :class="{ expanded: expandedModules.ticket }" ref="module-ticket">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.ticket" @click="toggleModule('ticket')" @keydown.enter="toggleModule('ticket')" @keydown.space.prevent="toggleModule('ticket')">
         <h3 class="guide-module-title">门票优惠 & 预约指南</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules.ticket }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.ticket }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
@@ -410,11 +445,18 @@
     <div id="dali-guide-area-budget" class="guide-module" :class="{ expanded: expandedModules.budget }" ref="module-budget">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.budget" @click="toggleModule('budget')" @keydown.enter="toggleModule('budget')" @keydown.space.prevent="toggleModule('budget')">
         <h3 class="guide-module-title">预算参考 & 避坑指南</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules.budget }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.budget }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">

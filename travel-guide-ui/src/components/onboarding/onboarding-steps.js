@@ -17,18 +17,33 @@ export const onboardingSteps = [
     actions: ['next', 'skip']
   },
   {
-    id: 'tab-selection',
-    type: 'tab-selection',
-    title: '选择目的地',
-    content: '点击选择你想查看的目的地，不选择的地点可以稍后在设置中恢复。',
-    target: '.nav-tabs-inner'
+    id: 'home-featured',
+    type: 'highlight',
+    title: '推荐目的地',
+    content: '首页展示推荐的首选目的地，点击卡片可以查看详细攻略。',
+    target: '.featured-destination'
   },
   {
-    id: 'tab-demo',
+    id: 'home-destinations',
     type: 'highlight',
-    title: '切换目的地',
-    content: '点击不同的标签可以查看对应目的地的详细攻略内容。',
-    target: '.nav-tabs-inner'
+    title: '更多目的地',
+    content: '这里可以快速跳转到其他目的地攻略，点击地图可查看全部地点。',
+    target: '.destinations-row'
+  },
+  {
+    id: 'home-checklist',
+    type: 'highlight',
+    title: '出发前检查',
+    content: '勾选完成所有准备事项后，卡片会自动隐藏，让你的页面更简洁。',
+    target: '.checklist-module',
+    skipIfMissing: true
+  },
+  {
+    id: 'global-nav',
+    type: 'highlight',
+    title: '全局导航',
+    content: '点击右上角菜单按钮，可以快速跳转到任意目的地。',
+    target: '.hero-menu-btn'
   },
   {
     id: 'settings-intro',
@@ -60,10 +75,17 @@ export const onboardingSteps = [
     target: '[data-onboarding="hidden-content"]'
   },
   {
+    id: 'add-hide-location',
+    type: 'highlight',
+    title: '隐藏地点',
+    content: '展开后可以隐藏不想查看的目的地，隐藏后可在下方「隐藏地点管理」中恢复。',
+    target: '[data-onboarding="add-hide-location"]'
+  },
+  {
     id: 'hidden-tabs',
     type: 'highlight',
     title: '隐藏地点管理',
-    content: '之前未选择的地点可以在这里恢复，恢复后会重新出现在顶部导航栏。',
+    content: '已隐藏的地点可以在这里恢复。',
     target: '[data-onboarding="hidden-tabs"]',
     skipIfMissing: true
   },
@@ -78,8 +100,8 @@ export const onboardingSteps = [
     id: 'map-intro',
     type: 'highlight',
     title: '地图导航',
-    content: '地图页面可以搜索地点、规划路线。点击导航栏「地图」标签即可进入。',
-    target: '.nav-tab:last-child',
+    content: '点击菜单按钮选择「地图导航」，可以搜索地点、规划路线。',
+    target: '.hero-menu-btn',
     action: 'goToMap'
   },
   {

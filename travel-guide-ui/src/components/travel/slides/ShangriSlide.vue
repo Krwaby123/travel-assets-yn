@@ -80,11 +80,18 @@
     <div id="shangri-la-guide-area-scenic" class="guide-module" :class="{ expanded: expandedModules.scenic }" ref="module-scenic">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.scenic" @click="toggleModule('scenic')" @keydown.enter="toggleModule('scenic')" @keydown.space.prevent="toggleModule('scenic')">
         <h3 class="guide-module-title">核心景点详解</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules.scenic }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.scenic }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
@@ -130,11 +137,18 @@
     <div id="shangri-la-guide-area-ticket" class="guide-module" :class="{ expanded: expandedModules.ticket }" ref="module-ticket">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.ticket" @click="toggleModule('ticket')" @keydown.enter="toggleModule('ticket')" @keydown.space.prevent="toggleModule('ticket')">
         <h3 class="guide-module-title">门票预约指南</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules.ticket }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.ticket }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
@@ -164,11 +178,18 @@
     <div id="shangri-la-guide-area-traffic" class="guide-module" :class="{ expanded: expandedModules.traffic }" ref="module-traffic">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.traffic" @click="toggleModule('traffic')" @keydown.enter="toggleModule('traffic')" @keydown.space.prevent="toggleModule('traffic')">
         <h3 class="guide-module-title">交通指南</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules.traffic }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.traffic }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
@@ -197,11 +218,18 @@
     <div id="shangri-la-guide-area-budget" class="guide-module" :class="{ expanded: expandedModules.budget }" ref="module-budget">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.budget" @click="toggleModule('budget')" @keydown.enter="toggleModule('budget')" @keydown.space.prevent="toggleModule('budget')">
         <h3 class="guide-module-title">预算参考</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules.budget }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.budget }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
@@ -227,11 +255,18 @@
     <div id="shangri-la-guide-area-stay-food" class="guide-module" :class="{ expanded: expandedModules['stay-food'] }" ref="module-stay-food">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules['stay-food']" @click="toggleModule('stay-food')" @keydown.enter="toggleModule('stay-food')" @keydown.space.prevent="toggleModule('stay-food')">
         <h3 class="guide-module-title">住宿 & 美食推荐</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules['stay-food'] }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules['stay-food'] }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
@@ -260,11 +295,18 @@
     <div id="shangri-la-guide-area-tips" class="guide-module" :class="{ expanded: expandedModules.tips }" ref="module-tips">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.tips" @click="toggleModule('tips')" @keydown.enter="toggleModule('tips')" @keydown.space.prevent="toggleModule('tips')">
         <h3 class="guide-module-title">高原出行提醒 & 避坑指南</h3>
-        <span class="guide-module-toggle" :class="{ expanded: expandedModules.tips }">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 9l-7 7-7-7"/>
-          </svg>
-        </span>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.tips }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
