@@ -7,21 +7,86 @@
         <h1>云南旅行攻略</h1>
         <p class="hero-subtitle">斗南花市 · 大理洱海</p>
       </div>
-    </header>
-
-    <nav class="nav-tabs" role="navigation" aria-label="目的地导航">
-      <div class="nav-tabs-inner" ref="navInner">
-        <button
-          v-for="(tab, index) in visibleNavTabs"
-          :key="tab.id"
-          ref="tabButtons"
-          :class="['nav-tab', { active: tabToSlideIndex(tab.id) === currentIndex }]"
-          @click="handleTabClick(tab, index)"
-        >
-          {{ tab.label }}
+      <div class="hero-actions">
+        <button class="hero-search-btn" @click="showSearchPanel = true" aria-label="搜索">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+        </button>
+        <button class="hero-menu-btn" @click="showJumpPanel = true" aria-label="导航菜单">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
         </button>
       </div>
-    </nav>
+    </header>
+
+    <!-- 全局导航面板 -->
+    <Teleport to="body">
+      <Transition name="jump-panel">
+        <div v-if="showJumpPanel" class="jump-panel-overlay" @click.self="showJumpPanel = false">
+          <div class="jump-panel">
+            <div class="jump-panel-header">
+              <span class="jump-panel-title">全部地点</span>
+              <button class="jump-panel-close" @click="showJumpPanel = false" aria-label="关闭">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+            <div class="jump-panel-body">
+              <button class="jump-section-btn" :class="{ active: currentIndex === 0 }" @click="handleGlobalJump(0)">
+                <span class="jump-section-icon">🏠</span>
+                <span class="jump-section-name">首页</span>
+                <svg class="jump-section-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+              <button class="jump-section-btn" :class="{ active: currentIndex === 1 }" @click="handleGlobalJump(1)">
+                <span class="jump-section-icon">🌸</span>
+                <span class="jump-section-name">斗南花市</span>
+                <span class="jump-section-tag">半天</span>
+                <svg class="jump-section-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+              <button class="jump-section-btn" :class="{ active: currentIndex === 2 }" @click="handleGlobalJump(2)">
+                <span class="jump-section-icon">🌊</span>
+                <span class="jump-section-name">大理洱海</span>
+                <span class="jump-section-tag">2天</span>
+                <svg class="jump-section-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+              <button class="jump-section-btn" :class="{ active: currentIndex === 3 }" @click="handleGlobalJump(3)">
+                <span class="jump-section-icon">🏔️</span>
+                <span class="jump-section-name">丽江古城</span>
+                <span class="jump-section-tag">2天</span>
+                <svg class="jump-section-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+              <button class="jump-section-btn" :class="{ active: currentIndex === 4 }" @click="handleGlobalJump(4)">
+                <span class="jump-section-icon">❄️</span>
+                <span class="jump-section-name">香格里拉</span>
+                <span class="jump-section-tag">2天</span>
+                <svg class="jump-section-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+              <button class="jump-section-btn" :class="{ active: currentIndex === 5 }" @click="handleGlobalJump(5)">
+                <span class="jump-section-icon">🗺️</span>
+                <span class="jump-section-name">地图导航</span>
+                <svg class="jump-section-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <main class="slides-container" id="main-content" ref="slidesContainer" :style="containerStyle" @mousedown="handleMouseDown" @touchstart="handleTouchStart">
       <div
@@ -574,6 +639,12 @@ const handleTabClick = (tab, visibleIndex) => {
   goToSlide(slideIndex, slideIndex > currentIndex.value ? 'right' : 'left')
 }
 
+const handleGlobalJump = (slideIndex) => {
+  showJumpPanel.value = false
+  const direction = slideIndex > currentIndex.value ? 'right' : 'left'
+  goToSlide(slideIndex, direction)
+}
+
 const appContainer = ref(null)
 const slidesContainer = ref(null)
 const navInner = ref(null)
@@ -582,6 +653,8 @@ const slideRefs = ref([])
 
 const currentIndex = ref(0)
 const isDark = ref(false)
+const showJumpPanel = ref(false)
+const showSearchPanel = ref(false)
 const themeMode = ref('auto')
 const fontSize = ref('medium')
 const fontWeight = ref('normal')
@@ -634,19 +707,13 @@ const updateSlideHeight = (immediate = false) => {
     const currentSlide = slideRefs.value[currentIndex.value]
     if (!currentSlide) return
 
-    const cachedHeight = slideHeights.value[currentIndex.value]
-
     currentSlide.classList.add('measuring')
     const newHeight = calculateSlideFullHeight(currentSlide, currentIndex.value)
     currentSlide.classList.remove('measuring')
 
     if (newHeight > 0) {
-      if (cachedHeight > 0 && newHeight < cachedHeight) {
-        currentSlideHeight.value = cachedHeight
-      } else {
-        slideHeights.value[currentIndex.value] = newHeight
-        currentSlideHeight.value = newHeight
-      }
+      slideHeights.value[currentIndex.value] = newHeight
+      currentSlideHeight.value = newHeight
     }
   }
 
@@ -980,6 +1047,7 @@ const cardNames = {
   'home-travel-tips': '出行防护',
   'home-transport': '省内高铁交通',
   'home-checklist': '出行必备',
+  'home-departure-checklist': '出发前检查',
   'dounan-time-table': '斗南营业时间表',
   'dounan-routes': '斗南逛买路线',
   'dounan-venue': '斗南场馆详解',
@@ -1189,8 +1257,20 @@ const initFontSettings = () => {
   applyFontWeight(savedWeight)
 }
 
+const scheduleHeightUpdate = () => {
+  nextTick(() => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        onModuleToggle()
+      })
+    })
+  })
+}
+
 const hideCard = (cardId, cardName) => {
-  hiddenCards.value.add(cardId)
+  const newSet = new Set(hiddenCards.value)
+  newSet.add(cardId)
+  hiddenCards.value = newSet
   safeStorage.setItem('hiddenCards', JSON.stringify([...hiddenCards.value]))
   lastHiddenCard.value = cardId
   toastMessage.value = `已隐藏「${cardName}」`
@@ -1198,33 +1278,37 @@ const hideCard = (cardId, cardName) => {
   setTimeout(() => {
     toastVisible.value = false
   }, 3000)
-  onModuleToggle()
+  scheduleHeightUpdate()
 }
 
 const restoreLastHidden = () => {
   if (lastHiddenCard.value && hiddenCards.value.has(lastHiddenCard.value)) {
-    hiddenCards.value.delete(lastHiddenCard.value)
+    const newSet = new Set(hiddenCards.value)
+    newSet.delete(lastHiddenCard.value)
+    hiddenCards.value = newSet
     safeStorage.setItem('hiddenCards', JSON.stringify([...hiddenCards.value]))
     toastVisible.value = false
     lastHiddenCard.value = null
-    onModuleToggle()
+    scheduleHeightUpdate()
   }
 }
 
 const showCard = (cardId) => {
-  hiddenCards.value.delete(cardId)
+  const newSet = new Set(hiddenCards.value)
+  newSet.delete(cardId)
+  hiddenCards.value = newSet
   safeStorage.setItem('hiddenCards', JSON.stringify([...hiddenCards.value]))
   if (lastHiddenCard.value === cardId) {
     lastHiddenCard.value = null
   }
-  onModuleToggle()
+  scheduleHeightUpdate()
 }
 
 const showAllCards = () => {
-  hiddenCards.value.clear()
+  hiddenCards.value = new Set()
   safeStorage.setItem('hiddenCards', JSON.stringify([]))
   hiddenModalVisible.value = false
-  onModuleToggle()
+  scheduleHeightUpdate()
 }
 
 const getCardName = (cardId) => cardNames[cardId] || cardId
@@ -1517,11 +1601,10 @@ const handleLightboxKeydown = (e) => {
 .hero {
   min-height: 20vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  text-align: center;
-  padding: var(--space-xl) var(--space-md) var(--space-lg);
+  padding: var(--space-md) var(--space-md);
   position: relative;
   background: linear-gradient(180deg, var(--sky-light) 0%, var(--bg) 100%);
 }
@@ -1539,48 +1622,72 @@ const handleLightboxKeydown = (e) => {
 .hero-content {
   position: relative;
   z-index: 1;
+  text-align: left;
 }
 
 .hero h1 {
   font-family: 'LXGW WenKai', serif;
-  font-size: clamp(1.25rem, 5vw, 2rem);
+  font-size: clamp(1.1rem, 5vw, 1.5rem);
   font-weight: 400;
   color: var(--forest);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
   letter-spacing: 0.05em;
-  animation: heroTitleIn 0.8s var(--ease-out-quart) 0.1s forwards;
-  opacity: 0;
-  transform: translateY(20px);
 }
 
 .hero-subtitle {
-  font-size: clamp(0.7rem, 2vw, 0.85rem);
+  font-size: clamp(0.65rem, 2vw, 0.75rem);
   color: var(--text-muted);
-  animation: heroSubtitleIn 0.7s var(--ease-out-quart) 0.3s forwards;
-  opacity: 0;
-  transform: translateY(16px);
 }
 
-@keyframes heroTitleIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.hero-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: var(--space-xs);
 }
 
-@keyframes heroSubtitleIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+.hero-search-btn,
+.hero-menu-btn {
+  width: 40px;
+  height: 40px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all var(--duration-fast) var(--ease-out-quart);
 }
 
-@media (min-width: 768px) {
-  .hero {
-    min-height: 28vh;
-  }
-  .hero h1 {
-    font-size: clamp(1.5rem, 6vw, 2.5rem);
-  }
-  .hero-subtitle {
-    font-size: clamp(0.75rem, 2.5vw, 0.95rem);
-  }
+.hero-search-btn:hover,
+.hero-menu-btn:hover {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: white;
+  transform: scale(1.05);
+}
+
+.hero-search-btn:active,
+.hero-menu-btn:active {
+  transform: scale(0.95);
+}
+
+.hero-search-btn svg,
+.hero-menu-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.jump-section-tag {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: var(--earth-light);
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-left: auto;
+  margin-right: var(--space-xs);
 }
 
 .nav-tabs {

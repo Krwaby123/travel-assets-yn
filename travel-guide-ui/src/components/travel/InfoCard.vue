@@ -53,7 +53,7 @@ const handleClose = () => {
   setTimeout(() => {
     emit('hide', props.cardId, props.cardName)
     isHiding.value = false
-  }, 300)
+  }, 250)
 }
 </script>
 

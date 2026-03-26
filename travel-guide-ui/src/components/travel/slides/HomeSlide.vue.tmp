@@ -1,0 +1,765 @@
+<template>
+  <section class="section home-section">
+    <!-- 快速入口区 -->
+    <div class="portal-entrances">
+      <div class="portal-entrance" @click="$emit('navigate', 1)">
+        <div class="entrance-visual">
+          <div class="entrance-emoji">🌸</div>
+          <div class="entrance-badge">半天</div>
+        </div>
+        <div class="entrance-info">
+          <h3 class="entrance-title">斗南花市</h3>
+          <p class="entrance-desc">亚洲最大鲜花交易市场</p>
+          <div class="entrance-meta">
+            <span class="entrance-price">¥30-100</span>
+            <span class="entrance-tag">昆明</span>
+          </div>
+        </div>
+        <svg class="entrance-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </div>
+
+      <div class="portal-entrance" @click="$emit('navigate', 2)">
+        <div class="entrance-visual">
+          <div class="entrance-emoji">🌊</div>
+          <div class="entrance-badge">2天</div>
+        </div>
+        <div class="entrance-info">
+          <h3 class="entrance-title">大理洱海</h3>
+          <p class="entrance-desc">苍山洱海，风花雪月</p>
+          <div class="entrance-meta">
+            <span class="entrance-price">¥250-600</span>
+            <span class="entrance-tag">推荐</span>
+          </div>
+        </div>
+        <svg class="entrance-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </div>
+
+      <div class="portal-entrance" @click="$emit('navigate', 3)">
+        <div class="entrance-visual">
+          <div class="entrance-emoji">🏔️</div>
+          <div class="entrance-badge">2天</div>
+        </div>
+        <div class="entrance-info">
+          <h3 class="entrance-title">丽江古城</h3>
+          <p class="entrance-desc">玉龙雪山下的古城</p>
+          <div class="entrance-meta">
+            <span class="entrance-price">¥400-800</span>
+            <span class="entrance-tag">可选</span>
+          </div>
+        </div>
+        <svg class="entrance-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </div>
+
+      <div class="portal-entrance" @click="$emit('navigate', 4)">
+        <div class="entrance-visual">
+          <div class="entrance-emoji">❄️</div>
+          <div class="entrance-badge">2天</div>
+        </div>
+        <div class="entrance-info">
+          <h3 class="entrance-title">香格里拉</h3>
+          <p class="entrance-desc">离天堂最近的地方</p>
+          <div class="entrance-meta">
+            <span class="entrance-price">¥500-1000</span>
+            <span class="entrance-tag">可选</span>
+          </div>
+        </div>
+        <svg class="entrance-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </div>
+
+      <div class="portal-entrance portal-entrance-map" @click="$emit('navigate', 5)">
+        <div class="entrance-visual">
+          <div class="entrance-emoji">🗺️</div>
+        </div>
+        <div class="entrance-info">
+          <h3 class="entrance-title">地图导航</h3>
+          <p class="entrance-desc">查看所有地点位置</p>
+        </div>
+        <svg class="entrance-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 出发检查清单 -->
+    <div class="home-module">
+      <div class="home-module-header">
+        <h2 class="home-module-title">出发前检查</h2>
+        <span class="checklist-count">{{ checkedItems.length }}/{{ checklistItems.length }}</span>
+      </div>
+      <div class="home-module-content">
+        <div class="checklist-compact">
+          <label v-for="(item, idx) in checklistItems" :key="idx" class="checklist-compact-item" :class="{ checked: checkedItems.includes(idx) }">
+            <input
+              type="checkbox"
+              :checked="checkedItems.includes(idx)"
+              @change="toggleCheckItem(idx)"
+              class="checklist-checkbox"
+            >
+            <span class="checklist-checkbox-custom"></span>
+            <span class="checklist-compact-text">{{ item }}</span>
+          </label>
+        </div>
+        <div class="checklist-complete" v-if="checkedItems.length === checklistItems.length">
+          <span class="complete-icon">✓</span>
+          <span>准备就绪！祝你旅途愉快</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 学生优惠 -->
+    <div class="home-module home-module-highlight">
+      <div class="home-module-header">
+        <span class="home-module-icon">🎓</span>
+        <h2 class="home-module-title">学生专属优惠</h2>
+      </div>
+      <div class="home-module-content">
+        <div class="student-discounts-compact">
+          <div class="student-discount-item">
+            <span class="discount-spot">崇圣寺三塔</span>
+            <span class="discount-save">省37.5元</span>
+          </div>
+          <div class="student-discount-item">
+            <span class="discount-spot">苍山索道</span>
+            <span class="discount-save">半价</span>
+          </div>
+          <div class="student-discount-item">
+            <span class="discount-spot">玉龙雪山</span>
+            <span class="discount-save">省100元</span>
+          </div>
+        </div>
+        <button class="discount-more-btn" @click="$emit('navigate', { index: 2, scrollTo: 'dali-ticket' })">
+          查看全部学生优惠
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 交通参考 -->
+    <div class="home-module">
+      <div class="home-module-header">
+        <h2 class="home-module-title">省内交通</h2>
+      </div>
+      <div class="home-module-content">
+        <div class="transport-compact">
+          <div class="transport-row" v-for="t in transportInfo" :key="t.from + t.to">
+            <div class="transport-route">
+              <span>{{ t.from }}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+              <span>{{ t.to }}</span>
+            </div>
+            <div class="transport-detail">
+              <span class="transport-price">{{ t.price }}</span>
+              <span class="transport-time">{{ t.time }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 行程参考 -->
+    <div class="home-module">
+      <div class="home-module-header">
+        <h2 class="home-module-title">推荐行程</h2>
+      </div>
+      <div class="home-module-content">
+        <div class="itinerary-tabs-compact">
+          <button
+            v-for="(option, key) in itineraryOptions"
+            :key="key"
+            :class="['itinerary-tab-compact', { active: activeItinerary === key }]"
+            @click="activeItinerary = key"
+          >
+            {{ option.label }}
+          </button>
+        </div>
+        <div class="itinerary-flow-compact">
+          <template v-for="(day, index) in itineraryOptions[activeItinerary].days" :key="day.num">
+            <div class="flow-day">
+              <span class="flow-day-num">{{ day.num }}</span>
+              <span class="flow-day-place">{{ day.place }}</span>
+            </div>
+            <span v-if="index < itineraryOptions[activeItinerary].days.length - 1" class="flow-arrow">→</span>
+          </template>
+        </div>
+        <div class="itinerary-budget-compact">
+          <span class="budget-label">人均</span>
+          <span class="budget-value">{{ itineraryOptions[activeItinerary].budget }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script setup>
+import { ref, onMounted, nextTick, watch } from 'vue'
+import { transportInfo, checklistItems, itineraryOptions } from '@/data/travelData'
+
+defineProps({
+  hiddenCards: Set
+})
+
+const emit = defineEmits(['navigate', 'hide-card'])
+
+const activeItinerary = ref('core4')
+const checkedItems = ref([])
+
+const safeStorage = {
+  getItem (key) {
+    try { return localStorage.getItem(key) } catch (e) { return null }
+  },
+  setItem (key, value) {
+    try { localStorage.setItem(key, value) } catch (e) {}
+  }
+}
+
+const toggleCheckItem = (idx) => {
+  const index = checkedItems.value.indexOf(idx)
+  if (index > -1) {
+    checkedItems.value.splice(index, 1)
+  } else {
+    checkedItems.value.push(idx)
+  }
+  safeStorage.setItem('preTripChecklist', JSON.stringify(checkedItems.value))
+}
+
+const initChecklist = () => {
+  const saved = safeStorage.getItem('preTripChecklist')
+  if (saved) {
+    try {
+      checkedItems.value = JSON.parse(saved)
+    } catch (e) {
+      checkedItems.value = []
+    }
+  }
+}
+
+onMounted(() => {
+  initChecklist()
+})
+</script>
+
+<style scoped>
+@import '../slides-common.css';
+
+.home-section {
+  padding: var(--space-md);
+  padding-top: var(--space-sm);
+  padding-bottom: var(--space-3xl);
+}
+
+/* ===== 快速入口区 ===== */
+.portal-entrances {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.portal-entrance {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  position: relative;
+  overflow: hidden;
+}
+
+.portal-entrance::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--forest);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out-quart);
+}
+
+.portal-entrance:hover {
+  border-color: var(--forest);
+  transform: translateX(4px);
+}
+
+.portal-entrance:hover::before {
+  opacity: 1;
+}
+
+.portal-entrance:active {
+  transform: scale(0.98);
+}
+
+.entrance-visual {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--forest-light) 0%, var(--sky-light) 100%);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.entrance-emoji {
+  font-size: 1.75rem;
+}
+
+.entrance-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--sunset);
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.entrance-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.entrance-title {
+  font-family: 'LXGW WenKai', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 2px 0;
+}
+
+.entrance-desc {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  color: var(--text-muted);
+  margin: 0 0 var(--space-xs) 0;
+}
+
+.entrance-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.entrance-price {
+  font-size: calc(0.85rem * var(--text-scale, 1));
+  font-weight: 700;
+  color: var(--forest);
+}
+
+.entrance-tag {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  background: var(--earth-light);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.entrance-arrow {
+  width: 20px;
+  height: 20px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform var(--duration-fast) var(--ease-out-quart);
+}
+
+.portal-entrance:hover .entrance-arrow {
+  transform: translateX(4px);
+  color: var(--forest);
+}
+
+.portal-entrance-map {
+  background: linear-gradient(135deg, var(--forest-light) 0%, var(--sky-light) 100%);
+  border-color: var(--forest);
+}
+
+.portal-entrance-map .entrance-title {
+  color: var(--forest);
+}
+
+/* ===== 模块通用 ===== */
+.home-module {
+  margin-bottom: var(--space-lg);
+  background: var(--card);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.home-module-highlight {
+  background: linear-gradient(135deg, var(--sunset-soft) 0%, var(--forest-light) 100%);
+  border-color: var(--sunset);
+}
+
+.home-module-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--border);
+}
+
+.home-module-highlight .home-module-header {
+  border-bottom-color: var(--sunset);
+}
+
+.home-module-title {
+  font-family: 'LXGW WenKai', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.home-module-icon {
+  margin-right: var(--space-xs);
+}
+
+.home-module-content {
+  padding: var(--space-md);
+}
+
+.checklist-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--forest);
+  background: var(--forest-light);
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+
+/* ===== 检查清单紧凑版 ===== */
+.checklist-compact {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xs);
+}
+
+.checklist-compact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out-quart);
+}
+
+.checklist-compact-item:hover {
+  background: var(--earth-light);
+}
+
+.checklist-checkbox {
+  display: none;
+}
+
+.checklist-checkbox-custom {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.checklist-compact-item.checked .checklist-checkbox-custom {
+  background: var(--forest);
+  border-color: var(--forest);
+}
+
+.checklist-compact-item.checked .checklist-checkbox-custom::after {
+  content: '✓';
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.checklist-compact-text {
+  font-size: calc(0.85rem * var(--text-scale, 1));
+  color: var(--text);
+  transition: color var(--duration-fast) var(--ease-out-quart);
+}
+
+.checklist-compact-item.checked .checklist-compact-text {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.checklist-complete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+  padding: var(--space-sm);
+  background: var(--forest-light);
+  border-radius: 10px;
+  color: var(--forest);
+  font-weight: 600;
+}
+
+.complete-icon {
+  width: 20px;
+  height: 20px;
+  background: var(--forest);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+}
+
+/* ===== 学生优惠紧凑版 ===== */
+.student-discounts-compact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.student-discount-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+}
+
+.discount-spot {
+  font-size: calc(0.9rem * var(--text-scale, 1));
+  color: var(--text);
+}
+
+.discount-save {
+  font-size: calc(0.85rem * var(--text-scale, 1));
+  font-weight: 700;
+  color: var(--sunset);
+}
+
+.discount-more-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  background: var(--sunset);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.discount-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.discount-more-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ===== 交通紧凑版 ===== */
+.transport-compact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.transport-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm);
+  background: var(--earth-light);
+  border-radius: 10px;
+}
+
+.transport-route {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: calc(0.9rem * var(--text-scale, 1));
+  color: var(--text);
+}
+
+.transport-route svg {
+  width: 16px;
+  height: 16px;
+  color: var(--forest);
+}
+
+.transport-detail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.transport-price {
+  font-size: calc(0.9rem * var(--text-scale, 1));
+  font-weight: 700;
+  color: var(--sunset);
+}
+
+.transport-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ===== 行程紧凑版 ===== */
+.itinerary-tabs-compact {
+  display: flex;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.itinerary-tabs-compact::-webkit-scrollbar {
+  display: none;
+}
+
+.itinerary-tab-compact {
+  padding: var(--space-xs) var(--space-md);
+  background: var(--earth-light);
+  border: none;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.itinerary-tab-compact:hover {
+  background: var(--forest-light);
+  color: var(--forest);
+}
+
+.itinerary-tab-compact.active {
+  background: var(--forest);
+  color: white;
+}
+
+.itinerary-flow-compact {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.flow-day {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--forest-light);
+  border-radius: 8px;
+}
+
+.flow-day-num {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--forest);
+  background: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.flow-day-place {
+  font-size: calc(0.85rem * var(--text-scale, 1));
+  font-weight: 500;
+  color: var(--text);
+}
+
+.flow-arrow {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.itinerary-budget-compact {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+}
+
+.itinerary-budget-compact .budget-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.itinerary-budget-compact .budget-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--sunset);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 480px) {
+  .checklist-compact {
+    grid-template-columns: 1fr;
+  }
+  
+  .portal-entrance {
+    padding: var(--space-sm);
+  }
+  
+  .entrance-visual {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .entrance-emoji {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .portal-entrances {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .portal-entrance-map {
+    grid-column: span 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portal-entrance,
+  .itinerary-tab-compact,
+  .discount-more-btn {
+    transition: none;
+  }
+}
+</style>
