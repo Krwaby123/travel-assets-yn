@@ -35,7 +35,7 @@ export const onboardingSteps = [
     type: 'highlight',
     title: '出发前检查',
     content: '勾选完成所有准备事项后，卡片会自动隐藏，让你的页面更简洁。',
-    target: '.checklist-module',
+    target: '[data-onboarding="checklist"]',
     skipIfMissing: true
   },
   {
@@ -64,30 +64,15 @@ export const onboardingSteps = [
     id: 'font-settings',
     type: 'highlight',
     title: '字体设置',
-    content: '可以调整文字大小和粗细，方便阅读。',
+    content: '点击下一步，系统将演示字体大小调整效果。',
     target: '[data-onboarding="font"]'
   },
   {
     id: 'hidden-content',
     type: 'highlight',
     title: '隐藏内容管理',
-    content: '点击卡片右上角 × 可以隐藏不需要的内容，也可以在这里恢复。',
+    content: '点击下一步，系统将演示如何隐藏和恢复内容。',
     target: '[data-onboarding="hidden-content"]'
-  },
-  {
-    id: 'add-hide-location',
-    type: 'highlight',
-    title: '隐藏地点',
-    content: '展开后可以隐藏不想查看的目的地，隐藏后可在下方「隐藏地点管理」中恢复。',
-    target: '[data-onboarding="add-hide-location"]'
-  },
-  {
-    id: 'hidden-tabs',
-    type: 'highlight',
-    title: '隐藏地点管理',
-    content: '已隐藏的地点可以在这里恢复。',
-    target: '[data-onboarding="hidden-tabs"]',
-    skipIfMissing: true
   },
   {
     id: 'music-intro',

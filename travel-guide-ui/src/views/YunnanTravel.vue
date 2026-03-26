@@ -490,6 +490,8 @@
       @close-settings="handleCloseSettings"
       @go-to-map="handleGoToMap"
       @go-to-home="handleGoToHome"
+      @set-theme="handleOnboardingSetTheme"
+      @set-font-size="handleOnboardingSetFontSize"
     />
   </div>
 </template>
@@ -634,11 +636,6 @@ const isLastVisibleSlide = computed(() => {
   return currentIndex.value === visibleIndexes[visibleIndexes.length - 1]
 })
 
-const handleTabClick = (tab, visibleIndex) => {
-  const slideIndex = tabToSlideIndex(tab.id)
-  goToSlide(slideIndex, slideIndex > currentIndex.value ? 'right' : 'left')
-}
-
 const handleGlobalJump = (slideIndex) => {
   showJumpPanel.value = false
   const direction = slideIndex > currentIndex.value ? 'right' : 'left'
@@ -647,7 +644,6 @@ const handleGlobalJump = (slideIndex) => {
 
 const appContainer = ref(null)
 const slidesContainer = ref(null)
-const navInner = ref(null)
 const bgMusic = ref(null)
 const slideRefs = ref([])
 
@@ -1430,10 +1426,9 @@ const handleHideTab = (tabId) => {
 
 const handleRestartOnboarding = () => {
   resetOnboarding()
+  currentStep.value = 1
+  onboardingActive.value = true
   settingsVisible.value = false
-  nextTick(() => {
-    startOnboarding()
-  })
 }
 
 const handleOpenSettings = () => {
@@ -1457,6 +1452,14 @@ const handleOnboardingComplete = () => {
   setTimeout(() => {
     preloadAllSlideHeights()
   }, 200)
+}
+
+const handleOnboardingSetTheme = (mode) => {
+  setTheme(mode)
+}
+
+const handleOnboardingSetFontSize = (size) => {
+  setFontSize(size)
 }
 
 const showToast = (message) => {

@@ -43,7 +43,7 @@ const hiddenTabs = ref(new Set())
 const isTransitioning = ref(false)
 
 export function useOnboarding () {
-  const totalSteps = 15
+  const totalSteps = 16
   const mapTotalSteps = 8
 
   const progress = computed(() => {

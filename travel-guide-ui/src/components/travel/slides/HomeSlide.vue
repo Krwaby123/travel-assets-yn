@@ -78,7 +78,7 @@
 
     <!-- 出发检查清单 -->
     <Transition name="checklist-fade">
-      <div v-if="!checklistHidden" class="home-module checklist-module" :class="{ 'is-complete': isChecklistComplete }">
+      <div v-if="!checklistHidden" class="home-module checklist-module" :class="{ 'is-complete': isChecklistComplete }" data-onboarding="checklist">
         <div class="home-module-header">
           <h2 class="home-module-title">出发前检查</h2>
           <span class="checklist-count" :class="{ 'count-complete': checkedItems.length === checklistItems.length }">{{ checkedItems.length }}/{{ checklistItems.length }}</span>
@@ -208,10 +208,6 @@ watch(() => props.hiddenCards?.has(CHECKLIST_CARD_ID), (isHidden, wasHidden) => 
   }
 })
 
-const triggerChecklistHide = () => {
-  emit('hide-card', CHECKLIST_CARD_ID, '出发前检查')
-}
-
 const initChecklist = () => {
   const saved = safeStorage.getItem('preTripChecklist')
   if (saved) {
@@ -221,7 +217,7 @@ const initChecklist = () => {
       checkedItems.value = []
     }
   }
-  
+
   if (checklistHidden.value) {
     hasAnimatedCompletion.value = true
   }
@@ -789,24 +785,24 @@ onMounted(() => {
   .checklist-compact {
     grid-template-columns: 1fr;
   }
-  
+
   .destinations-row {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .featured-title {
     font-size: 1.4rem;
   }
-  
+
   .featured-desc {
     display: none;
   }
-  
+
   .quick-info-bar {
     flex-direction: column;
     gap: var(--space-sm);
   }
-  
+
   .quick-info-divider {
     width: 100%;
     height: 1px;
@@ -818,7 +814,7 @@ onMounted(() => {
   .featured-destination {
     aspect-ratio: 21 / 9;
   }
-  
+
   .featured-desc {
     display: block;
   }
@@ -833,20 +829,20 @@ onMounted(() => {
   .checklist-module {
     transition: none;
   }
-  
+
   .featured-image img,
   .dest-mini-image img {
     transition: none;
   }
-  
+
   .celebration-icon {
     animation: none;
   }
-  
+
   .checklist-checkbox-custom .check-icon {
     stroke-dashoffset: 0;
   }
-  
+
   .checklist-fade-enter-active,
   .checklist-fade-leave-active,
   .complete-reveal-enter-active,

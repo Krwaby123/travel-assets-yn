@@ -451,7 +451,7 @@
                 <span class="tips-garden-icon">🌿</span>
                 <span class="tips-garden-title">选花技巧</span>
               </div>
-              
+
               <div class="tips-flowers">
                 <div class="tip-flower" v-for="(tip, idx) in flowerTips" :key="idx">
                   <div class="tip-petal"></div>
@@ -473,7 +473,7 @@
                 <span class="pitfall-title">避坑指南</span>
               </div>
             </div>
-            
+
             <div class="pitfall-items">
               <div class="pitfall-item" v-for="(item, idx) in pitfallTips" :key="idx">
                 <div class="pitfall-x">
@@ -619,47 +619,47 @@ const modules = [
 ]
 
 const jumpSections = [
-  { 
-    id: 'overview', 
-    title: '总览', 
+  {
+    id: 'overview',
+    title: '总览',
     icon: '🌺',
     cards: []
   },
-  { 
-    id: 'time', 
-    title: '营业时间 & 逛买路线', 
+  {
+    id: 'time',
+    title: '营业时间 & 逛买路线',
     icon: '⏰',
     cards: [
       { id: 'dounan-time-table', name: '斗南营业时间表' }
     ]
   },
-  { 
-    id: 'venue', 
-    title: '场馆分区详解', 
+  {
+    id: 'venue',
+    title: '场馆分区详解',
     icon: '🏛️',
     cards: [
       { id: 'dounan-venue', name: '斗南场馆详解' }
     ]
   },
-  { 
-    id: 'logistics', 
-    title: '寄花回家物流指南', 
+  {
+    id: 'logistics',
+    title: '寄花回家物流指南',
     icon: '📦',
     cards: [
       { id: 'dounan-shipping', name: '斗南寄花指南' }
     ]
   },
-  { 
-    id: 'skills', 
-    title: '选花技巧 & 避坑指南', 
+  {
+    id: 'skills',
+    title: '选花技巧 & 避坑指南',
     icon: '🌿',
     cards: [
       { id: 'dounan-tips', name: '斗南选花技巧' }
     ]
   },
-  { 
-    id: 'budget', 
-    title: '预算参考 & 配套服务', 
+  {
+    id: 'budget',
+    title: '预算参考 & 配套服务',
     icon: '💰',
     cards: [
       { id: 'dounan-budget', name: '斗南预算参考' },
@@ -741,7 +741,7 @@ const scrollToModule = (moduleId) => {
 const handleJump = (moduleId, cardId = null) => {
   showJumpPanel.value = false
   expandModule(moduleId)
-  
+
   nextTick(() => {
     if (cardId) {
       const cardElement = document.querySelector(`[data-card-id="${cardId}"]`)
