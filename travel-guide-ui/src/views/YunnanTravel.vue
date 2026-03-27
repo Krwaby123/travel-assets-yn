@@ -339,7 +339,7 @@
                   >
                   <img
                     v-else
-                    src="/images/music-covers/spring-flowers-cover.jpg"
+                    src="/images/music-covers/spring-flowers-cover.webp"
                     alt="春花"
                     class="music-cover-small"
                   >
