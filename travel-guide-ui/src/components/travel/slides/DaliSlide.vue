@@ -120,7 +120,7 @@
                 :class="{ optional: item.optional }"
               >
                 <span class="item-time">{{ item.time }}</span>
-                <span class="item-event" v-html="item.event"></span>
+                <span class="item-event" v-html="sanitizeHtml(item.event)"></span>
               </div>
             </div>
           </div>
@@ -137,7 +137,7 @@
                 :key="idx"
               >
                 <span class="item-time">{{ item.time }}</span>
-                <span class="item-event" v-html="item.event"></span>
+                <span class="item-event" v-html="sanitizeHtml(item.event)"></span>
               </div>
             </div>
           </div>
@@ -147,7 +147,7 @@
 
     <!-- 区域2：核心景点详解区 -->
     <div id="dali-guide-area-scenic" class="guide-module" :class="{ expanded: expandedModules.scenic }" ref="module-scenic">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.scenic" @click="toggleModule('scenic')" @keydown.enter="toggleModule('scenic')" @keydown.space.prevent="toggleModule('scenic')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.scenic" :aria-controls="'module-content-scenic'" @click="toggleModule('scenic')" @keydown.enter="toggleModule('scenic')" @keydown.space.prevent="toggleModule('scenic')">
         <div class="module-header-left">
           <h3 class="guide-module-title">核心景点详解</h3>
         </div>
@@ -167,7 +167,7 @@
           </span>
         </div>
       </div>
-      <div class="guide-module-content">
+      <div class="guide-module-content" id="module-content-scenic">
         <div class="guide-module-content-inner">
           <div class="spot-group">
             <div
@@ -216,9 +216,9 @@
                     @error="handleImageError(photo.src)"
                   >
                   <span class="photo-label">{{ photo.label }}</span>
-                  <div class="img-fallback" v-if="imgErrors[photo.src]">
-                    <span>🖼️</span>
-                    <span>图片加载失败</span>
+                  <div class="img-fallback" v-if="imgErrors[photo.src]" role="img" :aria-label="photo.label + ' - 图片加载失败'">
+                    <span aria-hidden="true">🖼️</span>
+                    <span>{{ photo.label }}</span>
                   </div>
                 </div>
               </div>
@@ -277,7 +277,7 @@
 
     <!-- 区域3：住宿美食推荐（合并） -->
     <div id="dali-guide-area-stay" class="guide-module" :class="{ expanded: expandedModules.stay }" ref="module-stay">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.stay" @click="toggleModule('stay')" @keydown.enter="toggleModule('stay')" @keydown.space.prevent="toggleModule('stay')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.stay" :aria-controls="'module-content-stay'" @click="toggleModule('stay')" @keydown.enter="toggleModule('stay')" @keydown.space.prevent="toggleModule('stay')">
         <div class="module-header-left">
           <h3 class="guide-module-title">住宿美食推荐</h3>
         </div>
@@ -297,7 +297,7 @@
           </span>
         </div>
       </div>
-      <div class="guide-module-content">
+      <div class="guide-module-content" id="module-content-stay">
         <div class="guide-module-content-inner">
           <!-- 住宿推荐 -->
           <div class="stay-section">
@@ -365,7 +365,7 @@
 
     <!-- 区域4：门票预算 & 实用信息（合并） -->
     <div id="dali-guide-area-info" class="guide-module" :class="{ expanded: expandedModules.info }" ref="module-info">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.info" @click="toggleModule('info')" @keydown.enter="toggleModule('info')" @keydown.space.prevent="toggleModule('info')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.info" :aria-controls="'module-content-info'" @click="toggleModule('info')" @keydown.enter="toggleModule('info')" @keydown.space.prevent="toggleModule('info')">
         <div class="module-header-left">
           <h3 class="guide-module-title">门票优惠 & 实用信息</h3>
         </div>
@@ -385,7 +385,7 @@
           </span>
         </div>
       </div>
-      <div class="guide-module-content">
+      <div class="guide-module-content" id="module-content-info">
         <div class="guide-module-content-inner">
           <!-- 学生票优惠 -->
           <div class="ticket-section">
@@ -484,6 +484,7 @@
 
 <script setup>
 import { ref, reactive, onMounted, nextTick } from 'vue'
+import { sanitizeHtml } from '@/utils/sanitize'
 
 defineProps({
   data: Object,

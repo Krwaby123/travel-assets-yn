@@ -36,6 +36,12 @@ export function useMusicPlayer () {
     bgMusic.value.currentTime = percent * duration.value
   }
 
+  const seekProgressByKey = (seconds) => {
+    if (!bgMusic.value || duration.value === 0) return
+    const newTime = Math.max(0, Math.min(duration.value, currentTime.value + seconds))
+    bgMusic.value.currentTime = newTime
+  }
+
   const loadPlaylist = async () => {
     try {
       const response = await fetch('./music/playlist.json')
@@ -213,6 +219,7 @@ export function useMusicPlayer () {
     musicProgress,
     formatTime,
     seekProgress,
+    seekProgressByKey,
     loadPlaylist,
     togglePlay,
     playSong,

@@ -2,6 +2,16 @@
   <div class="travel-app" ref="appContainer">
     <a href="#main-content" class="skip-link">跳转到主要内容</a>
 
+    <div v-if="hasError" class="global-error-boundary" role="alert">
+      <div class="global-error-content">
+        <div class="global-error-icon">⚠️</div>
+        <h2 class="global-error-title">页面加载出错</h2>
+        <p class="global-error-message">{{ errorMessage }}</p>
+        <button class="global-error-retry" @click="retryApp">重新加载</button>
+      </div>
+    </div>
+    <template v-else>
+
     <header class="hero">
       <div class="hero-content">
         <h1>云南旅行攻略</h1>
@@ -266,7 +276,12 @@
                 v-for="tab in visibleDestinationTabs"
                 :key="tab.id"
                 class="add-hide-location-item"
+                role="button"
+                tabindex="0"
+                :aria-label="'隐藏地点: ' + tab.label"
                 @click="handleHideTab(tab.id)"
+                @keydown.enter="handleHideTab(tab.id)"
+                @keydown.space.prevent="handleHideTab(tab.id)"
               >
                 <span class="add-hide-location-name">{{ tab.label }}</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="add-hide-location-icon">
@@ -314,7 +329,7 @@
           <div v-if="showMusicPlaylist" class="music-drawer-panel">
             <div class="music-drawer-content">
               <div class="music-current-song" v-if="currentSong">
-                <div class="music-disc-small" :class="{ 'is-playing': isMusicPlaying, 'is-pausing': isMusicPausing }" @click="currentSong?.cover && openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)">
+                <div class="music-disc-small" :class="{ 'is-playing': isMusicPlaying, 'is-pausing': isMusicPausing }" role="button" tabindex="0" :aria-label="currentSong?.cover ? '查看歌曲封面: ' + currentSong.name : '歌曲封面'" @click="currentSong?.cover && openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)" @keydown.enter="currentSong?.cover && openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)" @keydown.space.prevent="currentSong?.cover && openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)">
                   <img
                     v-if="currentSong?.cover"
                     :src="`/images/music-covers/${currentSong.cover}`"
@@ -334,7 +349,7 @@
                 </div>
               </div>
 
-              <div class="music-drawer-progress" @click="seekProgress">
+              <div class="music-drawer-progress" role="slider" :aria-label="'播放进度: ' + formatTime(currentTime) + ' / ' + formatTime(duration)" :aria-valuemin="0" :aria-valuemax="Math.round(duration)" :aria-valuenow="Math.round(currentTime)" tabindex="0" @click="seekProgress" @keydown.left="seekProgressByKey(-5)" @keydown.right="seekProgressByKey(5)">
                 <div class="progress-bar-bg">
                   <div class="progress-bar-fill" :style="{ width: musicProgress + '%' }"></div>
                 </div>
@@ -376,7 +391,13 @@
                     v-for="(song, index) in playlist"
                     :key="song.id"
                     :class="['drawer-playlist-item', { active: index === currentSongIndex }]"
+                    role="button"
+                    tabindex="0"
+                    :aria-label="'播放: ' + song.name + ' - ' + song.artist"
+                    :aria-current="index === currentSongIndex ? 'true' : undefined"
                     @click="playSong(index)"
+                    @keydown.enter="playSong(index)"
+                    @keydown.space.prevent="playSong(index)"
                   >
                     <span class="drawer-item-index">{{ index + 1 }}</span>
                     <div class="drawer-item-info">
@@ -514,25 +535,77 @@
     />
 
     <ConfettiEffect v-if="showConfetti" @complete="showConfetti = false" />
+    </template>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch, nextTick, computed, provide, defineAsyncComponent, shallowRef } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick, computed, provide, defineAsyncComponent, shallowRef, onErrorCaptured } from 'vue'
 import { useResizeObserver, useWindowSize } from '@vueuse/core'
 import OnboardingOverlay from '@/components/onboarding/OnboardingOverlay.vue'
 import ConfettiEffect from '@/components/onboarding/ConfettiEffect.vue'
 import { navTabs, dounanData, daliData, lijiangData, shangriData } from '@/data/travelData'
 import { useOnboarding } from '@/composables/useOnboarding'
 
-const HomeSlide = defineAsyncComponent(() => import('@/components/travel/slides/HomeSlide.vue'))
-const DounanSlide = defineAsyncComponent(() => import('@/components/travel/slides/DounanSlide.vue'))
-const DaliSlide = defineAsyncComponent(() => import('@/components/travel/slides/DaliSlide.vue'))
-const LijiangSlide = defineAsyncComponent(() => import('@/components/travel/slides/LijiangSlide.vue'))
-const ShangriSlide = defineAsyncComponent(() => import('@/components/travel/slides/ShangriSlide.vue'))
-const MapSlide = defineAsyncComponent(() => import('@/components/travel/slides/MapSlide.vue'))
+const asyncComponentOptions = {
+  timeout: 10000,
+  delay: 200,
+  suspensible: false,
+  onError: (error, retry, fail, attempts) => {
+    if (attempts <= 3) {
+      retry()
+    } else {
+      console.error('组件加载失败:', error)
+      fail()
+    }
+  }
+}
+
+const HomeSlide = defineAsyncComponent({
+  loader: () => import('@/components/travel/slides/HomeSlide.vue'),
+  ...asyncComponentOptions
+})
+const DounanSlide = defineAsyncComponent({
+  loader: () => import('@/components/travel/slides/DounanSlide.vue'),
+  ...asyncComponentOptions
+})
+const DaliSlide = defineAsyncComponent({
+  loader: () => import('@/components/travel/slides/DaliSlide.vue'),
+  ...asyncComponentOptions
+})
+const LijiangSlide = defineAsyncComponent({
+  loader: () => import('@/components/travel/slides/LijiangSlide.vue'),
+  ...asyncComponentOptions
+})
+const ShangriSlide = defineAsyncComponent({
+  loader: () => import('@/components/travel/slides/ShangriSlide.vue'),
+  ...asyncComponentOptions
+})
+const MapSlide = defineAsyncComponent({
+  loader: () => import('@/components/travel/slides/MapSlide.vue'),
+  ...asyncComponentOptions
+})
 
 const showConfetti = shallowRef(false)
+
+const hasError = shallowRef(false)
+const errorMessage = shallowRef('')
+const errorComponent = shallowRef('')
+
+onErrorCaptured((error, instance, info) => {
+  hasError.value = true
+  errorMessage.value = error.message || '未知错误'
+  errorComponent.value = instance?.$options?.name || info || '未知组件'
+  console.error('全局错误捕获:', error, info)
+  return false
+})
+
+const retryApp = () => {
+  hasError.value = false
+  errorMessage.value = ''
+  errorComponent.value = ''
+  window.location.reload()
+}
 
 const {
   completed: onboardingCompleted,
@@ -946,6 +1019,12 @@ const seekProgress = (e) => {
   const rect = bar.getBoundingClientRect()
   const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
   bgMusic.value.currentTime = percent * duration.value
+}
+
+const seekProgressByKey = (seconds) => {
+  if (!bgMusic.value || duration.value === 0) return
+  const newTime = Math.max(0, Math.min(duration.value, currentTime.value + seconds))
+  bgMusic.value.currentTime = newTime
 }
 
 const loadPlaylist = async () => {
@@ -1557,9 +1636,12 @@ const handleOnboardingSetFontSize = (size) => {
 const showToast = (message) => {
   toastMessage.value = message
   toastVisible.value = true
+  const baseTime = 2000
+  const timePerChar = 50
+  const duration = Math.min(Math.max(baseTime + message.length * timePerChar, 2000), 5000)
   setTimeout(() => {
     toastVisible.value = false
-  }, 3000)
+  }, duration)
 }
 
 const initHiddenCards = () => {
@@ -1693,6 +1775,55 @@ const handleLightboxKeydown = (e) => {
   min-height: auto;
   max-width: 100vw;
   overflow-x: hidden;
+}
+
+.global-error-boundary {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  z-index: 9999;
+}
+
+.global-error-content {
+  text-align: center;
+  max-width: 320px;
+}
+
+.global-error-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-md);
+}
+
+.global-error-title {
+  font-family: 'LXGW WenKai', serif;
+  font-size: 1.25rem;
+  color: var(--forest);
+  margin-bottom: var(--space-sm);
+}
+
+.global-error-message {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-lg);
+}
+
+.global-error-retry {
+  background: var(--forest);
+  color: white;
+  border: none;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--space-sm);
+  font-family: 'LXGW WenKai', serif;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out-quart);
+}
+
+.global-error-retry:hover {
+  background: var(--sunset);
 }
 
 .hero {

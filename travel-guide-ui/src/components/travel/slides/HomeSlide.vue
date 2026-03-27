@@ -1,7 +1,7 @@
 <template>
   <section class="section home-section">
     <!-- 主推荐：大理 -->
-    <div class="featured-destination" @click="$emit('navigate', 2)">
+    <div class="featured-destination" role="button" tabindex="0" aria-label="查看大理攻略" @click="$emit('navigate', 2)" @keydown.enter="$emit('navigate', 2)" @keydown.space.prevent="$emit('navigate', 2)">
       <div class="featured-image">
         <img src="/images/spots/dali.jpg" alt="大理" referrerpolicy="no-referrer" loading="lazy">
         <div class="featured-overlay"></div>
@@ -21,7 +21,7 @@
 
     <!-- 其他目的地 + 地图 -->
     <div class="destinations-row">
-      <div class="dest-mini" @click="$emit('navigate', 1)">
+      <div class="dest-mini" role="button" tabindex="0" aria-label="查看斗南花市攻略" @click="$emit('navigate', 1)" @keydown.enter="$emit('navigate', 1)" @keydown.space.prevent="$emit('navigate', 1)">
         <div class="dest-mini-image">
           <img src="/images/spots/dounan.jpg" alt="斗南花市" referrerpolicy="no-referrer" loading="lazy">
         </div>
@@ -30,7 +30,7 @@
           <span class="dest-mini-location">昆明 · 半天</span>
         </div>
       </div>
-      <div class="dest-mini" @click="$emit('navigate', 3)">
+      <div class="dest-mini" role="button" tabindex="0" aria-label="查看丽江攻略" @click="$emit('navigate', 3)" @keydown.enter="$emit('navigate', 3)" @keydown.space.prevent="$emit('navigate', 3)">
         <div class="dest-mini-image">
           <img src="/images/spots/lijiang.jpg" alt="丽江" referrerpolicy="no-referrer" loading="lazy">
         </div>
@@ -39,7 +39,7 @@
           <span class="dest-mini-location">古城雪山 · 2天</span>
         </div>
       </div>
-      <div class="dest-mini" @click="$emit('navigate', 4)">
+      <div class="dest-mini" role="button" tabindex="0" aria-label="查看香格里拉攻略" @click="$emit('navigate', 4)" @keydown.enter="$emit('navigate', 4)" @keydown.space.prevent="$emit('navigate', 4)">
         <div class="dest-mini-image">
           <img src="/images/spots/shangri.jpg" alt="香格里拉" referrerpolicy="no-referrer" loading="lazy">
         </div>
@@ -48,7 +48,7 @@
           <span class="dest-mini-location">藏地风光 · 2天</span>
         </div>
       </div>
-      <div class="dest-mini dest-mini-map" @click="$emit('navigate', 5)">
+      <div class="dest-mini dest-mini-map" role="button" tabindex="0" aria-label="查看地图导航" @click="$emit('navigate', 5)" @keydown.enter="$emit('navigate', 5)" @keydown.space.prevent="$emit('navigate', 5)">
         <div class="dest-mini-icon dest-mini-icon-image">
           <img src="/images/icons/map-nav-cute.jpg" alt="地图" loading="lazy">
         </div>
@@ -61,7 +61,7 @@
 
     <!-- 快捷信息条 -->
     <div class="quick-info-bar">
-      <div class="quick-info-item" @click.stop="$emit('navigate', { index: 2, expandModule: 'info' })">
+      <div class="quick-info-item" role="button" tabindex="0" aria-label="查看大理景点优惠信息" @click.stop="$emit('navigate', { index: 2, expandModule: 'info' })" @keydown.enter.stop="$emit('navigate', { index: 2, expandModule: 'info' })" @keydown.space.prevent.stop="$emit('navigate', { index: 2, expandModule: 'info' })">
         <span class="quick-info-text">大理景点学生证享半价</span>
         <span class="quick-info-action">查看优惠</span>
       </div>
@@ -133,7 +133,7 @@
               class="itinerary-day-card"
               :class="{ expanded: expandedDays[dayKey] }"
             >
-              <div class="itinerary-day-header" @click="toggleDay(dayKey)">
+              <div class="itinerary-day-header" role="button" tabindex="0" :aria-expanded="expandedDays[dayKey]" @click="toggleDay(dayKey)" @keydown.enter="toggleDay(dayKey)" @keydown.space.prevent="toggleDay(dayKey)">
                 <div class="itinerary-day-left">
                   <span class="itinerary-day-num">{{ index + 1 }}</span>
                   <div class="itinerary-day-info">
@@ -424,7 +424,7 @@ onMounted(() => {
   position: absolute;
   top: var(--space-md);
   right: var(--space-md);
-  background: rgba(255,255,255,0.2);
+  background: var(--amber-light);
   backdrop-filter: blur(8px);
   color: white;
   font-size: 0.75rem;
@@ -459,7 +459,7 @@ onMounted(() => {
 
 .dest-mini:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 20px var(--overlay-light);
   border-color: var(--forest);
 }
 
@@ -504,12 +504,12 @@ onMounted(() => {
 }
 
 .dest-mini-map {
-  background: linear-gradient(135deg, #fef3e2 0%, #fce7d6 100%);
-  border-color: #f5c6a5;
+  background: linear-gradient(135deg, var(--amber-light) 0%, var(--sunset-soft) 100%);
+  border-color: var(--amber);
 }
 
 .dest-mini-map .dest-mini-name {
-  color: #d4845f;
+  color: var(--sunset);
 }
 
 .dest-mini-icon {
@@ -1122,7 +1122,7 @@ onMounted(() => {
   align-items: center;
   gap: var(--space-xs);
   padding: var(--space-sm) var(--space-md);
-  background: rgba(76, 175, 80, 0.1);
+  background: var(--forest-light);
 }
 
 .tips-header-title {

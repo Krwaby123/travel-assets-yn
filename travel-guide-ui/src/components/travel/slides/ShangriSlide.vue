@@ -114,7 +114,7 @@
     </div>
 
     <div id="shangri-la-guide-area-scenic" class="guide-module" :class="{ expanded: expandedModules.scenic }" ref="module-scenic">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.scenic" @click="toggleModule('scenic')" @keydown.enter="toggleModule('scenic')" @keydown.space.prevent="toggleModule('scenic')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.scenic" :aria-controls="'module-content-scenic'" @click="toggleModule('scenic')" @keydown.enter="toggleModule('scenic')" @keydown.space.prevent="toggleModule('scenic')">
         <div class="module-header-left">
           <h3 class="guide-module-title">核心景点详解</h3>
         </div>
@@ -134,7 +134,7 @@
           </span>
         </div>
       </div>
-      <div class="guide-module-content">
+      <div class="guide-module-content" id="module-content-scenic">
         <div class="guide-module-content-inner">
           <div class="key-info-box">
             <div class="key-info-header">
@@ -201,7 +201,7 @@
     </div>
 
     <div id="shangri-la-guide-area-stay" class="guide-module" :class="{ expanded: expandedModules.stay }" ref="module-stay">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.stay" @click="toggleModule('stay')" @keydown.enter="toggleModule('stay')" @keydown.space.prevent="toggleModule('stay')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.stay" :aria-controls="'module-content-stay'" @click="toggleModule('stay')" @keydown.enter="toggleModule('stay')" @keydown.space.prevent="toggleModule('stay')">
         <div class="module-header-left">
           <h3 class="guide-module-title">住宿美食 & 交通</h3>
         </div>
@@ -221,7 +221,7 @@
           </span>
         </div>
       </div>
-      <div class="guide-module-content">
+      <div class="guide-module-content" id="module-content-stay">
         <div class="guide-module-content-inner">
           <div class="stay-section">
             <div class="section-label">
@@ -275,7 +275,7 @@
     </div>
 
     <div id="shangri-la-guide-area-info" class="guide-module" :class="{ expanded: expandedModules.info }" ref="module-info">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.info" @click="toggleModule('info')" @keydown.enter="toggleModule('info')" @keydown.space.prevent="toggleModule('info')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.info" :aria-controls="'module-content-info'" @click="toggleModule('info')" @keydown.enter="toggleModule('info')" @keydown.space.prevent="toggleModule('info')">
         <div class="module-header-left">
           <h3 class="guide-module-title">门票预算 & 高原提醒</h3>
         </div>
@@ -295,7 +295,7 @@
           </span>
         </div>
       </div>
-      <div class="guide-module-content">
+      <div class="guide-module-content" id="module-content-info">
         <div class="guide-module-content-inner">
           <div class="altitude-warning-section">
             <div class="altitude-warning-header">

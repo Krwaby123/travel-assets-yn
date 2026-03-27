@@ -88,7 +88,7 @@
           <div class="quick-tip" v-for="tip in data.quickTips" :key="tip.label">
             <div class="quick-tip-icon">{{ tip.icon }}</div>
             <div class="quick-tip-label">{{ tip.label }}</div>
-            <div class="quick-tip-value" v-html="tip.value"></div>
+            <div class="quick-tip-value" v-html="sanitizeHtml(tip.value)"></div>
           </div>
         </div>
 
@@ -99,13 +99,18 @@
             v-for="(photo, index) in data.photos"
             :key="photo.label"
             :style="{ '--photo-index': index }"
+            role="button"
+            tabindex="0"
+            :aria-label="'查看图片: ' + photo.label"
             @click="$emit('open-lightbox', photo.src, photo.label)"
+            @keydown.enter="$emit('open-lightbox', photo.src, photo.label)"
+            @keydown.space.prevent="$emit('open-lightbox', photo.src, photo.label)"
           >
             <img :src="photo.src" :alt="photo.label" loading="lazy" referrerpolicy="no-referrer" @load="handleImageLoad(photo.src)" @error="handleImageError(photo.src)">
             <span class="photo-label">{{ photo.label }}</span>
-            <div class="img-fallback" v-if="imgErrors[photo.src]">
-              <span>🖼️</span>
-              <span>图片加载失败</span>
+            <div class="img-fallback" v-if="imgErrors[photo.src]" role="img" :aria-label="photo.label + ' - 图片加载失败'">
+              <span aria-hidden="true">🖼️</span>
+              <span>{{ photo.label }}</span>
             </div>
           </div>
         </div>
@@ -114,7 +119,7 @@
 
     <!-- 区域2：营业时间与路线区 -->
     <div id="kunming-guide-area-time" class="guide-module" :class="{ expanded: expandedModules.time }" ref="module-time">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.time" @click="toggleModule('time')" @keydown.enter="toggleModule('time')" @keydown.space.prevent="toggleModule('time')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.time" :aria-controls="'module-content-time'" @click="toggleModule('time')" @keydown.enter="toggleModule('time')" @keydown.space.prevent="toggleModule('time')">
         <div class="module-header-left">
           <h3 class="guide-module-title">营业时间 & 逛买路线</h3>
         </div>
@@ -133,8 +138,8 @@
             </svg>
           </span>
         </div>
-      </div>
-      <div class="guide-module-content">
+</div>
+      <div class="guide-module-content" id="module-content-time">
         <div class="guide-module-content-inner">
           <InfoCard
             card-id="dounan-time-table"
@@ -286,7 +291,7 @@
 
     <!-- 区域3：场馆分区详解区 - 流程步骤式 -->
     <div id="kunming-guide-area-venue" class="guide-module" :class="{ expanded: expandedModules.venue }" ref="module-venue">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.venue" @click="toggleModule('venue')" @keydown.enter="toggleModule('venue')" @keydown.space.prevent="toggleModule('venue')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.venue" :aria-controls="'module-content-venue'" @click="toggleModule('venue')" @keydown.enter="toggleModule('venue')" @keydown.space.prevent="toggleModule('venue')">
         <div class="module-header-left">
           <h3 class="guide-module-title">场馆分区详解</h3>
         </div>
@@ -306,7 +311,7 @@
           </span>
         </div>
       </div>
-      <div class="guide-module-content">
+      <div class="guide-module-content" id="module-content-venue">
         <div class="guide-module-content-inner">
           <InfoCard
             card-id="dounan-venue"
@@ -382,7 +387,7 @@
 
     <!-- 区域4：鲜花物流指南区 -->
     <div id="kunming-guide-area-logistics" class="guide-module" :class="{ expanded: expandedModules.logistics }" ref="module-logistics">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.logistics" @click="toggleModule('logistics')" @keydown.enter="toggleModule('logistics')" @keydown.space.prevent="toggleModule('logistics')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.logistics" :aria-controls="'module-content-logistics'" @click="toggleModule('logistics')" @keydown.enter="toggleModule('logistics')" @keydown.space.prevent="toggleModule('logistics')">
         <div class="module-header-left">
           <h3 class="guide-module-title">寄花回家物流指南</h3>
         </div>
@@ -402,7 +407,7 @@
           </span>
         </div>
       </div>
-      <div class="guide-module-content">
+      <div class="guide-module-content" id="module-content-logistics">
         <div class="guide-module-content-inner">
           <InfoCard
             card-id="dounan-shipping"
@@ -429,7 +434,7 @@
 
     <!-- 区域5：选花技巧与避坑区 - 清单式 -->
     <div id="kunming-guide-area-skills" class="guide-module" :class="{ expanded: expandedModules.skills }" ref="module-skills">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.skills" @click="toggleModule('skills')" @keydown.enter="toggleModule('skills')" @keydown.space.prevent="toggleModule('skills')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.skills" :aria-controls="'module-content-skills'" @click="toggleModule('skills')" @keydown.enter="toggleModule('skills')" @keydown.space.prevent="toggleModule('skills')">
         <div class="module-header-left">
           <h3 class="guide-module-title">选花技巧 & 避坑指南</h3>
         </div>
@@ -449,7 +454,7 @@
           </span>
         </div>
       </div>
-      <div class="guide-module-content">
+      <div class="guide-module-content" id="module-content-skills">
         <div class="guide-module-content-inner">
           <InfoCard
             card-id="dounan-tips"
@@ -502,7 +507,7 @@
 
     <!-- 区域6：预算与配套区 - 进度条式 -->
     <div id="kunming-guide-area-budget" class="guide-module" :class="{ expanded: expandedModules.budget }" ref="module-budget">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.budget" @click="toggleModule('budget')" @keydown.enter="toggleModule('budget')" @keydown.space.prevent="toggleModule('budget')">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.budget" :aria-controls="'module-content-budget'" @click="toggleModule('budget')" @keydown.enter="toggleModule('budget')" @keydown.space.prevent="toggleModule('budget')">
         <div class="module-header-left">
           <h3 class="guide-module-title">预算参考 & 配套服务</h3>
         </div>
@@ -522,7 +527,7 @@
           </span>
         </div>
       </div>
-      <div class="guide-module-content">
+      <div class="guide-module-content" id="module-content-budget">
         <div class="guide-module-content-inner">
           <InfoCard
             card-id="dounan-budget"
@@ -611,6 +616,7 @@
 <script setup>
 import { reactive, ref, computed, onMounted, nextTick } from 'vue'
 import InfoCard from '../InfoCard.vue'
+import { sanitizeHtml } from '@/utils/sanitize'
 
 defineProps({
   data: Object,
@@ -1218,7 +1224,7 @@ onMounted(() => {
 }
 
 .timeline-detail.phase-night {
-  border-color: #6366f1;
+  border-color: var(--info);
 }
 
 .detail-header {
@@ -1249,7 +1255,7 @@ onMounted(() => {
 }
 
 .timeline-detail.phase-night .detail-icon {
-  color: #6366f1;
+  color: var(--info);
 }
 
 .detail-title-group {
@@ -1264,7 +1270,7 @@ onMounted(() => {
 }
 
 .timeline-detail.phase-night .detail-title {
-  color: #4f46e5;
+  color: var(--info);
 }
 
 .detail-time {
@@ -1285,7 +1291,7 @@ onMounted(() => {
 }
 
 .detail-tag.best {
-  background: #6366f1;
+  background: var(--info);
   color: white;
 }
 
@@ -1330,7 +1336,7 @@ onMounted(() => {
 }
 
 .detail-step.highlight .detail-step-num {
-  background: #6366f1;
+  background: var(--info);
 }
 
 .detail-step-content {

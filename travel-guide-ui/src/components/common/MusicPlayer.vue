@@ -35,7 +35,12 @@
             <div
               class="music-disc-small"
               :class="{ 'is-playing': isMusicPlaying, 'is-pausing': isMusicPausing }"
+              role="button"
+              tabindex="0"
+              :aria-label="currentSong?.cover ? '查看歌曲封面: ' + currentSong.name : '歌曲封面'"
               @click="handleDiscClick"
+              @keydown.enter="handleDiscClick"
+              @keydown.space.prevent="handleDiscClick"
             >
               <img
                 v-if="currentSong?.cover"
@@ -58,7 +63,7 @@
             </div>
           </div>
 
-          <div class="music-drawer-progress" @click="seekProgress">
+          <div class="music-drawer-progress" role="slider" :aria-label="'播放进度: ' + formatTime(currentTime) + ' / ' + formatTime(duration)" :aria-valuemin="0" :aria-valuemax="Math.round(duration)" :aria-valuenow="Math.round(currentTime)" tabindex="0" @click="seekProgress" @keydown.left="seekProgressByKey(-5)" @keydown.right="seekProgressByKey(5)">
             <div class="progress-bar-bg">
               <div class="progress-bar-fill" :style="{ width: musicProgress + '%' }"></div>
             </div>
@@ -100,7 +105,13 @@
                 v-for="(song, index) in playlist"
                 :key="song.id"
                 :class="['drawer-playlist-item', { active: index === currentSongIndex }]"
+                role="button"
+                tabindex="0"
+                :aria-label="'播放: ' + song.name + ' - ' + song.artist"
+                :aria-current="index === currentSongIndex ? 'true' : undefined"
                 @click="playSong(index)"
+                @keydown.enter="playSong(index)"
+                @keydown.space.prevent="playSong(index)"
               >
                 <span class="drawer-item-index">{{ index + 1 }}</span>
                 <div class="drawer-item-info">
@@ -141,6 +152,7 @@ const {
   musicProgress,
   formatTime,
   seekProgress,
+  seekProgressByKey,
   loadPlaylist,
   togglePlay,
   playSong,

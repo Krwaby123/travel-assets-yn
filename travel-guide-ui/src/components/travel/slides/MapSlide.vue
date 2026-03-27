@@ -18,6 +18,7 @@
               type="text"
               placeholder="搜索地点、景点、美食..."
               class="map-search-input"
+              aria-label="搜索地点、景点、美食"
               @keyup.enter="handleSearch"
               @input="handleSearchInput"
             >
@@ -110,7 +111,7 @@
                 :key="item.id"
                 class="map-result-item"
               >
-                <div class="map-result-main" @click="selectResult(item)">
+                <div class="map-result-main" role="button" tabindex="0" :aria-label="'选择地点: ' + item.name" @click="selectResult(item)" @keydown.enter="selectResult(item)" @keydown.space.prevent="selectResult(item)">
                   <div class="map-result-index">{{ index + 1 }}</div>
                   <div class="map-result-info">
                     <div class="map-result-name">{{ item.name }}</div>
@@ -243,6 +244,7 @@
                   type="text"
                   placeholder="搜索地点..."
                   class="map-modal-search-input"
+                  aria-label="搜索地点"
                   @keyup.enter="handleFullscreenSearch"
                   @input="handleFullscreenSearchInput"
                 >

@@ -24,7 +24,7 @@
 }
 
 .section-number {
-  font-family: 'LXGW WenKai', serif;
+  font-family: 'LXGW WenKai', 'KaiTi', 'STKaiti', serif;
   font-size: var(--text-xs);
   color: var(--sunset);
   letter-spacing: 0.25em;
@@ -33,7 +33,7 @@
 }
 
 .section-title {
-  font-family: 'LXGW WenKai', serif;
+  font-family: 'LXGW WenKai', 'KaiTi', 'STKaiti', serif;
   font-size: clamp(1.1rem, 4vw, 1.75rem);
   color: var(--forest);
   font-weight: 400;
@@ -873,7 +873,7 @@
 }
 
 .jump-panel-title {
-  font-family: 'LXGW WenKai', serif;
+  font-family: 'LXGW WenKai', 'KaiTi', 'STKaiti', serif;
   font-size: var(--text-lg);
   font-weight: 600;
   color: var(--forest);
