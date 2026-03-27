@@ -1,30 +1,11 @@
 import { ref, computed } from 'vue'
 import { onboardingSteps, mapOnboardingSteps } from '@/components/onboarding/onboarding-steps'
+import { safeStorage } from '@/utils/storage'
 
 const STORAGE_KEY = 'yunnan_travel_guide_completed'
 const MAP_STORAGE_KEY = 'yunnan_travel_map_guide_completed'
 const SELECTED_TABS_KEY = 'yunnan_travel_selected_tabs'
 const HIDDEN_TABS_KEY = 'yunnan_travel_hidden_tabs'
-
-const safeStorage = {
-  getItem (key) {
-    try {
-      return localStorage.getItem(key)
-    } catch (e) {
-      return null
-    }
-  },
-  setItem (key, value) {
-    try {
-      localStorage.setItem(key, value)
-    } catch (e) {}
-  },
-  removeItem (key) {
-    try {
-      localStorage.removeItem(key)
-    } catch (e) {}
-  }
-}
 
 const allTabs = [
   { id: 'dounan', label: '昆明', index: 1 },

@@ -216,6 +216,7 @@
 <script setup>
 import { ref, onMounted, watch, computed, reactive } from 'vue'
 import { checklistItems, itineraryOptions } from '@/data/travelData'
+import { safeStorage } from '@/utils/storage'
 
 const props = defineProps({
   hiddenCards: Set
@@ -241,15 +242,6 @@ const getDayPlacesBrief = (items) => {
   if (!items || items.length === 0) return ''
   const places = items.slice(0, 3).map(item => item.place.replace(/[→→]/g, '').trim())
   return places.join(' → ')
-}
-
-const safeStorage = {
-  getItem (key) {
-    try { return localStorage.getItem(key) } catch (e) { return null }
-  },
-  setItem (key, value) {
-    try { localStorage.setItem(key, value) } catch (e) {}
-  }
 }
 
 const isChecklistComplete = computed(() => {

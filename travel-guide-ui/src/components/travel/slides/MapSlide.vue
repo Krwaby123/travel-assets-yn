@@ -547,6 +547,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import AMapLoader from '@amap/amap-jsapi-loader'
+import { safeStorage } from '@/utils/storage'
 
 const props = defineProps({
   searchPlace: {
@@ -643,21 +644,6 @@ const createUserLocationContent = () => {
   return '<div style="width:20px;height:20px;background:#ef4444;border:3px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>'
 }
 
-const safeStorage = {
-  getItem (key) {
-    try {
-      return localStorage.getItem(key)
-    } catch (e) {
-      return null
-    }
-  },
-  setItem (key, value) {
-    try {
-      localStorage.setItem(key, value)
-    } catch (e) {}
-  }
-}
-
 const saveRouteToStorage = () => {
   if (!currentPosition.value || !routeDestination.value) return
 
@@ -712,14 +698,12 @@ const startAutoRefresh = () => {
       updateUserLocation()
     }
   }, 10000)
-  console.log('开启自动刷新')
 }
 
 const stopAutoRefresh = () => {
   if (autoRefreshTimer) {
     clearInterval(autoRefreshTimer)
     autoRefreshTimer = null
-    console.log('停止自动刷新')
   }
 }
 
@@ -733,9 +717,10 @@ const handleVisibilityChange = () => {
 }
 
 const updateUserLocation = (panToLocation = false) => {
-  if (!geolocationControl || !map) return
+  if (!geolocationControl || !map || !AMap) return
 
   geolocationControl.getCurrentPosition((status, result) => {
+    if (!map || !AMap) return
     if (status === 'complete' && result.position) {
       const { lng, lat } = result.position
       currentPosition.value = { lng, lat }
@@ -756,8 +741,6 @@ const updateUserLocation = (panToLocation = false) => {
         map.setCenter([lng, lat])
         map.setZoom(15)
       }
-
-      console.log('位置已更新:', lng, lat)
     }
   })
 }
@@ -772,12 +755,15 @@ const initMap = () => {
   mapLoadError.value = false
   locatingStatus.value = '正在加载地图...'
 
+  const amapKey = process.env.VUE_APP_AMAP_KEY || 'c59e09c3d89a186259e126e7dd34aa5e'
+  const amapSecurityCode = process.env.VUE_APP_AMAP_SECURITY_CODE || 'd74b83d940be20495496bfd02626213e'
+
   window._AMapSecurityConfig = {
-    securityJsCode: 'd74b83d940be20495496bfd02626213e'
+    securityJsCode: amapSecurityCode
   }
 
   AMapLoader.load({
-    key: 'c59e09c3d89a186259e126e7dd34aa5e',
+    key: amapKey,
     version: '2.0',
     plugins: [
       'AMap.Scale',
@@ -841,23 +827,20 @@ const initMap = () => {
       map.addControl(geolocationControl)
 
       map.on('indoor_create', () => {
-        console.log('室内地图图层已创建')
-        if (currentIndoorPoiId.value) {
+        if (!map) return
+        if (currentIndoorPoiId.value && map.indoorMap) {
           map.indoorMap.showIndoorMap(currentIndoorPoiId.value, 1)
         }
-        map.indoorMap.on('click', (result) => {
-          console.log('=== 室内地图商铺点击 ===')
-          console.log('商铺ID:', result.shop?.id)
-          console.log('商铺名称:', result.shop?.name)
-          console.log('完整结果:', result)
-        })
+        if (map.indoorMap) {
+          map.indoorMap.on('click', (result) => {
+          })
+        }
       })
 
       mapLoading.value = false
 
       const savedRoute = restoreRouteFromStorage()
       if (savedRoute) {
-        console.log('发现已保存路线，正在恢复...')
         currentPosition.value = {
           lng: savedRoute.userLocation[0],
           lat: savedRoute.userLocation[1]
@@ -897,7 +880,6 @@ const initMap = () => {
       }
     })
     .catch((e) => {
-      console.error('地图加载失败:', e)
       mapLoading.value = false
       mapLoadError.value = true
       mapLoadRetryCount.value++
@@ -917,10 +899,7 @@ const retryMapLoad = () => {
 
 const initFullscreenMap = () => {
   if (fullscreenMap) return
-  if (!AMap) {
-    console.error('AMap 未初始化，无法创建全屏地图')
-    return
-  }
+  if (!AMap) return
 
   fullscreenMap = new AMap.Map('amap-fullscreen-container', {
     viewMode: '3D',
@@ -987,7 +966,7 @@ const syncRouteToFullscreen = () => {
   if (!routePlugin) return
 
   routePlugin.search(start, end, (status, result) => {
-    if (!fullscreenMap) return
+    if (!fullscreenMap || !AMap) return
     if (status !== 'complete' || !result.routes || result.routes.length === 0) return
 
     const route = result.routes[0]
@@ -1191,7 +1170,7 @@ const clearFullscreenSearch = () => {
 }
 
 const selectFullscreenResult = (item) => {
-  if (!fullscreenMap || !item.location) return
+  if (!fullscreenMap || !AMap || !item.location) return
 
   fullscreenSearchResults.value = []
 
@@ -1224,7 +1203,7 @@ const selectFullscreenResult = (item) => {
 }
 
 const selectResult = (item) => {
-  if (!map || !item.location) return
+  if (!map || !AMap || !item.location) return
 
   searchResults.value = []
 
@@ -1257,7 +1236,6 @@ const selectResult = (item) => {
 
   currentIndoorPoiId.value = item.id
   if (map.indoorMap) {
-    console.log('尝试显示室内地图, POI ID: B0FFGF6XB3 (斗南花市)')
     map.indoorMap.showIndoorMap('B0FFGF6XB3', 4)
   }
 
@@ -1270,7 +1248,7 @@ const clearSearch = () => {
 }
 
 const goToLocation = (loc) => {
-  if (!map) return
+  if (!map || !AMap) return
 
   selectedQuickLocation.value = loc.name
   searchKeyword.value = loc.name
@@ -1299,7 +1277,6 @@ const goToLocation = (loc) => {
   }
 
   if (loc.indoorPoiId && map.indoorMap) {
-    console.log('显示室内地图, POI ID:', loc.indoorPoiId, loc.name)
     map.indoorMap.showIndoorMap(loc.indoorPoiId, 1)
     currentIndoorPoiId.value = loc.indoorPoiId
   }
@@ -1369,23 +1346,17 @@ const fullscreenLocateMe = () => {
 
   const env = getMobileEnvInfo()
 
-  console.log('=== 全屏地图定位 - 移动端环境 ===')
-  console.log('操作系统:', env.isIOS ? 'iOS' : env.isAndroid ? 'Android' : 'Desktop')
-  console.log('HTTPS:', env.isHTTPS ? '是' : '否')
-
   isFullscreenLocating.value = true
 
   fullscreenGeolocationControl.getCurrentPosition((status, result) => {
     isFullscreenLocating.value = false
 
-    if (!fullscreenMap) return
+    if (!fullscreenMap || !AMap) return
 
     if (status === 'complete') {
       const lng = result.position.lng
       const lat = result.position.lat
       const type = result.location_type
-
-      console.log('全屏定位成功:', lng, lat, '类型:', type, '精度:', result.accuracy)
 
       currentPosition.value = { lng, lat }
       locationType.value = type
@@ -1405,10 +1376,6 @@ const fullscreenLocateMe = () => {
         fullscreenUserLocationMarker.setMap(fullscreenMap)
       }
     } else {
-      console.error('全屏定位失败:', result)
-      console.error('错误码:', result.error_code || result.info)
-      console.error('错误信息:', result.message)
-
       const errorCode = result.error_code || result.info
       const errorMessage = result.message || ''
 
@@ -1459,8 +1426,6 @@ const openRoutePanel = async (destination) => {
     routeError.value = ''
 
     const env = getMobileEnvInfo()
-    console.log('=== 路线规划定位 - 移动端环境 ===')
-    console.log('操作系统:', env.isIOS ? 'iOS' : env.isAndroid ? 'Android' : 'Desktop')
 
     await new Promise((resolve) => {
       const geolocation = new AMap.Geolocation({
@@ -1480,26 +1445,14 @@ const openRoutePanel = async (destination) => {
       })
 
       geolocation.getCurrentPosition((status, result) => {
-        console.log('=== 路线规划定位 ===')
-        console.log('状态:', status)
-        console.log('结果:', result)
-
         if (status === 'complete') {
           const lng = result.position.lng
           const lat = result.position.lat
           const type = result.location_type
 
-          console.log('起点坐标:', lng, lat)
-          console.log('定位类型:', type)
-          console.log('精度:', result.accuracy, '米')
-
           currentPosition.value = { lng, lat }
           locationType.value = type
         } else {
-          console.error('定位失败:', result)
-          console.error('错误码:', result.error_code || result.info)
-          console.error('错误信息:', result.message)
-
           const errorCode = result.error_code || result.info
           const errorMessage = result.message || ''
           let tip = '无法获取您的位置'
@@ -1561,13 +1514,6 @@ const planRoute = () => {
   const endLng = routeDestination.value.location.lng
   const endLat = routeDestination.value.location.lat
 
-  const straightDistance = calculateStraightDistance(startLng, startLat, endLng, endLat)
-
-  console.log('=== 路线规划 ===')
-  console.log('起点:', startLng, startLat, '定位类型:', locationType.value)
-  console.log('终点:', endLng, endLat, routeDestination.value.name)
-  console.log('直线距离:', straightDistance.toFixed(1), '公里')
-
   const start = [startLng, startLat]
   const end = [endLng, endLat]
 
@@ -1586,20 +1532,10 @@ const planRoute = () => {
   routePlugin.search(start, end, (status, result) => {
     isRouteLoading.value = false
 
-    console.log('路线规划API结果:', status, result)
-
     if (status === 'complete' && result.routes && result.routes.length > 0) {
       const route = result.routes[0]
       const distance = route.distance
       const time = route.time
-      const routeDistanceKm = distance / 1000
-
-      console.log('规划距离:', routeDistanceKm.toFixed(1), '公里')
-      console.log('规划时间:', Math.ceil(time / 60), '分钟')
-
-      if (routeDistanceKm < straightDistance * 0.8) {
-        console.warn('警告: 规划距离小于直线距离的80%，可能存在问题')
-      }
 
       routeResult.value = {
         distance: formatDistance(distance),
@@ -1712,11 +1648,8 @@ const drawRouteWithPath = (start, end) => {
   if (!routePlugin) return
 
   routePlugin.search(start, end, (status, result) => {
-    console.log('路线规划结果:', status, result)
-
-    if (!map) return
+    if (!map || !AMap) return
     if (status !== 'complete' || !result.routes || result.routes.length === 0) {
-      console.error('路线绘制失败:', status, result)
       return
     }
 
@@ -1750,7 +1683,6 @@ const drawRouteWithPath = (start, end) => {
     }
 
     if (path.length === 0) {
-      console.error('无法获取路径点')
       return
     }
 
@@ -1949,7 +1881,6 @@ const sharePlace = async () => {
     try {
       await navigator.share(shareData)
     } catch (e) {
-      console.log('分享取消或失败')
     }
   } else {
     const text = `${selectedPlaceDetail.value.name}\n${selectedPlaceDetail.value.address || ''}`
@@ -1992,16 +1923,81 @@ onMounted(() => {
 onUnmounted(() => {
   stopAutoRefresh()
   document.removeEventListener('visibilitychange', handleVisibilityChange)
+
   if (window._mapErrorHandler) {
     window.removeEventListener('error', window._mapErrorHandler, true)
     delete window._mapErrorHandler
   }
+
+  if (marker) {
+    marker.setMap(null)
+    marker = null
+  }
+  if (fullscreenMarker) {
+    fullscreenMarker.setMap(null)
+    fullscreenMarker = null
+  }
+  if (userLocationMarker) {
+    userLocationMarker.setMap(null)
+    userLocationMarker = null
+  }
+  if (fullscreenUserLocationMarker) {
+    fullscreenUserLocationMarker.setMap(null)
+    fullscreenUserLocationMarker = null
+  }
+  if (startMarker) {
+    startMarker.setMap(null)
+    startMarker = null
+  }
+  if (endMarker) {
+    endMarker.setMap(null)
+    endMarker = null
+  }
+  if (fullscreenStartMarker) {
+    fullscreenStartMarker.setMap(null)
+    fullscreenStartMarker = null
+  }
+  if (fullscreenEndMarker) {
+    fullscreenEndMarker.setMap(null)
+    fullscreenEndMarker = null
+  }
+  if (routePolyline) {
+    routePolyline.setMap(null)
+    routePolyline = null
+  }
+  if (fullscreenRoutePolyline) {
+    fullscreenRoutePolyline.setMap(null)
+    fullscreenRoutePolyline = null
+  }
+  if (geolocationControl) {
+    geolocationControl = null
+  }
+  if (fullscreenGeolocationControl) {
+    fullscreenGeolocationControl = null
+  }
+  if (placeSearch) {
+    placeSearch = null
+  }
+  if (driving) {
+    driving = null
+  }
+  if (riding) {
+    riding = null
+  }
+  if (walking) {
+    walking = null
+  }
+
   if (map) {
     map.destroy()
+    map = null
   }
   if (fullscreenMap) {
     fullscreenMap.destroy()
+    fullscreenMap = null
   }
+
+  AMap = null
 })
 </script>
 
