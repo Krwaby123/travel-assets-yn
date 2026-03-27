@@ -731,7 +731,7 @@ const onModuleToggle = () => {
     heightUpdateTimer = null
   }
 
-  const updateWithRetry = (retriesLeft = 5, delay = 100) => {
+  const updateWithRetry = (retriesLeft = 8, delay = 150) => {
     if (retriesLeft <= 0) return
 
     heightUpdateTimer = setTimeout(() => {
@@ -759,7 +759,7 @@ const onModuleToggle = () => {
       })
 
       if (stillAnimating || currentSlideHeight.value !== prevHeight) {
-        updateWithRetry(retriesLeft - 1, 150)
+        updateWithRetry(retriesLeft - 1, 200)
       }
     }, delay)
   }

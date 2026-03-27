@@ -113,7 +113,7 @@
     </Transition>
 
     <!-- 行程参考 -->
-    <div class="home-module">
+    <div class="home-module itinerary-module">
       <div class="home-module-header">
         <h2 class="home-module-title">推荐行程</h2>
       </div>
@@ -122,25 +122,63 @@
           <button
             v-for="(option, key) in itineraryOptions"
             :key="key"
-            :class="['itinerary-tab-compact', { active: activeItinerary === key }]"
+            :class="['itinerary-tab-compact', { active: activeItinerary === key, highlight: option.highlight }]"
             @click="activeItinerary = key"
           >
+            <span v-if="option.badge" class="tab-badge">{{ option.badge }}</span>
             {{ option.label }}
           </button>
         </div>
-        <div class="itinerary-flow-compact">
-          <template v-for="(day, index) in itineraryOptions[activeItinerary].days" :key="day.num">
-            <div class="flow-day">
-              <span class="flow-day-num">{{ day.num }}</span>
-              <span class="flow-day-place">{{ day.place }}</span>
+
+        <!-- 详细行程视图 -->
+        <div v-if="currentItineraryDetail" class="itinerary-detail">
+          <p class="itinerary-detail-desc">{{ currentItineraryDetail.desc }}</p>
+
+          <div v-for="(dayKey, index) in currentItineraryDayKeys" :key="dayKey" class="itinerary-day-detail">
+            <div class="itinerary-day-header">
+              <span class="itinerary-day-badge">{{ currentItineraryDetail[dayKey][0]?.dayBadge || `D${index + 1}` }}</span>
+              <span class="itinerary-day-title">{{ currentItineraryDetail.days?.[index]?.title || itineraryOptions[activeItinerary].days[index]?.place }}</span>
             </div>
-            <span v-if="index < itineraryOptions[activeItinerary].days.length - 1" class="flow-arrow">→</span>
-          </template>
+            <div class="itinerary-timeline">
+              <div v-for="(item, idx) in currentItineraryDetail[dayKey]" :key="idx" class="timeline-item">
+                <span class="timeline-time">{{ item.time }}</span>
+                <div class="timeline-content">
+                  <span class="timeline-place">{{ item.place }}</span>
+                  <span class="timeline-event">{{ item.event }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="itinerary-tips" v-if="currentItineraryDetail.tips">
+            <div v-for="(tip, idx) in currentItineraryDetail.tips" :key="idx" class="itinerary-tip-item">
+              <span class="tip-icon">{{ tip.icon }}</span>
+              <span class="tip-text">{{ tip.text }}</span>
+            </div>
+          </div>
+
+          <div class="itinerary-extend" v-if="currentItineraryDetail.extend">
+            <span class="extend-badge">可选延申</span>
+            <span class="extend-text">{{ currentItineraryDetail.extend.desc }}</span>
+          </div>
         </div>
-        <div class="itinerary-budget-compact">
-          <span class="budget-label">人均</span>
-          <span class="budget-value">{{ itineraryOptions[activeItinerary].budget }}</span>
-        </div>
+
+        <!-- 无详细内容的简洁视图 -->
+        <template v-else>
+          <div class="itinerary-flow-compact">
+            <template v-for="(day, index) in itineraryOptions[activeItinerary].days" :key="day.num">
+              <div class="flow-day">
+                <span class="flow-day-num">{{ day.num }}</span>
+                <span class="flow-day-place">{{ day.place }}</span>
+              </div>
+              <span v-if="index < itineraryOptions[activeItinerary].days.length - 1" class="flow-arrow">→</span>
+            </template>
+          </div>
+          <div class="itinerary-budget-compact">
+            <span class="budget-label">人均</span>
+            <span class="budget-value">{{ itineraryOptions[activeItinerary].budget }}</span>
+          </div>
+        </template>
       </div>
     </div>
   </section>
@@ -156,7 +194,7 @@ const props = defineProps({
 
 const emit = defineEmits(['navigate', 'hide-card'])
 
-const activeItinerary = ref('core4')
+const activeItinerary = ref('weekend')
 const checkedItems = ref([])
 const hasAnimatedCompletion = ref(false)
 
@@ -177,6 +215,27 @@ const isChecklistComplete = computed(() => {
 
 const checklistHidden = computed(() => {
   return props.hiddenCards?.has(CHECKLIST_CARD_ID) ?? false
+})
+
+const currentItineraryDetail = computed(() => {
+  return itineraryOptions[activeItinerary.value]?.detail || null
+})
+
+const currentItineraryDayKeys = computed(() => {
+  if (!currentItineraryDetail.value) return []
+  const keys = []
+  let dayIndex = 1
+  while (currentItineraryDetail.value[`d${dayIndex}`]) {
+    keys.push(`d${dayIndex}`)
+    dayIndex++
+  }
+  return keys
+})
+
+watch(activeItinerary, () => {
+  setTimeout(() => {
+    emit('module-toggle')
+  }, 50)
 })
 
 const toggleCheckItem = (idx) => {
@@ -780,6 +839,175 @@ onMounted(() => {
   color: var(--sunset);
 }
 
+/* ===== 行程详细版 ===== */
+.itinerary-tab-compact.highlight {
+  position: relative;
+  background: var(--sunset-soft);
+  border: 1px solid var(--sunset);
+  color: var(--sunset);
+}
+
+.itinerary-tab-compact.highlight.active {
+  background: var(--sunset);
+  border-color: var(--sunset);
+  color: white;
+}
+
+.tab-badge {
+  font-size: 0.65rem;
+  background: var(--sunset);
+  color: white;
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-right: var(--space-2xs);
+  font-weight: 600;
+}
+
+.itinerary-tab-compact.active .tab-badge {
+  background: white;
+  color: var(--sunset);
+}
+
+.itinerary-detail {
+  margin-top: var(--space-sm);
+}
+
+.itinerary-detail-desc {
+  font-size: calc(0.85rem * var(--text-scale, 1));
+  color: var(--text-muted);
+  margin-bottom: var(--space-md);
+  padding-left: var(--space-xs);
+  border-left: 3px solid var(--sunset);
+}
+
+.itinerary-day-detail {
+  margin-bottom: var(--space-md);
+}
+
+.itinerary-day-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.itinerary-day-badge {
+  background: var(--forest);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.itinerary-day-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.itinerary-timeline {
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--border);
+  margin-left: 12px;
+}
+
+.timeline-item {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-xs) 0;
+  position: relative;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--space-sm) - 5px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--forest);
+  border-radius: 50%;
+}
+
+.timeline-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  min-width: 65px;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timeline-place {
+  font-size: calc(0.8rem * var(--text-scale, 1));
+  font-weight: 600;
+  color: var(--forest);
+}
+
+.timeline-event {
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.itinerary-tips {
+  background: var(--forest-light);
+  border-radius: 10px;
+  padding: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.itinerary-tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  padding: var(--space-2xs) 0;
+}
+
+.itinerary-tip-item .tip-icon {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+}
+
+.itinerary-tip-item .tip-text {
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.itinerary-extend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--earth-light);
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+}
+
+.extend-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--sunset);
+  background: var(--sunset-soft);
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.extend-text {
+  font-size: calc(0.75rem * var(--text-scale, 1));
+  color: var(--text-muted);
+}
+
 /* ===== 响应式 ===== */
 @media (max-width: 480px) {
   .checklist-compact {
@@ -807,6 +1035,20 @@ onMounted(() => {
     width: 100%;
     height: 1px;
     margin: 0;
+  }
+
+  .timeline-item {
+    flex-direction: column;
+    gap: var(--space-2xs);
+  }
+
+  .timeline-time {
+    font-size: 0.65rem;
+  }
+
+  .itinerary-extend {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
