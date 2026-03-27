@@ -3,7 +3,7 @@
     <!-- 主推荐：大理 -->
     <div class="featured-destination" role="button" tabindex="0" aria-label="查看大理攻略" @click="$emit('navigate', 2)" @keydown.enter="$emit('navigate', 2)" @keydown.space.prevent="$emit('navigate', 2)">
       <div class="featured-image">
-        <img src="/images/spots/dali.webp" alt="大理" referrerpolicy="no-referrer" loading="lazy">
+        <img src="https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/spots/dali.webp" alt="大理" referrerpolicy="no-referrer" loading="lazy">
         <div class="featured-overlay"></div>
       </div>
       <div class="featured-content">
@@ -23,7 +23,7 @@
     <div class="destinations-row">
       <div class="dest-mini" role="button" tabindex="0" aria-label="查看斗南花市攻略" @click="$emit('navigate', 1)" @keydown.enter="$emit('navigate', 1)" @keydown.space.prevent="$emit('navigate', 1)">
         <div class="dest-mini-image">
-          <img src="/images/spots/dounan.webp" alt="斗南花市" referrerpolicy="no-referrer" loading="lazy">
+          <img src="https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/spots/dounan.webp" alt="斗南花市" referrerpolicy="no-referrer" loading="lazy">
         </div>
         <div class="dest-mini-content">
           <span class="dest-mini-name">斗南花市</span>
@@ -32,7 +32,7 @@
       </div>
       <div class="dest-mini" role="button" tabindex="0" aria-label="查看丽江攻略" @click="$emit('navigate', 3)" @keydown.enter="$emit('navigate', 3)" @keydown.space.prevent="$emit('navigate', 3)">
         <div class="dest-mini-image">
-          <img src="/images/spots/lijiang.webp" alt="丽江" referrerpolicy="no-referrer" loading="lazy">
+          <img src="https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/spots/lijiang.webp" alt="丽江" referrerpolicy="no-referrer" loading="lazy">
         </div>
         <div class="dest-mini-content">
           <span class="dest-mini-name">丽江</span>
@@ -41,7 +41,7 @@
       </div>
       <div class="dest-mini" role="button" tabindex="0" aria-label="查看香格里拉攻略" @click="$emit('navigate', 4)" @keydown.enter="$emit('navigate', 4)" @keydown.space.prevent="$emit('navigate', 4)">
         <div class="dest-mini-image">
-          <img src="/images/spots/shangri.webp" alt="香格里拉" referrerpolicy="no-referrer" loading="lazy">
+          <img src="https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/spots/shangri.webp" alt="香格里拉" referrerpolicy="no-referrer" loading="lazy">
         </div>
         <div class="dest-mini-content">
           <span class="dest-mini-name">香格里拉</span>
@@ -50,7 +50,7 @@
       </div>
       <div class="dest-mini dest-mini-map" role="button" tabindex="0" aria-label="查看地图导航" @click="$emit('navigate', 5)" @keydown.enter="$emit('navigate', 5)" @keydown.space.prevent="$emit('navigate', 5)">
         <div class="dest-mini-icon dest-mini-icon-image">
-          <img src="/images/icons/map-nav-cute.webp" alt="地图" loading="lazy">
+          <img src="https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/icons/map-nav-cute.webp" alt="地图" loading="lazy">
         </div>
         <div class="dest-mini-content">
           <span class="dest-mini-name">地图</span>

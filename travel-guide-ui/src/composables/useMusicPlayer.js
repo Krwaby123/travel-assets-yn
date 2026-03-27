@@ -44,7 +44,7 @@ export function useMusicPlayer () {
 
   const loadPlaylist = async () => {
     try {
-      const response = await fetch('./music/playlist.json')
+      const response = await fetch('https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/music/playlist.json')
       const data = await response.json()
       playlist.value = data.songs || []
     } catch (e) {

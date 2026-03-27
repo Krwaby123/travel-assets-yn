@@ -636,7 +636,7 @@ const routeModes = [
 
 const createMarkerContent = () => {
   return `<div style="width:32px;height:32px;">
-    <img src="/images/icons/marker.svg" style="width:100%;height:100%;" />
+    <img src="https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/icons/marker.svg" style="width:100%;height:100%;" />
   </div>`
 }
 

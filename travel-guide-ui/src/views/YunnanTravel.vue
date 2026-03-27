@@ -330,16 +330,16 @@
           <div v-if="showMusicPlaylist" class="music-drawer-panel">
             <div class="music-drawer-content">
               <div class="music-current-song" v-if="currentSong">
-                <div class="music-disc-small" :class="{ 'is-playing': isMusicPlaying, 'is-pausing': isMusicPausing }" role="button" tabindex="0" :aria-label="currentSong?.cover ? '查看歌曲封面: ' + currentSong.name : '歌曲封面'" @click="currentSong?.cover && openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)" @keydown.enter="currentSong?.cover && openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)" @keydown.space.prevent="currentSong?.cover && openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)">
+                <div class="music-disc-small" :class="{ 'is-playing': isMusicPlaying, 'is-pausing': isMusicPausing }" role="button" tabindex="0" :aria-label="currentSong?.cover ? '查看歌曲封面: ' + currentSong.name : '歌曲封面'" @click="currentSong?.cover && openLightbox(`https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/music-covers/${currentSong.cover}`, currentSong.name)" @keydown.enter="currentSong?.cover && openLightbox(`https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/music-covers/${currentSong.cover}`, currentSong.name)" @keydown.space.prevent="currentSong?.cover && openLightbox(`https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/music-covers/${currentSong.cover}`, currentSong.name)">
                   <img
                     v-if="currentSong?.cover"
-                    :src="`/images/music-covers/${currentSong.cover}`"
+                    :src="`https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/music-covers/${currentSong.cover}`"
                     :alt="currentSong.name"
                     class="music-cover-small"
                   >
                   <img
                     v-else
-                    src="/images/music-covers/spring-flowers-cover.webp"
+                    src="https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/music-covers/spring-flowers-cover.webp"
                     alt="春花"
                     class="music-cover-small"
                   >
@@ -507,7 +507,7 @@
     </div>
 
     <audio ref="bgMusic" preload="auto" @timeupdate="updateProgress" @loadedmetadata="onAudioLoaded" @ended="onSongEnded">
-      <source v-if="currentSong" :src="`./music/${currentSong.file}`" type="audio/mpeg">
+      <source v-if="currentSong" :src="`https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/music/${currentSong.file}`" type="audio/mpeg">
     </audio>
 
     <div id="a11yAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
