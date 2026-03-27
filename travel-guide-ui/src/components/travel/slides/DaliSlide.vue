@@ -13,8 +13,11 @@
         </button>
       </div>
       <button class="nav-jump-btn" @click="showJumpPanel = true" aria-label="快速跳转">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 6h16M4 12h16M4 18h16"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
         </svg>
       </button>
     </nav>
@@ -52,7 +55,7 @@
       </Transition>
     </Teleport>
 
-    <!-- 区域1：大理总览区（默认展开，不折叠） -->
+    <!-- 区域1：大理总览区（无边框，直接展示） -->
     <div id="dali-guide-area-overview" class="guide-module guide-module-expanded" ref="module-overview">
       <div class="guide-module-header guide-module-header-static">
         <div class="section-number">{{ data.number }}</div>
@@ -61,6 +64,7 @@
       <div class="guide-module-content-wrapper">
         <p class="section-desc">{{ data.desc }}</p>
 
+        <!-- 2天路线总览 -->
         <div class="route-overview">
           <div class="route-overview-title">
             <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -76,7 +80,7 @@
                 <span class="route-overview-arrow">→</span>
                 <span class="route-overview-point">喜洲古镇</span>
                 <span class="route-overview-arrow">→</span>
-                <span class="route-overview-point">洱海生态廊道</span>
+                <span class="route-overview-point">洱海廊道</span>
                 <span class="route-overview-arrow">→</span>
                 <span class="route-overview-point end">古城夜景</span>
               </div>
@@ -95,88 +99,66 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- 区域2：行程详细时间线区 -->
-    <div id="dali-guide-area-itinerary" class="guide-module" :class="{ expanded: expandedModules.itinerary }" ref="module-itinerary">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.itinerary" @click="toggleModule('itinerary')" @keydown.enter="toggleModule('itinerary')" @keydown.space.prevent="toggleModule('itinerary')">
-        <h3 class="guide-module-title">详细行程时间线</h3>
-        <div class="module-header-actions">
-          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-          <span class="guide-module-toggle" :class="{ expanded: expandedModules.itinerary }">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 9l-7 7-7-7"/>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="guide-module-content">
-        <div class="guide-module-content-inner">
-          <InfoCard
-            card-id="dali-route-detail"
-            card-name="大理详细路线"
-            :hidden-cards="hiddenCards"
-            :closable="false"
-            @hide="(id, name) => $emit('hide-card', id, name)"
-          >
-            <div class="route-detail">
-              <div class="route-detail-inner">
-                <div class="route-day-section">
-                  <div class="route-day-header">
-                    <span class="route-day-badge day1">Day1</span>
-                    <h4 class="route-day-title">{{ data.routeDetail?.day1?.title || '海西精华线' }}</h4>
-                  </div>
-                  <div class="route-timeline">
-                    <div
-                      class="route-timeline-item"
-                      v-for="(item, idx) in data.routeDetail?.day1?.items"
-                      :key="idx"
-                      :class="{ optional: item.optional }"
-                    >
-                      <span class="timeline-time">{{ item.time }}</span>
-                      <span class="timeline-dot"></span>
-                      <span class="timeline-event" v-html="item.event"></span>
-                    </div>
-                  </div>
-                </div>
+        <!-- 详细行程时间线（紧凑版，嵌入总览） -->
+        <div class="timeline-compact">
+          <div class="timeline-compact-header">
+            <span class="timeline-compact-icon">📅</span>
+            <span class="timeline-compact-title">详细行程</span>
+          </div>
 
-                <div class="route-day-section">
-                  <div class="route-day-header">
-                    <span class="route-day-badge day2">Day2</span>
-                    <h4 class="route-day-title">{{ data.routeDetail?.day2?.title || '海东慢游线' }}</h4>
-                  </div>
-                  <div class="route-timeline">
-                    <div
-                      class="route-timeline-item"
-                      v-for="(item, idx) in data.routeDetail?.day2?.items"
-                      :key="idx"
-                    >
-                      <span class="timeline-time">{{ item.time }}</span>
-                      <span class="timeline-dot"></span>
-                      <span class="timeline-event" v-html="item.event"></span>
-                    </div>
-                  </div>
-                </div>
+          <div class="timeline-compact-day">
+            <div class="timeline-compact-day-header">
+              <span class="day-badge day1">Day1</span>
+              <span class="day-title">{{ data.routeDetail?.day1?.title || '海西精华线' }}</span>
+            </div>
+            <div class="timeline-compact-items">
+              <div
+                class="timeline-compact-item"
+                v-for="(item, idx) in data.routeDetail?.day1?.items"
+                :key="idx"
+                :class="{ optional: item.optional }"
+              >
+                <span class="item-time">{{ item.time }}</span>
+                <span class="item-event" v-html="item.event"></span>
               </div>
             </div>
-          </InfoCard>
+          </div>
+
+          <div class="timeline-compact-day">
+            <div class="timeline-compact-day-header">
+              <span class="day-badge day2">Day2</span>
+              <span class="day-title">{{ data.routeDetail?.day2?.title || '海东慢游线' }}</span>
+            </div>
+            <div class="timeline-compact-items">
+              <div
+                class="timeline-compact-item"
+                v-for="(item, idx) in data.routeDetail?.day2?.items"
+                :key="idx"
+              >
+                <span class="item-time">{{ item.time }}</span>
+                <span class="item-event" v-html="item.event"></span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 区域3：核心景点详解区 -->
+    <!-- 区域2：核心景点详解区 -->
     <div id="dali-guide-area-scenic" class="guide-module" :class="{ expanded: expandedModules.scenic }" ref="module-scenic">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.scenic" @click="toggleModule('scenic')" @keydown.enter="toggleModule('scenic')" @keydown.space.prevent="toggleModule('scenic')">
-        <h3 class="guide-module-title">核心景点详解</h3>
+        <div class="module-header-left">
+          <span class="module-header-icon">🏔️</span>
+          <h3 class="guide-module-title">核心景点详解</h3>
+        </div>
         <div class="module-header-actions">
           <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
             </svg>
           </button>
           <span class="guide-module-toggle" :class="{ expanded: expandedModules.scenic }">
@@ -190,16 +172,15 @@
         <div class="guide-module-content-inner">
           <div class="spot-group">
             <div
-              class="spot-with-route"
+              class="spot-card"
               v-for="(spot, idx) in data.spots"
               :key="spot.name"
-              :style="{ '--delay': idx * 50 }"
+              :style="{ '--spot-index': idx }"
             >
-              <div class="spot" :class="['spot-item-' + spot.name.replace(/\s/g, '-')]">
-                <h3 class="spot-name">
-                  <span class="spot-dot"></span>
-                  {{ spot.name }}
-                  <span class="spot-highlight-tag">{{ spot.tag || '免费' }}</span>
+              <div class="spot-header">
+                <div class="spot-title-row">
+                  <h4 class="spot-name">{{ spot.name }}</h4>
+                  <span class="spot-tag">{{ spot.tag || '免费' }}</span>
                   <button
                     class="spot-map-btn"
                     @click.stop="$emit('open-map', spot.name)"
@@ -210,11 +191,11 @@
                       <circle cx="12" cy="10" r="3"/>
                     </svg>
                   </button>
-                </h3>
+                </div>
                 <p class="spot-highlight">{{ spot.highlight }}</p>
                 <div class="spot-meta">
-                  <span class="spot-transport">{{ spot.transport }}</span>
-                  <span class="spot-time" v-if="spot.openTime">{{ spot.openTime }}</span>
+                  <span class="spot-meta-item">{{ spot.transport }}</span>
+                  <span class="spot-meta-item" v-if="spot.openTime">{{ spot.openTime }}</span>
                 </div>
               </div>
 
@@ -222,8 +203,9 @@
                 <div
                   class="photo-item"
                   :class="{ 'img-loaded': loadedImages[photo.src], 'img-error': imgErrors[photo.src] }"
-                  v-for="photo in spot.photos"
+                  v-for="(photo, pIdx) in spot.photos"
                   :key="photo.label"
+                  :style="{ '--photo-index': pIdx }"
                   @click="$emit('open-lightbox', photo.src, photo.label)"
                 >
                   <img
@@ -242,41 +224,43 @@
                 </div>
               </div>
 
-              <div class="spot-cycling" v-if="spot.cycling">
+              <!-- 骑行分段 -->
+              <div class="spot-extra" v-if="spot.cycling">
                 <button class="expandable-toggle" @click="toggleSpotDetail('cycling-' + idx)" :aria-expanded="isSpotDetailExpanded('cycling-' + idx)">
                   <span class="expandable-icon">🚴</span>
                   <span>骑行分段</span>
-                  <svg class="expandable-arrow" :class="{ collapsed: !isSpotDetailExpanded('cycling-' + idx) }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg class="expandable-arrow" :class="{ expanded: isSpotDetailExpanded('cycling-' + idx) }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 9l-7 7-7-7"/>
                   </svg>
                 </button>
-                <div class="expandable-content" :class="{ collapsed: !isSpotDetailExpanded('cycling-' + idx) }">
-                  <div>
+                <div class="expandable-content" :class="{ expanded: isSpotDetailExpanded('cycling-' + idx) }">
+                  <div class="expandable-content-inner">
                     <div class="cycling-routes">
                       <div class="cycling-route" v-for="route in spot.cycling.routes" :key="route.name">
                         <div class="cycling-route-name">{{ route.name }}</div>
-                        <div class="cycling-route-info">
+                        <div class="cycling-route-meta">
                           <span>{{ route.distance }}</span>
                           <span>{{ route.time }}</span>
                         </div>
                         <div class="cycling-route-tip">{{ route.tip }}</div>
                       </div>
                     </div>
-                    <div class="cycling-tips">{{ spot.cycling.tips }}</div>
+                    <div class="cycling-note">{{ spot.cycling.tips }}</div>
                   </div>
                 </div>
               </div>
 
-              <div class="spot-photo-spots" v-if="spot.photoSpots">
+              <!-- 打卡机位 -->
+              <div class="spot-extra" v-if="spot.photoSpots">
                 <button class="expandable-toggle" @click="toggleSpotDetail('photo-' + idx)" :aria-expanded="isSpotDetailExpanded('photo-' + idx)">
                   <span class="expandable-icon">📷</span>
                   <span>打卡机位</span>
-                  <svg class="expandable-arrow" :class="{ collapsed: !isSpotDetailExpanded('photo-' + idx) }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg class="expandable-arrow" :class="{ expanded: isSpotDetailExpanded('photo-' + idx) }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 9l-7 7-7-7"/>
                   </svg>
                 </button>
-                <div class="expandable-content" :class="{ collapsed: !isSpotDetailExpanded('photo-' + idx) }">
-                  <div>
+                <div class="expandable-content" :class="{ expanded: isSpotDetailExpanded('photo-' + idx) }">
+                  <div class="expandable-content-inner">
                     <div class="photo-spots-list">
                       <div class="photo-spot-item" v-for="ps in spot.photoSpots" :key="ps.name">
                         <span class="photo-spot-name">{{ ps.name }}</span>
@@ -292,17 +276,23 @@
       </div>
     </div>
 
-    <!-- 区域4：住宿推荐区 -->
-    <div id="dali-guide-area-hotel" class="guide-module" :class="{ expanded: expandedModules.hotel }" ref="module-hotel">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.hotel" @click="toggleModule('hotel')" @keydown.enter="toggleModule('hotel')" @keydown.space.prevent="toggleModule('hotel')">
-        <h3 class="guide-module-title">住宿推荐</h3>
+    <!-- 区域3：住宿美食推荐（合并） -->
+    <div id="dali-guide-area-stay" class="guide-module" :class="{ expanded: expandedModules.stay }" ref="module-stay">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.stay" @click="toggleModule('stay')" @keydown.enter="toggleModule('stay')" @keydown.space.prevent="toggleModule('stay')">
+        <div class="module-header-left">
+          <span class="module-header-icon">🏨</span>
+          <h3 class="guide-module-title">住宿美食推荐</h3>
+        </div>
         <div class="module-header-actions">
           <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
             </svg>
           </button>
-          <span class="guide-module-toggle" :class="{ expanded: expandedModules.hotel }">
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.stay }">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M19 9l-7 7-7-7"/>
             </svg>
@@ -311,51 +301,87 @@
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
-          <InfoCard
-            card-id="dali-hotel"
-            card-name="大理住宿推荐"
-            :hidden-cards="hiddenCards"
-            @hide="(id, name) => $emit('hide-card', id, name)"
-          >
-            <div class="practical-stay">
-              <div class="stay-groups">
-                <div class="stay-group" v-for="group in data.accommodations" :key="group.category">
-                  <div class="stay-group-label">{{ group.category }}</div>
-                  <div class="stay-items">
-                    <div class="stay-item" v-for="item in group.items" :key="item.name">
-                      <div class="stay-item-header">
-                        <span class="stay-item-name">{{ item.name }}</span>
-                        <span class="stay-item-price">{{ item.price }}</span>
-                      </div>
-                      <div class="stay-item-location">{{ item.location }}</div>
-                      <div class="stay-item-highlights">{{ item.highlights }}</div>
-                    </div>
+          <!-- 住宿推荐 -->
+          <div class="stay-section">
+            <div class="section-label">
+              <span class="section-label-icon">🛏️</span>
+              <span>住宿推荐</span>
+              <span class="section-label-badge">美团官方可订</span>
+            </div>
+            <div class="stay-list">
+              <div class="stay-card" v-for="(item, idx) in data.accommodations" :key="item.name" :style="{ '--card-index': idx }">
+                <div class="stay-card-row">
+                  <div class="stay-card-info">
+                    <div class="stay-card-name">{{ item.name }}</div>
+                    <div class="stay-card-price">{{ item.price }}</div>
+                  </div>
+                  <a :href="item.bookingUrl" target="_blank" rel="noopener" class="stay-booking-btn" @click.stop>
+                    预订
+                  </a>
+                </div>
+                <div class="stay-card-meta">
+                  <span class="stay-card-location">{{ item.location }}</span>
+                  <span class="stay-card-divider">·</span>
+                  <span class="stay-card-phone">{{ item.phone }}</span>
+                </div>
+                <div class="stay-card-tags">
+                  <span class="stay-tag" v-for="tag in item.tags" :key="tag">{{ tag }}</span>
+                </div>
+                <p class="stay-card-highlight">{{ item.highlights }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 美食推荐 -->
+          <div class="food-section">
+            <div class="section-label">
+              <span class="section-label-icon">🍜</span>
+              <span>必吃美食</span>
+            </div>
+            <div class="food-list">
+              <div class="food-card" v-for="(food, idx) in data.foods" :key="food.name" :style="{ '--food-index': idx }">
+                <div class="food-card-icon">{{ foodIcons[idx] || '🍽️' }}</div>
+                <div class="food-card-content">
+                  <div class="food-card-header">
+                    <h4 class="food-card-name">{{ food.name }}</h4>
+                    <span class="food-card-price">{{ food.price }}</span>
+                  </div>
+                  <div class="food-card-shops">
+                    <span class="food-shops-label">推荐店铺</span>
+                    <span class="food-shops-value">{{ food.shops }}</span>
+                  </div>
+                  <div class="food-card-tip" v-if="food.tip">
+                    <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <path d="M12 16v-4M12 8h.01"/>
+                    </svg>
+                    <span>{{ food.tip }}</span>
                   </div>
                 </div>
               </div>
-              <div class="stay-tips" v-if="data.accommodationTips">
-                <div class="stay-tips-title">住宿小贴士</div>
-                <div class="stay-tips-list">
-                  <div class="stay-tips-item" v-for="(tip, idx) in data.accommodationTips" :key="idx">{{ tip }}</div>
-                </div>
-              </div>
             </div>
-          </InfoCard>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 区域5：美食推荐区 -->
-    <div id="dali-guide-area-food" class="guide-module" :class="{ expanded: expandedModules.food }" ref="module-food">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.food" @click="toggleModule('food')" @keydown.enter="toggleModule('food')" @keydown.space.prevent="toggleModule('food')">
-        <h3 class="guide-module-title">必吃美食</h3>
+    <!-- 区域4：门票预算 & 实用信息（合并） -->
+    <div id="dali-guide-area-info" class="guide-module" :class="{ expanded: expandedModules.info }" ref="module-info">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.info" @click="toggleModule('info')" @keydown.enter="toggleModule('info')" @keydown.space.prevent="toggleModule('info')">
+        <div class="module-header-left">
+          <span class="module-header-icon">🎫</span>
+          <h3 class="guide-module-title">门票优惠 & 实用信息</h3>
+        </div>
         <div class="module-header-actions">
           <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
             </svg>
           </button>
-          <span class="guide-module-toggle" :class="{ expanded: expandedModules.food }">
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.info }">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M19 9l-7 7-7-7"/>
             </svg>
@@ -364,119 +390,94 @@
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
-          <InfoCard
-            card-id="dali-food"
-            card-name="大理必吃美食"
-            :hidden-cards="hiddenCards"
-            @hide="(id, name) => $emit('hide-card', id, name)"
-          >
-            <div class="food-items">
-              <div class="food-item" v-for="food in data.foods" :key="food.name">
-                <div class="food-item-header">
-                  <span class="food-item-name">{{ food.name }}</span>
-                  <span class="food-item-price">{{ food.price }}</span>
-                </div>
-                <div class="food-item-shops">推荐：{{ food.shops }}</div>
-                <div class="food-item-tip" v-if="food.tip">{{ food.tip }}</div>
-              </div>
+          <!-- 学生票优惠 -->
+          <div class="ticket-section">
+            <div class="section-label">
+              <span class="section-label-icon">🎓</span>
+              <span>学生票优惠</span>
             </div>
-          </InfoCard>
-        </div>
-      </div>
-    </div>
-
-    <!-- 区域6：门票优惠与预约区 -->
-    <div id="dali-guide-area-ticket" class="guide-module" :class="{ expanded: expandedModules.ticket }" ref="module-ticket">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.ticket" @click="toggleModule('ticket')" @keydown.enter="toggleModule('ticket')" @keydown.space.prevent="toggleModule('ticket')">
-        <h3 class="guide-module-title">门票优惠 & 预约指南</h3>
-        <div class="module-header-actions">
-          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-          <span class="guide-module-toggle" :class="{ expanded: expandedModules.ticket }">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 9l-7 7-7-7"/>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="guide-module-content">
-        <div class="guide-module-content-inner">
-          <InfoCard
-            card-id="dali-ticket"
-            card-name="大理门票&预约"
-            :hidden-cards="hiddenCards"
-            :closable="false"
-            @hide="(id, name) => $emit('hide-card', id, name)"
-          >
-            <div class="ticket-section">
-              <div class="ticket-header">
-                <span class="ticket-label">🎫 学生票（持学生证）</span>
-              </div>
-              <div class="ticket-list">
-                <div class="ticket-item" v-for="item in data.studentDiscounts" :key="item.spot">
-                  <div class="ticket-item-row">
-                    <span class="ticket-spot-name">{{ item.spot }}</span>
-                    <span class="ticket-price-row">
-                      <span class="ticket-full">{{ item.fullPrice }}</span>
-                      <span class="ticket-arrow">→</span>
-                      <span class="ticket-student">{{ item.studentPrice }}</span>
-                    </span>
+            <div class="ticket-grid">
+              <div class="ticket-item" v-for="item in data.studentDiscounts" :key="item.spot">
+                <div class="ticket-item-main">
+                  <span class="ticket-spot">{{ item.spot }}</span>
+                  <div class="ticket-price-change">
+                    <span class="ticket-full">{{ item.fullPrice }}</span>
+                    <svg class="ticket-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                    <span class="ticket-student">{{ item.studentPrice }}</span>
                   </div>
-                  <div class="ticket-item-note" v-if="item.note">{{ item.note }}</div>
                 </div>
-              </div>
-              <div class="ticket-booking">
-                <div class="ticket-booking-title">📅 预约信息</div>
-                <div class="ticket-booking-item" v-for="item in data.bookingInfo" :key="item.spot" :class="{ important: item.important }">
-                  <strong>{{ item.spot }}</strong>：{{ item.note }}
-                </div>
-              </div>
-              <div class="ticket-note">大理古城、洱海廊道、喜洲古镇免费开放</div>
-            </div>
-          </InfoCard>
-        </div>
-      </div>
-    </div>
-
-    <!-- 区域7：预算与避坑区 -->
-    <div id="dali-guide-area-budget" class="guide-module" :class="{ expanded: expandedModules.budget }" ref="module-budget">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.budget" @click="toggleModule('budget')" @keydown.enter="toggleModule('budget')" @keydown.space.prevent="toggleModule('budget')">
-        <h3 class="guide-module-title">预算参考 & 避坑指南</h3>
-        <div class="module-header-actions">
-          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-          <span class="guide-module-toggle" :class="{ expanded: expandedModules.budget }">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 9l-7 7-7-7"/>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="guide-module-content">
-        <div class="guide-module-content-inner">
-          <InfoCard
-            card-id="dali-budget"
-            card-name="大理预算参考"
-            :hidden-cards="hiddenCards"
-            @hide="(id, name) => $emit('hide-card', id, name)"
-          >
-            <div class="simple-info">
-              <div class="simple-info-title"><span class="emoji" aria-hidden="true">💰</span> 预算参考（2天）</div>
-              <div class="simple-info-content">
-                <strong>常规版约600元：</strong>住宿150元+餐饮150元+环湖交通100元+体验项目100元<br>
-                <strong>经济版约250元：</strong>青旅住宿+公交出行+只逛免费景点
+                <div class="ticket-note" v-if="item.note">{{ item.note }}</div>
               </div>
             </div>
-          </InfoCard>
+            <div class="ticket-free-note">大理古城、洱海廊道、喜洲古镇免费开放</div>
+          </div>
 
-          <div class="warning-box">
-            <strong>避坑：</strong>别信"50元环洱海一日游"；别买古城银饰玉石；租车问清续航和隐藏费用。
+          <!-- 预约信息 -->
+          <div class="booking-section">
+            <div class="section-label">
+              <span class="section-label-icon">📅</span>
+              <span>预约信息</span>
+            </div>
+            <div class="booking-list">
+              <div class="booking-item" v-for="item in data.bookingInfo" :key="item.spot" :class="{ important: item.important }">
+                <span class="booking-spot">{{ item.spot }}</span>
+                <span class="booking-note">{{ item.note }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 预算参考 -->
+          <div class="budget-section">
+            <div class="section-label">
+              <span class="section-label-icon">💰</span>
+              <span>预算参考（2天）</span>
+            </div>
+            <div class="budget-compare">
+              <div class="budget-option">
+                <div class="budget-option-header">
+                  <span class="budget-option-name">常规版</span>
+                  <span class="budget-option-price">约600元</span>
+                </div>
+                <div class="budget-option-breakdown">
+                  住宿150 + 餐饮150 + 环湖交通100 + 体验项目100
+                </div>
+              </div>
+              <div class="budget-option budget-option-economy">
+                <div class="budget-option-header">
+                  <span class="budget-option-name">经济版</span>
+                  <span class="budget-option-price">约250元</span>
+                </div>
+                <div class="budget-option-breakdown">
+                  青旅住宿 + 公交出行 + 只逛免费景点
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 避坑指南 -->
+          <div class="pitfall-section">
+            <div class="pitfall-header">
+              <svg class="pitfall-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+              <span>避坑指南</span>
+            </div>
+            <div class="pitfall-items">
+              <div class="pitfall-item">
+                <span class="pitfall-x">✕</span>
+                <span>别信"50元环洱海一日游"</span>
+              </div>
+              <div class="pitfall-item">
+                <span class="pitfall-x">✕</span>
+                <span>别买古城银饰玉石，水深</span>
+              </div>
+              <div class="pitfall-item">
+                <span class="pitfall-x">✕</span>
+                <span>租车问清续航和隐藏费用</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -486,7 +487,6 @@
 
 <script setup>
 import { ref, reactive, onMounted, nextTick } from 'vue'
-import InfoCard from '../InfoCard.vue'
 
 defineProps({
   data: Object,
@@ -501,32 +501,25 @@ const spotDetailCollapsed = reactive({})
 
 const modules = [
   { id: 'overview', title: '大理·苍山洱海', shortTitle: '总览' },
-  { id: 'itinerary', title: '详细行程时间线', shortTitle: '时间线' },
   { id: 'scenic', title: '核心景点详解', shortTitle: '景点详解' },
-  { id: 'hotel', title: '住宿推荐', shortTitle: '住宿' },
-  { id: 'food', title: '必吃美食', shortTitle: '美食' },
-  { id: 'ticket', title: '门票优惠 & 预约指南', shortTitle: '门票预约' },
-  { id: 'budget', title: '预算参考 & 避坑指南', shortTitle: '预算避坑' }
+  { id: 'stay', title: '住宿美食推荐', shortTitle: '住宿美食' },
+  { id: 'info', title: '门票优惠 & 实用信息', shortTitle: '门票优惠' }
 ]
 
 const jumpSections = [
   { id: 'overview', title: '总览', icon: '🌊' },
-  { id: 'itinerary', title: '详细行程时间线', icon: '📅' },
   { id: 'scenic', title: '核心景点详解', icon: '🏔️' },
-  { id: 'hotel', title: '住宿推荐', icon: '🏨' },
-  { id: 'food', title: '必吃美食', icon: '🍜' },
-  { id: 'ticket', title: '门票优惠 & 预约指南', icon: '🎫' },
-  { id: 'budget', title: '预算参考 & 避坑指南', icon: '💰' }
+  { id: 'stay', title: '住宿美食推荐', icon: '🏨' },
+  { id: 'info', title: '门票优惠 & 实用信息', icon: '🎫' }
 ]
 
 const expandedModules = reactive({
-  itinerary: false,
   scenic: false,
-  hotel: false,
-  food: false,
-  ticket: false,
-  budget: false
+  stay: false,
+  info: false
 })
+
+const foodIcons = ['🐟', '🥛', '🫓']
 
 const activeModule = ref('overview')
 const quickNavBar = ref(null)
@@ -546,6 +539,9 @@ const expandModule = (moduleId) => {
 
 const toggleSpotDetail = (key) => {
   spotDetailCollapsed[key] = !spotDetailCollapsed[key]
+  setTimeout(() => {
+    emit('module-toggle')
+  }, 350)
 }
 
 const isSpotDetailExpanded = (key) => {
@@ -618,6 +614,7 @@ onMounted(() => {
   padding-top: 0;
 }
 
+/* ===== 模块通用 ===== */
 .guide-module {
   position: relative;
   padding-top: var(--space-lg);
@@ -667,6 +664,16 @@ onMounted(() => {
   transform: scale(0.99);
 }
 
+.module-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.module-header-icon {
+  font-size: 1.25rem;
+}
+
 .guide-module-title {
   font-family: 'LXGW WenKai', serif;
   font-size: var(--text-lg);
@@ -678,6 +685,103 @@ onMounted(() => {
 
 .guide-module-title-large {
   font-size: clamp(1.25rem, 5vw, 1.5rem);
+  background: linear-gradient(90deg,
+    var(--sky) 0%,
+    #4a9eff 25%,
+    var(--forest) 50%,
+    var(--sunset) 75%,
+    var(--sky) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: mountainMist 1.5s var(--ease-out-quart) forwards,
+             shimmer 3s ease-in-out infinite;
+  opacity: 0;
+  margin-left: 2.5rem;
+  position: relative;
+}
+
+.guide-module-title-large::before {
+  content: '';
+  position: absolute;
+  left: -2.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 20px solid var(--forest);
+  opacity: 0;
+  animation: peakRise 0.8s var(--ease-out-quart) 0.2s forwards;
+  filter: drop-shadow(6px 0 0 var(--sky));
+}
+
+.guide-module-title-large::after {
+  content: '';
+  position: absolute;
+  left: -1.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 14px solid var(--sky);
+  opacity: 0;
+  animation: peakRiseBack 0.6s var(--ease-out-quart) 0.4s forwards;
+}
+
+@keyframes mountainMist {
+  0% {
+    opacity: 0;
+    transform: translateY(-15px);
+    letter-spacing: 0.2em;
+    filter: blur(3px);
+  }
+  60% {
+    letter-spacing: 0.06em;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.05em;
+    filter: blur(0);
+  }
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    background-position: 0% 50%;
+    filter: brightness(1);
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: brightness(1.1);
+  }
+}
+
+@keyframes peakRise {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) translateY(15px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-50%) translateY(0) scale(1);
+  }
+}
+
+@keyframes peakRiseBack {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) translateY(10px) scale(0.7);
+  }
+  100% {
+    opacity: 0.7;
+    transform: translateY(-50%) translateY(0) scale(1);
+  }
 }
 
 .guide-module-toggle {
@@ -700,18 +804,17 @@ onMounted(() => {
 }
 
 .guide-module-content {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.35s var(--ease-out-quart);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s var(--ease-out-quart);
 }
 
 .guide-module-content-wrapper {
-  min-height: 0;
+  padding: 0 var(--space-md);
 }
 
 .guide-module-content-inner {
-  min-height: 0;
-  overflow: hidden;
+  padding-bottom: var(--space-md);
 }
 
 .guide-module-expanded .guide-module-content-wrapper {
@@ -719,9 +822,10 @@ onMounted(() => {
 }
 
 .guide-module.expanded .guide-module-content {
-  grid-template-rows: 1fr;
+  max-height: 5000px;
 }
 
+/* ===== 总览区 ===== */
 .section-number {
   font-family: 'LXGW WenKai', serif;
   font-size: 0.75rem;
@@ -737,11 +841,13 @@ onMounted(() => {
   margin-bottom: var(--space-lg);
 }
 
+/* 路线总览 */
 .route-overview {
-  background: var(--card);
+  background: linear-gradient(135deg, var(--forest-light) 0%, var(--sky-light) 100%);
   border: 2px solid var(--forest);
   border-radius: var(--space-md);
   padding: var(--space-md);
+  margin-bottom: var(--space-lg);
 }
 
 .route-overview-title {
@@ -801,15 +907,15 @@ onMounted(() => {
 .route-overview-point {
   font-size: 0.75rem;
   padding: 0.2rem 0.5rem;
-  background: var(--earth-light);
+  background: white;
   border-radius: var(--space-sm);
   color: var(--text);
   white-space: nowrap;
 }
 
 .route-overview-point.end {
-  background: var(--forest-light);
-  color: var(--forest);
+  background: var(--forest);
+  color: white;
   font-weight: 600;
 }
 
@@ -819,26 +925,50 @@ onMounted(() => {
   font-weight: 700;
 }
 
-.route-detail {
+/* 紧凑时间线 */
+.timeline-compact {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--space-md);
+  overflow: hidden;
+}
+
+.timeline-compact-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--earth-light);
+  border-bottom: 1px solid var(--border);
+}
+
+.timeline-compact-icon {
+  font-size: 1rem;
+}
+
+.timeline-compact-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--forest);
+}
+
+.timeline-compact-day {
   padding: var(--space-md);
+  border-bottom: 1px dashed var(--border);
 }
 
-.route-day-section {
-  padding-bottom: var(--space-md);
+.timeline-compact-day:last-child {
+  border-bottom: none;
 }
 
-.route-day-section:last-child {
-  padding-bottom: 0;
-}
-
-.route-day-header {
+.timeline-compact-day-header {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
   margin-bottom: var(--space-sm);
 }
 
-.route-day-badge {
+.day-badge {
   font-size: 0.7rem;
   font-weight: 700;
   padding: 0.2rem 0.5rem;
@@ -846,117 +976,119 @@ onMounted(() => {
   color: white;
 }
 
-.route-day-badge.day1 { background: var(--forest); }
-.route-day-badge.day2 { background: var(--sunset); }
+.day-badge.day1 { background: var(--forest); }
+.day-badge.day2 { background: var(--sunset); }
 
-.route-day-title {
+.day-title {
   font-size: var(--text-sm);
   font-weight: 600;
   color: var(--text);
-  margin: 0;
 }
 
-.route-timeline {
+.timeline-compact-items {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
-  padding-left: var(--space-xs);
 }
 
-.route-timeline-item {
+.timeline-compact-item {
   display: flex;
   align-items: flex-start;
   gap: var(--space-sm);
-  padding: var(--space-xs) 0;
+  padding: var(--space-2xs) 0;
+  opacity: 0;
+  animation: fadeIn 0.4s var(--ease-out-quart) forwards;
 }
 
-.route-timeline-item.optional {
+.timeline-compact-item.optional {
   opacity: 0.7;
 }
 
-.route-timeline-item.optional .timeline-time::after {
+.timeline-compact-item.optional .item-time::after {
   content: '可选';
   font-size: 0.6rem;
   margin-left: var(--space-2xs);
   color: var(--text-muted);
 }
 
-.timeline-time {
-  font-size: 0.75rem;
+.item-time {
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--sunset);
-  min-width: 2.5rem;
+  min-width: 3.5rem;
   flex-shrink: 0;
 }
 
-.timeline-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--forest);
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 0.3rem;
-}
-
-.timeline-event {
+.item-event {
   font-size: calc(var(--text-sm) * var(--text-scale, 1));
   color: var(--text);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
-.timeline-event :deep(strong) {
+.item-event :deep(strong) {
   color: var(--forest);
 }
 
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===== 景点区 ===== */
 .spot-group {
   padding: var(--space-md);
 }
 
-.spot-with-route {
-  position: relative;
-  margin-bottom: var(--space-lg);
+.spot-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--space-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUp 0.5s var(--ease-out-quart) forwards;
+  animation-delay: calc(var(--spot-index, 0) * 100ms);
 }
 
-.spot-with-route:last-child {
+.spot-card:last-child {
   margin-bottom: 0;
 }
 
-.spot {
-  padding-bottom: var(--space-md);
-  border-bottom: 1px dashed var(--border);
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.spot:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+.spot-header {
+  margin-bottom: var(--space-sm);
+}
+
+.spot-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
 }
 
 .spot-name {
   font-size: var(--text-lg);
   font-weight: 600;
   color: var(--text);
-  margin-bottom: var(--space-xs);
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
+  margin: 0;
 }
 
-.spot-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--sunset);
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.spot-highlight-tag {
+.spot-tag {
   display: inline-block;
   background: var(--sunset);
   color: white;
-  font-size: var(--text-xs);
+  font-size: 0.7rem;
   font-weight: 600;
-  padding: 0.2rem 0.5rem;
-  border-radius: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.25rem;
 }
 
 .spot-map-btn {
@@ -996,8 +1128,8 @@ onMounted(() => {
 .spot-highlight {
   font-size: var(--text-sm);
   color: var(--text-muted);
-  margin-bottom: var(--space-xs);
-  line-height: 1.75;
+  margin: 0 0 var(--space-xs) 0;
+  line-height: 1.6;
 }
 
 .spot-meta {
@@ -1006,7 +1138,7 @@ onMounted(() => {
   gap: var(--space-xs);
 }
 
-.spot-transport {
+.spot-meta-item {
   font-size: 0.75rem;
   color: var(--sky);
   background: var(--sky-light);
@@ -1014,19 +1146,12 @@ onMounted(() => {
   border-radius: var(--space-2xs);
 }
 
-.spot-time {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  background: var(--earth-light);
-  padding: 2px 6px;
-  border-radius: var(--space-2xs);
-}
-
+/* 照片网格 */
 .spot-photo-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-xs);
-  margin-top: var(--space-sm);
+  margin-bottom: var(--space-sm);
 }
 
 .photo-item {
@@ -1035,7 +1160,17 @@ onMounted(() => {
   overflow: hidden;
   aspect-ratio: 1 / 1;
   cursor: pointer;
-  transition: transform var(--duration-fast) var(--ease-out-quart);
+  opacity: 0;
+  transform: scale(0.95);
+  animation: photoReveal 0.5s var(--ease-out-quart) forwards;
+  animation-delay: calc(var(--photo-index, 0) * 80ms);
+}
+
+@keyframes photoReveal {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .photo-item:hover {
@@ -1083,10 +1218,10 @@ onMounted(() => {
   color: var(--text-muted);
 }
 
-.spot-cycling {
-  background: var(--sky-light);
+/* 展开内容 */
+.spot-extra {
+  background: var(--earth-light);
   border-radius: var(--space-sm);
-  margin-top: var(--space-sm);
   overflow: hidden;
 }
 
@@ -1104,6 +1239,7 @@ onMounted(() => {
   font-weight: 600;
   color: var(--sky);
   min-height: 44px;
+  transition: background var(--duration-fast) var(--ease-out-quart);
 }
 
 .expandable-toggle:hover {
@@ -1122,25 +1258,22 @@ onMounted(() => {
   transition: transform 0.3s var(--ease-out-quart);
 }
 
-.expandable-arrow.collapsed {
-  transform: rotate(-90deg);
+.expandable-arrow.expanded {
+  transform: rotate(180deg);
 }
 
 .expandable-content {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition: grid-template-rows 0.3s var(--ease-out-quart);
-  padding: 0 var(--space-sm) var(--space-sm);
-}
-
-.expandable-content.collapsed {
-  grid-template-rows: 0fr;
-  padding-bottom: 0;
-}
-
-.expandable-content > div {
-  min-height: 0;
+  max-height: 0;
   overflow: hidden;
+  transition: max-height 0.35s var(--ease-out-quart);
+}
+
+.expandable-content.expanded {
+  max-height: 500px;
+}
+
+.expandable-content-inner {
+  padding: var(--space-sm);
 }
 
 .cycling-routes {
@@ -1161,7 +1294,7 @@ onMounted(() => {
   color: var(--text);
 }
 
-.cycling-route-info {
+.cycling-route-meta {
   display: flex;
   gap: var(--space-sm);
   font-size: 0.75rem;
@@ -1175,28 +1308,12 @@ onMounted(() => {
   margin-top: 2px;
 }
 
-.cycling-tips {
+.cycling-note {
   font-size: 0.7rem;
   color: var(--text-muted);
   margin-top: var(--space-sm);
   padding-top: var(--space-sm);
   border-top: 1px dashed var(--border);
-}
-
-.spot-photo-spots {
-  background: var(--sunset-soft);
-  border-radius: var(--space-sm);
-  margin-top: var(--space-sm);
-  overflow: hidden;
-}
-
-.spot-photo-spots .expandable-toggle {
-  color: var(--sunset);
-}
-
-.spot-photo-spots .expandable-toggle:hover {
-  background: var(--sunset);
-  color: white;
 }
 
 .photo-spots-list {
@@ -1222,309 +1339,529 @@ onMounted(() => {
   color: var(--text-muted);
 }
 
-.practical-stay {
+/* ===== 住宿美食区 ===== */
+.stay-section,
+.food-section {
   padding: var(--space-md);
 }
 
-.stay-groups {
+.section-label {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
 }
 
-.stay-group-label {
-  font-size: 0.7rem;
+.section-label-icon {
+  font-size: 1.25rem;
+}
+
+.section-label span:nth-child(2) {
+  font-size: var(--text-base);
   font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: var(--forest);
+}
+
+.section-label-badge {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--sunset);
+  background: var(--sunset-soft);
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+/* 住宿卡片 */
+.stay-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.stay-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--space-md);
+  padding: var(--space-md);
+  opacity: 0;
+  transform: translateY(12px);
+  animation: cardSlideUp 0.4s var(--ease-out-quart) forwards;
+  animation-delay: calc(var(--card-index, 0) * 60ms);
+  transition: border-color var(--duration-fast) var(--ease-out-quart);
+}
+
+.stay-card:hover {
+  border-color: var(--forest);
+}
+
+@keyframes cardSlideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stay-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-sm);
   margin-bottom: var(--space-xs);
 }
 
-.stay-items {
-  display: grid;
-  gap: var(--space-sm);
+.stay-card-info {
+  flex: 1;
+  min-width: 0;
 }
 
-.stay-item {
-  background: var(--forest-light);
-  border-radius: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
-  border-left: 3px solid var(--forest);
-}
-
-.stay-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 4px;
-}
-
-.stay-item-name {
-  font-size: 0.85rem;
+.stay-card-name {
+  font-size: 0.9rem;
   font-weight: 700;
-  color: var(--forest);
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 2px;
 }
 
-.stay-item-price {
-  font-size: 0.8rem;
+.stay-card-price {
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--sunset);
-  white-space: nowrap;
 }
 
-.stay-item-location {
+.stay-booking-btn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  background: transparent;
+  color: var(--forest);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1.5px solid var(--forest);
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.stay-booking-btn:hover {
+  background: var(--forest);
+  color: white;
+}
+
+.stay-booking-btn:active {
+  transform: scale(0.95);
+}
+
+.stay-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.7rem;
   color: var(--text-muted);
-  line-height: 1.4;
+  margin-bottom: var(--space-xs);
 }
 
-.stay-item-highlights {
-  font-size: 0.7rem;
+.stay-card-divider {
+  color: var(--border);
+}
+
+.stay-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: var(--space-xs);
+}
+
+.stay-tag {
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--forest);
+  background: var(--forest-light);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.stay-card-highlight {
+  font-size: 0.72rem;
   color: var(--text);
-  margin-top: 4px;
-  line-height: 1.4;
+  margin: 0;
+  line-height: 1.6;
 }
 
-.stay-tips {
-  margin-top: var(--space-md);
-  padding-top: var(--space-md);
+/* 美食卡片 */
+.food-section {
   border-top: 1px dashed var(--border);
 }
 
-.stay-tips-title {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--forest);
-  margin-bottom: var(--space-sm);
-}
-
-.stay-tips-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.stay-tips-item {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  padding-left: var(--space-sm);
-  position: relative;
-}
-
-.stay-tips-item::before {
-  content: '•';
-  position: absolute;
-  left: 0;
-  color: var(--forest);
-}
-
-.food-items {
-  padding: var(--space-md);
+.food-list {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
 }
 
-.food-item {
-  background: var(--forest-light);
-  border-radius: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
-  border-left: 3px solid var(--sunset);
+.food-card {
+  display: flex;
+  gap: var(--space-sm);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--space-md);
+  padding: var(--space-sm);
+  opacity: 0;
+  transform: translateX(-8px);
+  animation: foodSlideIn 0.35s var(--ease-out-quart) forwards;
+  animation-delay: calc(var(--food-index, 0) * 80ms);
+  transition: border-color var(--duration-fast) var(--ease-out-quart);
 }
 
-.food-item-header {
+.food-card:hover {
+  border-color: var(--sunset);
+}
+
+@keyframes foodSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.food-card-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--sunset-soft);
+  border-radius: var(--space-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.food-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.food-card-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
-.food-item-name {
+.food-card-name {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--forest);
+  color: var(--text);
+  margin: 0;
 }
 
-.food-item-price {
-  font-size: 0.8rem;
+.food-card-price {
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--sunset);
   white-space: nowrap;
 }
 
-.food-item-shops {
-  font-size: 0.75rem;
-  color: var(--text);
-  line-height: 1.4;
-}
-
-.food-item-tip {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  margin-top: 4px;
-  line-height: 1.4;
-}
-
-.ticket-section {
-  padding: var(--space-md);
-}
-
-.ticket-header {
-  margin-bottom: var(--space-md);
-  padding-bottom: var(--space-xs);
-  border-bottom: 2px solid var(--forest-light);
-}
-
-.ticket-label {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--forest);
-}
-
-.ticket-list {
+.food-card-shops {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.food-shops-label {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.food-shops-value {
+  font-size: 0.7rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.food-card-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.food-card-tip .tip-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--sky);
+}
+
+/* ===== 门票预算区 ===== */
+.ticket-section,
+.booking-section,
+.budget-section,
+.pitfall-section {
+  padding: var(--space-md);
+  border-bottom: 1px dashed var(--border);
+}
+
+.ticket-section:last-child,
+.booking-section:last-child,
+.budget-section:last-child,
+.pitfall-section:last-child {
+  border-bottom: none;
+}
+
+.ticket-grid {
+  display: grid;
   gap: var(--space-sm);
-  margin-bottom: var(--space-md);
 }
 
 .ticket-item {
   background: var(--forest-light);
   border-radius: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
-  border-left: 3px solid var(--forest);
+  padding: var(--space-sm);
 }
 
-.ticket-item-row {
+.ticket-item-main {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
 }
 
-.ticket-spot-name {
+.ticket-spot {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text);
 }
 
-.ticket-price-row {
-  font-size: 0.8rem;
-  white-space: nowrap;
+.ticket-price-change {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
 }
 
 .ticket-full {
+  font-size: 0.75rem;
   color: var(--text-muted);
   text-decoration: line-through;
 }
 
 .ticket-arrow {
-  color: var(--text-muted);
-  margin: 0 6px;
+  width: 14px;
+  height: 14px;
+  color: var(--forest);
 }
 
 .ticket-student {
-  color: var(--sunset);
-  font-weight: 600;
-}
-
-.ticket-item-note {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  margin-top: 4px;
-  line-height: 1.4;
-}
-
-.ticket-booking {
-  background: var(--earth-light);
-  border-radius: var(--space-sm);
-  padding: var(--space-md);
-}
-
-.ticket-booking-title {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: var(--space-sm);
-}
-
-.ticket-booking-item {
-  font-size: 0.75rem;
-  color: var(--text);
-  margin-bottom: var(--space-xs);
-  line-height: 1.5;
-}
-
-.ticket-booking-item:last-child {
-  margin-bottom: 0;
-}
-
-.ticket-booking-item.important {
-  background: var(--sunset-soft);
-  margin: 0 calc(var(--space-md) * -1);
-  padding: var(--space-xs) var(--space-md);
-  color: var(--sunset);
-  font-weight: 600;
-}
-
-.ticket-booking-item strong {
+  font-size: 0.85rem;
+  font-weight: 700;
   color: var(--forest);
 }
 
 .ticket-note {
   font-size: 0.7rem;
   color: var(--text-muted);
-  text-align: center;
+  margin-top: var(--space-xs);
+}
+
+.ticket-free-note {
   margin-top: var(--space-md);
-  padding-top: var(--space-sm);
-  border-top: 1px dashed var(--border);
-}
-
-.simple-info {
-  padding: var(--space-md);
-}
-
-.simple-info-title {
-  font-size: var(--text-sm);
-  font-weight: 600;
+  padding: var(--space-sm);
+  background: var(--forest-light);
+  border-radius: var(--space-sm);
+  font-size: 0.75rem;
   color: var(--forest);
-  margin-bottom: var(--space-sm);
+  text-align: center;
 }
 
-.simple-info-content {
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.booking-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--card);
+  border-radius: var(--space-xs);
   font-size: 0.8rem;
-  line-height: 1.8;
-  color: var(--text);
 }
 
-.warning-box {
-  margin: var(--space-md);
-  padding: var(--space-md);
+.booking-item.important {
   background: var(--sunset-soft);
-  border-radius: var(--space-md);
-  font-size: var(--text-sm);
-  color: var(--text);
-  line-height: 1.6;
+  border-left: 3px solid var(--sunset);
 }
 
-.warning-box strong {
+.booking-spot {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.booking-note {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.budget-compare {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.budget-option {
+  background: var(--forest-light);
+  border-radius: var(--space-sm);
+  padding: var(--space-sm);
+}
+
+.budget-option-economy {
+  background: var(--earth-light);
+}
+
+.budget-option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-xs);
+}
+
+.budget-option-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.budget-option-price {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--forest);
+}
+
+.budget-option-breakdown {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.pitfall-section {
+  background: var(--sunset-soft);
+}
+
+.pitfall-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.pitfall-icon {
+  width: 20px;
+  height: 20px;
   color: var(--sunset);
 }
 
+.pitfall-header span {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--sunset);
+}
+
+.pitfall-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.pitfall-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.pitfall-x {
+  width: 20px;
+  height: 20px;
+  background: var(--sunset);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ===== 响应式 ===== */
 @media (max-width: 480px) {
-  .quick-nav-btn {
-    font-size: 0.7rem;
-    padding: var(--space-xs) var(--space-sm);
-    min-height: 40px;
-  }
   .spot-photo-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-2xs);
   }
+
+  .timeline-compact-item {
+    flex-direction: column;
+    gap: var(--space-2xs);
+  }
+
+  .route-overview-flow {
+    gap: var(--space-2xs);
+  }
+
+  .spot-card {
+    padding: var(--space-sm);
+  }
+
+  .stay-section,
+  .food-section,
+  .ticket-section,
+  .booking-section,
+  .budget-section,
+  .pitfall-section {
+    padding: var(--space-sm);
+  }
+
+  .stay-card-main {
+    padding: var(--space-sm);
+  }
+
+  .stay-card-footer {
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  .food-card {
+    padding: var(--space-xs);
+    gap: var(--space-xs);
+  }
+
+  .food-card-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
 }
 
 @media (min-width: 480px) {
-  .stay-items {
+  .ticket-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 640px) {
+  .stay-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .food-list {
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -1540,8 +1877,26 @@ onMounted(() => {
   .guide-module-content,
   .guide-module-toggle,
   .expandable-arrow,
-  .expandable-content {
+  .expandable-content,
+  .spot-card,
+  .photo-item,
+  .timeline-compact-item,
+  .guide-module-title-large,
+  .guide-module-title-large::before,
+  .guide-module-title-large::after,
+  .stay-card,
+  .food-card {
+    animation: none;
     transition: none;
+    opacity: 1;
+    transform: none;
+    letter-spacing: 0.05em;
+  }
+  .guide-module.expanded .guide-module-content {
+    max-height: none;
+  }
+  .expandable-content.expanded {
+    max-height: none;
   }
 }
 </style>

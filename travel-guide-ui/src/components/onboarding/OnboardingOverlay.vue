@@ -17,7 +17,7 @@
           :style="spotlightStyle"
         >
           <Transition name="hint">
-            <div v-if="simpleHint" class="spotlight-simple-hint">
+            <div v-if="simpleHint" class="spotlight-simple-hint" :class="simpleHintPosition">
               {{ simpleHint }}
             </div>
           </Transition>
@@ -234,6 +234,7 @@ const emit = defineEmits([
   'clear-all',
   'open-settings',
   'close-settings',
+  'close-nav-panel',
   'go-to-map',
   'go-to-home',
   'set-theme',
@@ -249,6 +250,7 @@ const tooltipStyle = ref({})
 const isAnimatingAction = ref(false)
 const hideSpotlight = ref(false)
 const simpleHint = ref(null)
+const simpleHintPosition = ref('top')
 const demoHint = ref(null)
 
 const currentStepData = computed(() => {
@@ -269,10 +271,22 @@ const showSpotlightWithSimpleHint = (rect, hint) => {
     height: `${rect.height + 16}px`
   }
   simpleHint.value = hint
+
+  const hintHeight = 48
+  const safeMargin = 16
+  const spaceAbove = rect.top - 8
+  const spaceBelow = window.innerHeight - (rect.bottom + 8)
+
+  if (spaceAbove < hintHeight + safeMargin && spaceBelow >= hintHeight + safeMargin) {
+    simpleHintPosition.value = 'bottom'
+  } else {
+    simpleHintPosition.value = 'top'
+  }
 }
 
 const clearSimpleHint = () => {
   simpleHint.value = null
+  simpleHintPosition.value = 'top'
 }
 
 const isLastStep = computed(() => {
@@ -289,12 +303,15 @@ const scrollToElement = (element) => {
     scrollAnimationId = null
   }
 
+  const isSmallScreen = window.innerHeight < 700
+  const tooltipSpace = isSmallScreen ? 200 : 220
+  const offsetY = 20
+
   if (settingsPanel) {
     const panelRect = settingsPanel.getBoundingClientRect()
     const elementRect = element.getBoundingClientRect()
-    const offsetY = 120
 
-    if (elementRect.top < panelRect.top + offsetY) {
+    if (elementRect.top < panelRect.top + tooltipSpace) {
       settingsPanel.scrollBy({
         top: elementRect.top - panelRect.top - offsetY,
         behavior: 'smooth'
@@ -302,7 +319,7 @@ const scrollToElement = (element) => {
       return true
     } else if (elementRect.bottom > panelRect.bottom - offsetY) {
       settingsPanel.scrollBy({
-        top: elementRect.bottom - panelRect.bottom + offsetY,
+        top: elementRect.bottom - panelRect.bottom + tooltipSpace,
         behavior: 'smooth'
       })
       return true
@@ -312,10 +329,14 @@ const scrollToElement = (element) => {
 
   const rect = element.getBoundingClientRect()
   const viewportHeight = window.innerHeight
-  const offsetY = 150
 
-  if (rect.top < offsetY || rect.bottom > viewportHeight - offsetY) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  if (rect.top < tooltipSpace) {
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    return true
+  }
+
+  if (rect.bottom > viewportHeight - tooltipSpace) {
+    element.scrollIntoView({ behavior: 'smooth', block: 'end' })
     return true
   }
 
@@ -403,37 +424,51 @@ const updateSpotlight = async () => {
 }
 
 const updateTooltipPosition = (targetRect) => {
-  const tooltipWidth = 320
-  const tooltipHeight = 180
-  const gap = 16
   const viewportWidth = window.innerWidth
   const viewportHeight = window.innerHeight
+  const safeMargin = 16
+  const gap = 12
+
+  const isSmallScreen = viewportHeight < 700
+  const tooltipWidth = Math.min(320, viewportWidth - safeMargin * 2)
+  const tooltipHeight = isSmallScreen ? 180 : 200
 
   let placement = 'bottom'
   let left = targetRect.left + targetRect.width / 2 - tooltipWidth / 2
   let top = targetRect.bottom + gap
 
-  if (top + tooltipHeight > viewportHeight - 20) {
+  if (left < safeMargin) {
+    left = safeMargin
+  }
+  if (left + tooltipWidth > viewportWidth - safeMargin) {
+    left = viewportWidth - tooltipWidth - safeMargin
+  }
+
+  const spaceBelow = viewportHeight - targetRect.bottom - gap
+  const spaceAbove = targetRect.top - gap
+
+  if (spaceBelow < tooltipHeight + safeMargin && spaceAbove >= tooltipHeight + safeMargin) {
     placement = 'top'
     top = targetRect.top - tooltipHeight - gap
+  } else if (top + tooltipHeight > viewportHeight - safeMargin) {
+    placement = 'top'
+    top = targetRect.top - tooltipHeight - gap
+
+    if (top < safeMargin) {
+      placement = 'center'
+      top = Math.max(safeMargin, (viewportHeight - tooltipHeight) / 2)
+    }
   }
 
-  if (left < 20) {
-    left = 20
-  }
-  if (left + tooltipWidth > viewportWidth - 20) {
-    left = viewportWidth - tooltipWidth - 20
-  }
-
-  if (placement === 'left' || placement === 'right') {
-    left = placement === 'right' ? targetRect.right + gap : targetRect.left - tooltipWidth - gap
-    top = targetRect.top + targetRect.height / 2 - tooltipHeight / 2
+  if (placement === 'center') {
+    left = (viewportWidth - tooltipWidth) / 2
   }
 
   tooltipPosition.value = { placement }
   tooltipStyle.value = {
-    left: `${left}px`,
-    top: `${top}px`
+    left: `${Math.max(safeMargin, left)}px`,
+    top: `${Math.max(safeMargin, top)}px`,
+    maxWidth: `${tooltipWidth}px`
   }
 }
 
@@ -441,6 +476,26 @@ const handleNext = async () => {
   if (isAnimatingAction.value) return
 
   const step = currentStepData.value
+
+  if (step?.action === 'openGlobalNav') {
+    isAnimatingAction.value = true
+    const menuBtn = document.querySelector('.hero-menu-btn')
+    if (menuBtn) {
+      menuBtn.classList.add('onboarding-click-effect')
+      setTimeout(() => {
+        menuBtn.classList.remove('onboarding-click-effect')
+        menuBtn.click()
+        setTimeout(() => {
+          emit('next')
+          isAnimatingAction.value = false
+        }, 400)
+      }, 300)
+    } else {
+      emit('next')
+      isAnimatingAction.value = false
+    }
+    return
+  }
 
   if (step?.action === 'openSettings') {
     isAnimatingAction.value = true
@@ -477,11 +532,10 @@ const handleNext = async () => {
   }
 
   const autoDemoSteps = {
-    5: autoClickGlobalNav,
-    7: autoToggleTheme,
-    8: autoChangeFontSize,
-    9: autoExpandHiddenContent,
-    12: autoSearchPlace
+    8: autoToggleTheme,
+    9: autoChangeFontSize,
+    10: autoExpandHiddenContent,
+    13: autoSearchPlace
   }
 
   const demoFn = autoDemoSteps[props.currentStep]
@@ -529,47 +583,6 @@ const animateTyping = (inputElement, text, callback, speed = 80) => {
   }
 
   typeChar()
-}
-
-const autoClickGlobalNav = async () => {
-  isAnimatingAction.value = true
-
-  const menuBtn = document.querySelector('.hero-menu-btn')
-  if (!menuBtn) {
-    emit('next')
-    isAnimatingAction.value = false
-    return
-  }
-
-  menuBtn.classList.add('onboarding-click-effect')
-  await new Promise(resolve => setTimeout(resolve, 300))
-  menuBtn.classList.remove('onboarding-click-effect')
-
-  menuBtn.click()
-
-  await new Promise(resolve => setTimeout(resolve, 400))
-
-  const jumpPanel = document.querySelector('.jump-panel')
-  if (jumpPanel) {
-    spotlightStyle.value = {
-      left: `${jumpPanel.getBoundingClientRect().left - 12}px`,
-      top: `${jumpPanel.getBoundingClientRect().top - 12}px`,
-      width: `${jumpPanel.offsetWidth + 24}px`,
-      height: `${jumpPanel.offsetHeight + 24}px`
-    }
-
-    await new Promise(resolve => setTimeout(resolve, 2000))
-  }
-
-  const closeBtn = document.querySelector('.jump-panel-close')
-  if (closeBtn) {
-    closeBtn.click()
-  }
-
-  await new Promise(resolve => setTimeout(resolve, 300))
-
-  emit('next')
-  isAnimatingAction.value = false
 }
 
 const autoToggleTheme = async () => {
@@ -665,12 +678,21 @@ const autoChangeFontSize = async () => {
 
   const venueSection = document.querySelector('#kunming-guide-area-venue')
   if (venueSection) {
-    venueSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    await new Promise(resolve => setTimeout(resolve, 600))
+    if (!venueSection.classList.contains('expanded')) {
+      const header = venueSection.querySelector('.guide-module-header')
+      if (header) {
+        header.click()
+        await new Promise(resolve => setTimeout(resolve, 400))
+      }
+    }
+
+    const contentArea = venueSection.querySelector('.guide-module-content') || venueSection
+    contentArea.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    await new Promise(resolve => setTimeout(resolve, 800))
 
     demoHint.value = null
 
-    const rect = venueSection.getBoundingClientRect()
+    const rect = contentArea.getBoundingClientRect()
     showSpotlightWithSimpleHint(rect, '中号字体')
     await new Promise(resolve => setTimeout(resolve, 2000))
   }
@@ -691,7 +713,8 @@ const autoChangeFontSize = async () => {
   await new Promise(resolve => setTimeout(resolve, 400))
 
   if (venueSection) {
-    const rect = venueSection.getBoundingClientRect()
+    const contentArea = venueSection.querySelector('.guide-module-content') || venueSection
+    const rect = contentArea.getBoundingClientRect()
     showSpotlightWithSimpleHint(rect, '大号字体')
     await new Promise(resolve => setTimeout(resolve, 2000))
   }
@@ -745,10 +768,19 @@ const autoExpandHiddenContent = async () => {
 
     const venueSection = document.querySelector('#kunming-guide-area-venue')
     if (venueSection) {
-      venueSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      await new Promise(resolve => setTimeout(resolve, 600))
+      if (!venueSection.classList.contains('expanded')) {
+        const header = venueSection.querySelector('.guide-module-header')
+        if (header) {
+          header.click()
+          await new Promise(resolve => setTimeout(resolve, 400))
+        }
+      }
 
-      const rect = venueSection.getBoundingClientRect()
+      const contentArea = venueSection.querySelector('.guide-module-content') || venueSection
+      contentArea.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      await new Promise(resolve => setTimeout(resolve, 800))
+
+      const rect = contentArea.getBoundingClientRect()
       spotlightStyle.value = {
         left: `${rect.left - 8}px`,
         top: `${rect.top - 8}px`,
@@ -897,15 +929,27 @@ const handleStepChange = (newStep, oldStep) => {
 
   hideSpotlight.value = false
   simpleHint.value = null
+  simpleHintPosition.value = 'top'
 
-  const SETTINGS_STEPS = [7, 8, 9, 10]
-  const MAP_STEPS = [11, 12, 13, 14]
+  const HOME_STEPS = [2, 3, 4]
+  const SETTINGS_STEPS = [8, 9, 10, 11]
+  const MAP_STEPS = [12, 13, 14, 15]
+  const NAV_PANEL_STEP = 6
 
+  const isInHome = HOME_STEPS.includes(newStep)
   const wasInSettings = SETTINGS_STEPS.includes(oldStep)
   const isInSettings = SETTINGS_STEPS.includes(newStep)
 
   const wasInMap = MAP_STEPS.includes(oldStep)
   const isInMap = MAP_STEPS.includes(newStep)
+
+  if (isInHome && props.settingsVisible) {
+    emit('close-settings')
+  }
+
+  if (oldStep === NAV_PANEL_STEP) {
+    emit('close-nav-panel')
+  }
 
   if (isInSettings && !props.settingsVisible) {
     emit('open-settings')
@@ -923,13 +967,21 @@ const handleStepChange = (newStep, oldStep) => {
 watch(() => props.currentStep, (newStep, oldStep) => {
   handleStepChange(newStep, oldStep)
 
-  const SETTINGS_STEPS = [7, 8, 9, 10]
-  const MAP_STEPS = [11, 12, 13, 14]
+  const NAV_PANEL_STEP = 6
+  const SETTINGS_STEPS = [8, 9, 10, 11]
+  const MAP_STEPS = [12, 13, 14, 15]
 
+  const isNavPanel = newStep === NAV_PANEL_STEP
   const isInSettings = SETTINGS_STEPS.includes(newStep)
   const isInMap = MAP_STEPS.includes(newStep)
 
-  if (isInSettings) {
+  if (isNavPanel) {
+    setTimeout(() => {
+      nextTick(() => {
+        updateSpotlight()
+      })
+    }, 500)
+  } else if (isInSettings) {
     setTimeout(() => {
       nextTick(() => {
         updateSpotlight()
@@ -958,6 +1010,7 @@ watch(() => props.isActive, (active) => {
     isAnimatingAction.value = false
     hideSpotlight.value = false
     simpleHint.value = null
+    simpleHintPosition.value = 'top'
     demoHint.value = null
     return
   }
@@ -965,6 +1018,7 @@ watch(() => props.isActive, (active) => {
   isAnimatingAction.value = false
   hideSpotlight.value = false
   simpleHint.value = null
+  simpleHintPosition.value = 'top'
   demoHint.value = null
   nextTick(() => {
     setTimeout(() => {
@@ -1020,7 +1074,7 @@ onUnmounted(() => {
 }
 
 .highlight-spotlight {
-  position: absolute;
+  position: fixed;
   background: transparent;
   border-radius: 16px;
   box-shadow:
@@ -1059,7 +1113,6 @@ onUnmounted(() => {
 
 .spotlight-simple-hint {
   position: absolute;
-  top: -48px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(34, 139, 34, 0.95);
@@ -1073,6 +1126,14 @@ onUnmounted(() => {
   z-index: 3;
 }
 
+.spotlight-simple-hint.top {
+  top: -48px;
+}
+
+.spotlight-simple-hint.bottom {
+  bottom: -48px;
+}
+
 .hint-enter-active,
 .hint-leave-active {
   transition: opacity 0.3s var(--ease-out-quart), transform 0.3s var(--ease-out-quart);
@@ -1081,7 +1142,16 @@ onUnmounted(() => {
 .hint-enter-from,
 .hint-leave-to {
   opacity: 0;
+}
+
+.spotlight-simple-hint.top.hint-enter-from,
+.spotlight-simple-hint.top.hint-leave-to {
   transform: translateX(-50%) translateY(10px);
+}
+
+.spotlight-simple-hint.bottom.hint-enter-from,
+.spotlight-simple-hint.bottom.hint-leave-to {
+  transform: translateX(-50%) translateY(-10px);
 }
 
 .demo-hint-toast {
@@ -1130,7 +1200,7 @@ onUnmounted(() => {
 }
 
 .onboarding-tooltip {
-  position: absolute;
+  position: fixed;
   width: 320px;
   max-width: calc(100vw - 40px);
   background: var(--card);
@@ -1726,12 +1796,33 @@ onUnmounted(() => {
 }
 
 @media (max-width: 480px) {
+  .highlight-spotlight {
+    border-radius: 12px;
+  }
+
+  .spotlight-simple-hint {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+
+  .spotlight-simple-hint.top {
+    top: -44px;
+  }
+
+  .spotlight-simple-hint.bottom {
+    bottom: -44px;
+  }
+
   .onboarding-tooltip {
     width: calc(100vw - 32px);
     max-width: calc(100vw - 32px);
+    padding: 14px;
+  }
+
+  .onboarding-tooltip.center {
+    top: 50% !important;
     left: 16px !important;
-    right: 16px !important;
-    padding: 16px;
+    transform: translateY(-50%);
   }
 
   .onboarding-modal {
@@ -1749,11 +1840,69 @@ onUnmounted(() => {
 
   .tooltip-content {
     font-size: 0.8rem;
+    margin-bottom: 12px;
+  }
+
+  .tooltip-hint {
+    margin-top: 10px;
+    padding: 4px 10px;
   }
 
   .tooltip-btn {
     padding: 6px 12px;
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 375px), (max-height: 667px) {
+  .spotlight-simple-hint {
+    font-size: 0.8rem;
+    padding: 6px 14px;
+  }
+
+  .spotlight-simple-hint.top {
+    top: -40px;
+  }
+
+  .spotlight-simple-hint.bottom {
+    bottom: -40px;
+  }
+
+  .onboarding-tooltip {
+    padding: 12px;
+  }
+
+  .tooltip-header {
+    margin-bottom: 6px;
+  }
+
+  .tooltip-title {
+    font-size: 0.9rem;
+  }
+
+  .tooltip-content {
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  .tooltip-hint {
+    margin-top: 8px;
+    padding: 3px 8px;
+    font-size: 0.65rem;
+  }
+
+  .tooltip-actions {
+    gap: 8px;
+  }
+
+  .tooltip-btn {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+
+  .tooltip-progress {
+    margin-top: 10px;
   }
 }
 

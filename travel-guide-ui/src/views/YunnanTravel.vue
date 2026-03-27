@@ -8,15 +8,16 @@
         <p class="hero-subtitle">斗南花市 · 大理洱海</p>
       </div>
       <div class="hero-actions">
-        <button class="hero-search-btn" @click="showSearchPanel = true" aria-label="搜索">
+        <!-- <button class="hero-search-btn" @click="showSearchPanel = true" aria-label="搜索">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"/>
             <path d="M21 21l-4.35-4.35"/>
           </svg>
-        </button>
-        <button class="hero-menu-btn" @click="showJumpPanel = true" aria-label="导航菜单">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 6h16M4 12h16M4 18h16"/>
+        </button> -->
+        <button class="hero-menu-btn" :class="{ spinning: menuBtnSpinning }" @click="handleMenuClick" aria-label="导航菜单">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88" fill="currentColor" stroke="none"/>
           </svg>
         </button>
       </div>
@@ -113,7 +114,14 @@
       <p class="footer-text">愿你的云南之旅，一路花开</p>
     </footer>
 
-    <button class="settings-toggle" :class="{ open: settingsVisible }" @click="settingsVisible = !settingsVisible" aria-label="设置">
+    <button class="back-to-top" :class="{ visible: showBackToTop }" @click="scrollToTop" aria-label="回到顶部">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 19V5"/>
+        <path d="M5 12l7-7 7 7"/>
+      </svg>
+    </button>
+
+    <button class="settings-toggle" :class="{ open: settingsVisible, spinning: settingsBtnSpinning }" @click="handleSettingsClick" aria-label="设置">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="3"/>
         <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
@@ -296,7 +304,7 @@
           <div v-if="showMusicPlaylist" class="music-drawer-panel">
             <div class="music-drawer-content">
               <div class="music-current-song" v-if="currentSong">
-                <div class="music-disc-small" :class="{ 'is-playing': isMusicPlaying }" @click="currentSong?.cover && openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)">
+                <div class="music-disc-small" :class="{ 'is-playing': isMusicPlaying, 'is-pausing': isMusicPausing }" @click="currentSong?.cover && openLightbox(`/images/music-covers/${currentSong.cover}`, currentSong.name)">
                   <img
                     v-if="currentSong?.cover"
                     :src="`/images/music-covers/${currentSong.cover}`"
@@ -488,6 +496,7 @@
       @clear-all="clearAllTabs"
       @open-settings="handleOpenSettings"
       @close-settings="handleCloseSettings"
+      @close-nav-panel="handleCloseNavPanel"
       @go-to-map="handleGoToMap"
       @go-to-home="handleGoToHome"
       @set-theme="handleOnboardingSetTheme"
@@ -647,6 +656,43 @@ const handleGlobalJump = (slideIndex) => {
   goToSlide(slideIndex, direction)
 }
 
+const handleMenuClick = () => {
+  if (showJumpPanel.value) {
+    showJumpPanel.value = false
+    return
+  }
+  menuBtnSpinning.value = true
+  setTimeout(() => {
+    showJumpPanel.value = true
+    menuBtnSpinning.value = false
+  }, 400)
+}
+
+const handleSettingsClick = () => {
+  if (settingsVisible.value) {
+    settingsVisible.value = false
+    return
+  }
+  settingsBtnSpinning.value = true
+  setTimeout(() => {
+    settingsVisible.value = true
+    settingsBtnSpinning.value = false
+  }, 400)
+}
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}
+
+const checkScrollPosition = () => {
+  const scrollY = window.scrollY
+  const threshold = 300
+  showBackToTop.value = scrollY > threshold
+}
+
 const appContainer = ref(null)
 const slidesContainer = ref(null)
 const bgMusic = ref(null)
@@ -655,13 +701,16 @@ const slideRefs = ref([])
 const currentIndex = ref(0)
 const isDark = ref(false)
 const showJumpPanel = ref(false)
-const showSearchPanel = ref(false)
+const menuBtnSpinning = ref(false)
+// const showSearchPanel = ref(false)
 const themeMode = ref('auto')
 const fontSize = ref('medium')
 const fontWeight = ref('normal')
 const hiddenCards = ref(new Set())
 const settingsVisible = ref(false)
+const settingsBtnSpinning = ref(false)
 const hiddenModalVisible = ref(false)
+const showBackToTop = ref(false)
 
 const currentSlideHeight = ref(0)
 const slideHeights = ref([0, 0, 0, 0, 0, 0])
@@ -855,6 +904,7 @@ const visibleDestinationTabs = computed(() => {
 })
 
 const isMusicPlaying = ref(false)
+const isMusicPausing = ref(false)
 const showMusicPlaylist = ref(false)
 const currentTime = ref(0)
 const duration = ref(0)
@@ -905,7 +955,11 @@ const togglePlay = () => {
 
   if (isMusicPlaying.value) {
     bgMusic.value.pause()
+    isMusicPausing.value = true
     isMusicPlaying.value = false
+    setTimeout(() => {
+      isMusicPausing.value = false
+    }, 800)
   } else {
     bgMusic.value.play().then(() => {
       isMusicPlaying.value = true
@@ -1150,17 +1204,34 @@ const goToSlide = (index, direction = null) => {
 
 const handleNavigate = (payload) => {
   const index = typeof payload === 'object' ? payload.index : payload
-  const scrollTo = typeof payload === 'object' ? payload.scrollTo : null
+  const expandModule = typeof payload === 'object' ? payload.expandModule : null
 
   goToSlide(index, index > currentIndex.value ? 'right' : 'left')
 
-  if (scrollTo) {
+  if (expandModule) {
     setTimeout(() => {
-      const element = document.querySelector(`[data-card-id="${scrollTo}"]`)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      const moduleElement = document.getElementById(`dali-guide-area-${expandModule}`)
+      if (moduleElement) {
+        const headerElement = moduleElement.querySelector('.guide-module-header')
+        if (headerElement && !moduleElement.classList.contains('expanded')) {
+          headerElement.click()
+        }
+        setTimeout(() => {
+          const quickNavBar = document.querySelector('.quick-nav-bar')
+          const navHeight = quickNavBar ? quickNavBar.offsetHeight : 0
+          const elementRect = moduleElement.getBoundingClientRect()
+          const viewportHeight = window.innerHeight
+          const targetHeight = Math.min(elementRect.height, viewportHeight * 0.7)
+          const offset = (viewportHeight - targetHeight) / 2 - navHeight
+          const scrollTarget = window.pageYOffset + elementRect.top - offset
+
+          window.scrollTo({
+            top: Math.max(0, scrollTarget),
+            behavior: 'smooth'
+          })
+        }, 350)
       }
-    }, 100)
+    }, 300)
   }
 }
 
@@ -1444,6 +1515,10 @@ const handleCloseSettings = () => {
   settingsVisible.value = false
 }
 
+const handleCloseNavPanel = () => {
+  showJumpPanel.value = false
+}
+
 const handleGoToMap = () => {
   goToSlide(5, 'right')
 }
@@ -1510,6 +1585,7 @@ onMounted(() => {
   }
 
   document.addEventListener('keydown', handleKeydown)
+  window.addEventListener('scroll', checkScrollPosition, { passive: true })
 
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual'
@@ -1533,6 +1609,7 @@ onUnmounted(() => {
     slidesContainer.value.removeEventListener('scroll', handleScroll)
   }
   document.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('scroll', checkScrollPosition)
 
   if (resizeObserverCleanup) {
     resizeObserverCleanup()
@@ -1655,38 +1732,54 @@ const handleLightboxKeydown = (e) => {
   gap: var(--space-xs);
 }
 
-.hero-search-btn,
 .hero-menu-btn {
-  width: 40px;
-  height: 40px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--forest) 0%, var(--sky) 100%);
+  border: none;
+  border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
-  transition: all var(--duration-fast) var(--ease-out-quart);
-}
-
-.hero-search-btn:hover,
-.hero-menu-btn:hover {
-  background: var(--forest);
-  border-color: var(--forest);
   color: white;
-  transform: scale(1.05);
+  transition: all var(--duration-normal) var(--ease-out-quart);
+  box-shadow: 0 4px 16px rgba(26, 93, 26, 0.25);
+  position: relative;
+  overflow: hidden;
 }
 
-.hero-search-btn:active,
+.hero-menu-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+  border-radius: 50%;
+}
+
+.hero-menu-btn:hover {
+  transform: scale(1.08) rotate(5deg);
+  box-shadow: 0 6px 24px rgba(26, 93, 26, 0.35);
+}
+
 .hero-menu-btn:active {
   transform: scale(0.95);
 }
 
-.hero-search-btn svg,
 .hero-menu-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-menu-btn.spinning svg {
+  animation: compassSpin 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes compassSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .jump-section-tag {
@@ -1761,13 +1854,6 @@ const handleLightboxKeydown = (e) => {
   background: var(--forest);
   color: white;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  animation: tabActivate 0.35s var(--ease-out-quart);
-}
-
-@keyframes tabActivate {
-  0% { transform: scale(0.92); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
 }
 
 .slides-container {
@@ -1792,18 +1878,21 @@ const handleLightboxKeydown = (e) => {
   height: auto;
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  transition: opacity 0.3s var(--ease-out-quart);
+  opacity: 0;
+  transform: scale(0.98);
+  transition: opacity 0.35s var(--ease-out-quart),
+              transform 0.35s var(--ease-out-quart);
 }
 
 .slide.active {
   opacity: 1;
+  transform: scale(1);
   height: auto;
   min-height: auto;
   overflow: visible;
 }
 
 .slide:not(.active) {
-  opacity: 0;
   pointer-events: none;
   height: 0;
   min-height: 0;
@@ -1847,6 +1936,61 @@ const handleLightboxKeydown = (e) => {
   letter-spacing: 0.1em;
 }
 
+.back-to-top {
+  position: fixed;
+  bottom: 80px;
+  right: var(--space-md);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sky) 0%, var(--forest) 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(26, 93, 26, 0.2);
+  z-index: 90;
+  outline: none;
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease-out-quart),
+              transform 0.35s var(--ease-out-quart),
+              box-shadow 0.25s var(--ease-out-quart);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.back-to-top:hover {
+  transform: translateY(0) scale(1.08);
+  box-shadow: 0 6px 24px rgba(26, 93, 26, 0.3);
+}
+
+.back-to-top:active {
+  transform: translateY(0) scale(0.95);
+  transition-duration: 0.1s;
+}
+
+.back-to-top svg {
+  width: 22px;
+  height: 22px;
+}
+
+.back-to-top.visible svg {
+  animation: arrowBounce 2s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
 .settings-toggle {
   position: fixed;
   bottom: 24px;
@@ -1865,7 +2009,8 @@ const handleLightboxKeydown = (e) => {
   z-index: 90;
   outline: none;
   transition: transform var(--duration-normal) var(--ease-out-quart),
-              box-shadow var(--duration-normal) var(--ease-out-quart);
+              box-shadow var(--duration-normal) var(--ease-out-quart),
+              background var(--duration-normal) var(--ease-out-quart);
 }
 
 .settings-toggle:hover {
@@ -1881,11 +2026,19 @@ const handleLightboxKeydown = (e) => {
 .settings-toggle svg {
   width: 20px;
   height: 20px;
-  transition: transform var(--duration-normal) var(--ease-out-quart);
 }
 
-.settings-toggle.open svg {
-  transform: rotate(45deg);
+.settings-toggle.spinning svg {
+  animation: gearSpin 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes gearSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.settings-toggle.open {
+  background: var(--sunset);
 }
 
 .settings-overlay {
@@ -1914,7 +2067,7 @@ const handleLightboxKeydown = (e) => {
   width: min(320px, 85vw);
   background: var(--card);
   transform: translateX(100%);
-  transition: transform 0.4s var(--ease-out-quint);
+  transition: transform 0.4s var(--ease-out-quart);
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -1937,6 +2090,16 @@ const handleLightboxKeydown = (e) => {
   top: 0;
   background: var(--card);
   z-index: 1;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.3s var(--ease-out-quart),
+              transform 0.3s var(--ease-out-quart);
+}
+
+.settings-panel.active .settings-header {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.15s;
 }
 
 .settings-title {
@@ -1955,12 +2118,16 @@ const handleLightboxKeydown = (e) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s var(--ease-out-quart);
 }
 
 .settings-close:hover {
   background: var(--sunset-soft);
-  transform: rotate(90deg);
+  transform: scale(1.05);
+}
+
+.settings-close:active {
+  transform: scale(0.95);
 }
 
 .settings-close svg {
@@ -1972,6 +2139,51 @@ const handleLightboxKeydown = (e) => {
 .settings-section {
   padding: var(--space-md);
   border-bottom: 1px solid var(--border);
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.35s var(--ease-out-quart),
+              transform 0.35s var(--ease-out-quart);
+}
+
+.settings-panel.active .settings-section:nth-child(1) {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.1s;
+}
+.settings-panel.active .settings-section:nth-child(2) {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.15s;
+}
+.settings-panel.active .settings-section:nth-child(3) {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.2s;
+}
+.settings-panel.active .settings-section:nth-child(4) {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.25s;
+}
+.settings-panel.active .settings-section:nth-child(5) {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.3s;
+}
+.settings-panel.active .settings-section:nth-child(6) {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.35s;
+}
+.settings-panel.active .settings-section:nth-child(7) {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.4s;
+}
+.settings-panel.active .settings-section:nth-child(8) {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.45s;
 }
 
 .settings-section:last-child {
@@ -2421,9 +2633,24 @@ const handleLightboxKeydown = (e) => {
   cursor: pointer;
 }
 
+.music-disc-small.is-pausing {
+  animation: discSpinSlowDown 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  cursor: pointer;
+}
+
 @keyframes discSpin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+@keyframes discSpinSlowDown {
+  0% {
+    transform: rotate(0deg);
+    animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
 }
 
 .music-disc-small:hover {
@@ -2925,17 +3152,17 @@ const handleLightboxKeydown = (e) => {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 8px;
   z-index: 99;
-  padding: 0.5rem;
 }
 
 .slide-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--border);
-  transition: all 0.25s var(--ease-out-quart);
+  transition: all 0.3s var(--ease-out-quart);
   cursor: pointer;
   position: relative;
 }
@@ -2946,26 +3173,53 @@ const handleLightboxKeydown = (e) => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 44px;
-  height: 44px;
+  width: 32px;
+  height: 32px;
 }
 
 .slide-dot:hover {
   background: var(--text-muted);
-  transform: scale(1.25);
+  transform: scale(1.2);
 }
 
 .slide-dot.active {
-  background: var(--forest);
-  width: 24px;
-  border-radius: 4px;
-  animation: dotActivate 0.4s var(--ease-out-quart);
+  width: 20px;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg,
+    var(--forest) 0%,
+    #38a169 25%,
+    #4ade80 50%,
+    #38a169 75%,
+    var(--forest) 100%);
+  background-size: 200% 100%;
+  animation: dotExpand 0.35s var(--ease-out-quart),
+             gradientFlow 2.5s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.25);
 }
 
-@keyframes dotActivate {
-  0% { transform: scale(0.8); }
-  40% { transform: scale(1.15); }
-  100% { transform: scale(1); }
+@keyframes dotExpand {
+  0% {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-size: 100% 100%;
+  }
+  100% {
+    width: 20px;
+    height: 6px;
+    border-radius: 3px;
+    background-size: 200% 100%;
+  }
+}
+
+@keyframes gradientFlow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 @media (min-width: 768px) {
@@ -3109,6 +3363,16 @@ const handleLightboxKeydown = (e) => {
 }
 
 @media (max-width: 480px) {
+  .back-to-top {
+    width: 44px;
+    height: 44px;
+    bottom: 80px;
+    right: var(--space-sm);
+  }
+  .back-to-top svg {
+    width: 20px;
+    height: 20px;
+  }
   .settings-toggle {
     width: 44px;
     height: 44px;

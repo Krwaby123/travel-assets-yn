@@ -39,11 +39,20 @@ export const onboardingSteps = [
     skipIfMissing: true
   },
   {
-    id: 'global-nav',
+    id: 'global-nav-button',
     type: 'highlight',
-    title: '全局导航',
-    content: '点击右上角菜单按钮，可以快速跳转到任意目的地。',
-    target: '.hero-menu-btn'
+    title: '全局导航按钮',
+    content: '点击这里可以打开全局导航面板，快速跳转到任意目的地。',
+    target: '.hero-menu-btn',
+    action: 'openGlobalNav'
+  },
+  {
+    id: 'global-nav-panel',
+    type: 'highlight',
+    title: '全部地点',
+    content: '这里列出所有可跳转的目的地：首页、斗南、大理、丽江、香格里拉和地图导航。',
+    target: '.jump-panel',
+    skipIfMissing: true
   },
   {
     id: 'settings-intro',

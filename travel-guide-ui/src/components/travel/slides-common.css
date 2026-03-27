@@ -773,32 +773,54 @@
 /* 快捷跳转按钮 */
 .nav-jump-btn {
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  background: var(--forest);
-  border: none;
-  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  background: var(--earth-light);
+  border: 2px solid var(--border);
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  transition: all var(--duration-fast) var(--ease-out-quart);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  color: var(--forest);
+  transition: all 0.25s var(--ease-out-quart);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-jump-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--forest) 0%, var(--sky) 100%);
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-out-quart);
 }
 
 .nav-jump-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  border-color: var(--forest);
+  box-shadow: 0 4px 16px rgba(26, 93, 26, 0.2);
+}
+
+.nav-jump-btn:hover::before {
+  opacity: 1;
+}
+
+.nav-jump-btn:hover {
+  color: white;
 }
 
 .nav-jump-btn:active {
   transform: scale(0.95);
+  transition-duration: 0.1s;
 }
 
 .nav-jump-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 /* ===== 跳转面板通用样式 ===== */
@@ -824,6 +846,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.2);
+  transform-origin: bottom center;
 }
 
 .jump-panel-header {
@@ -833,6 +856,16 @@
   padding: var(--space-md) var(--space-lg);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: panelHeaderIn 0.3s var(--ease-out-quart) 0.15s forwards;
+}
+
+@keyframes panelHeaderIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .jump-panel-title {
@@ -853,12 +886,17 @@
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
-  transition: all var(--duration-fast) var(--ease-out-quart);
+  transition: all 0.2s var(--ease-out-quart);
 }
 
 .jump-panel-close:hover {
   background: var(--sunset);
   color: white;
+  transform: scale(1.05);
+}
+
+.jump-panel-close:active {
+  transform: scale(0.95);
 }
 
 .jump-panel-close svg {
@@ -874,6 +912,24 @@
 
 .jump-section {
   margin-bottom: var(--space-xs);
+  opacity: 0;
+  transform: translateY(12px);
+  animation: jumpSectionIn 0.35s var(--ease-out-quart) forwards;
+}
+
+.jump-section:nth-child(1) { animation-delay: 0.1s; }
+.jump-section:nth-child(2) { animation-delay: 0.15s; }
+.jump-section:nth-child(3) { animation-delay: 0.2s; }
+.jump-section:nth-child(4) { animation-delay: 0.25s; }
+.jump-section:nth-child(5) { animation-delay: 0.3s; }
+.jump-section:nth-child(6) { animation-delay: 0.35s; }
+.jump-section:nth-child(7) { animation-delay: 0.4s; }
+
+@keyframes jumpSectionIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .jump-section:last-child {
@@ -1000,31 +1056,52 @@
 }
 
 .module-jump-btn {
-  width: 32px;
-  height: 32px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  background: var(--earth-light);
+  border: 2px solid var(--border);
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
-  transition: all var(--duration-fast) var(--ease-out-quart);
+  color: var(--forest);
+  transition: all 0.25s var(--ease-out-quart);
+  position: relative;
+  overflow: hidden;
+}
+
+.module-jump-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--forest) 0%, var(--sky) 100%);
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-out-quart);
 }
 
 .module-jump-btn:hover {
-  background: var(--forest);
-  border-color: var(--forest);
-  color: white;
   transform: scale(1.05);
+  border-color: var(--forest);
+  box-shadow: 0 4px 16px rgba(26, 93, 26, 0.2);
+}
+
+.module-jump-btn:hover::before {
+  opacity: 1;
+}
+
+.module-jump-btn:hover {
+  color: white;
 }
 
 .module-jump-btn:active {
   transform: scale(0.95);
+  transition-duration: 0.1s;
 }
 
 .module-jump-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  z-index: 1;
 }

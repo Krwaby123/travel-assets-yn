@@ -22,7 +22,7 @@ const fireConfetti = () => {
       angle: 60,
       spread: 55,
       origin: { x: 0, y: 0.6 },
-      colors: colors,
+      colors,
       shapes: ['circle', 'circle', 'square']
     })
     confetti({
@@ -30,7 +30,7 @@ const fireConfetti = () => {
       angle: 120,
       spread: 55,
       origin: { x: 1, y: 0.6 },
-      colors: colors,
+      colors,
       shapes: ['circle', 'circle', 'square']
     })
 

@@ -1,6 +1,5 @@
 <template>
   <section class="section shangri-section">
-    <!-- 快速导航栏 -->
     <nav class="quick-nav-bar" ref="quickNavBar">
       <div class="quick-nav-track">
         <button
@@ -13,13 +12,15 @@
         </button>
       </div>
       <button class="nav-jump-btn" @click="showJumpPanel = true" aria-label="快速跳转">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 6h16M4 12h16M4 18h16"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
         </svg>
       </button>
     </nav>
 
-    <!-- 跳转面板 -->
     <Teleport to="body">
       <Transition name="jump-panel">
         <div v-if="showJumpPanel" class="jump-panel-overlay" @click.self="showJumpPanel = false">
@@ -52,7 +53,6 @@
       </Transition>
     </Teleport>
 
-    <!-- 区域1：香格里拉总览区（默认展开，不折叠） -->
     <div id="shangri-la-guide-area-overview" class="guide-module guide-module-expanded" ref="module-overview">
       <div class="guide-module-header guide-module-header-static">
         <div class="section-number">{{ data.number }}</div>
@@ -69,6 +69,43 @@
           </div>
         </div>
 
+        <div class="plateau-preview">
+          <div class="plateau-preview-header">
+            <div class="plateau-icon-wrap">
+              <svg class="plateau-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <div class="plateau-title-group">
+              <span class="plateau-title">高原藏地</span>
+              <span class="plateau-subtitle">海拔3300m+ 循序渐进</span>
+            </div>
+            <span class="plateau-badge">注意高反</span>
+          </div>
+          <div class="plateau-highlights">
+            <div class="plateau-highlight">
+              <span class="highlight-icon">🏛️</span>
+              <div class="highlight-content">
+                <span class="highlight-name">松赞林寺</span>
+                <span class="highlight-tag">小布达拉宫</span>
+              </div>
+            </div>
+            <div class="plateau-highlight">
+              <span class="highlight-icon">🎡</span>
+              <div class="highlight-content">
+                <span class="highlight-name">独克宗古城</span>
+                <span class="highlight-tag">世界最大转经筒</span>
+              </div>
+            </div>
+          </div>
+          <div class="plateau-warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <span>刚到别剧烈运动，当天别洗澡，氧气瓶市区药店买</span>
+          </div>
+        </div>
+
         <figure class="section-cover">
           <img :src="data.coverImage.src" :alt="data.coverImage.caption" loading="lazy" referrerpolicy="no-referrer" @click="$emit('open-lightbox', data.coverImage.src, data.coverImage.caption)">
           <figcaption class="section-cover-caption">{{ data.coverImage.caption }}</figcaption>
@@ -76,14 +113,19 @@
       </div>
     </div>
 
-    <!-- 区域2：核心景点详解区 -->
     <div id="shangri-la-guide-area-scenic" class="guide-module" :class="{ expanded: expandedModules.scenic }" ref="module-scenic">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.scenic" @click="toggleModule('scenic')" @keydown.enter="toggleModule('scenic')" @keydown.space.prevent="toggleModule('scenic')">
-        <h3 class="guide-module-title">核心景点详解</h3>
+        <div class="module-header-left">
+          <span class="module-header-icon">🏔️</span>
+          <h3 class="guide-module-title">核心景点详解</h3>
+        </div>
         <div class="module-header-actions">
           <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
             </svg>
           </button>
           <span class="guide-module-toggle" :class="{ expanded: expandedModules.scenic }">
@@ -95,245 +137,247 @@
       </div>
       <div class="guide-module-content">
         <div class="guide-module-content-inner">
-          <InfoCard
-            card-id="shangri-venue"
-            card-name="香格里拉景点"
-            :hidden-cards="hiddenCards"
-            :closable="false"
-            @hide="(id, name) => $emit('hide-card', id, name)"
-          >
-            <div class="venue-section">
-              <div
-                class="venue-item"
-                v-for="venue in data.venues"
-                :key="venue.name"
-                :class="['venue-item-' + venue.name.replace(/\s+/g, '-').replace(/[·]/g, '-')]"
-              >
-                <div class="venue-header">
-                  <div class="venue-name">
-                    {{ venue.name }}
-                    <span class="venue-tag" :class="{ optional: venue.optional }">{{ venue.tag }}</span>
-                  </div>
-                  <div class="venue-actions">
-                    <button class="venue-map-btn" @click="$emit('open-map', venue.name)" :aria-label="'在地图上查看' + venue.name">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                      </svg>
-                    </button>
-                    <span class="venue-time" v-if="venue.openTime">{{ venue.openTime }}</span>
-                    <span class="venue-booking" v-if="venue.booking">{{ venue.booking }}</span>
-                  </div>
-                </div>
-                <div class="venue-desc">{{ venue.desc }}</div>
-              </div>
+          <div class="key-info-box">
+            <div class="key-info-header">
+              <span class="key-info-icon">📌</span>
+              <span class="key-info-title">核心要点</span>
             </div>
-          </InfoCard>
-        </div>
-      </div>
-    </div>
-
-    <!-- 区域3：门票预约指南区 -->
-    <div id="shangri-la-guide-area-ticket" class="guide-module" :class="{ expanded: expandedModules.ticket }" ref="module-ticket">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.ticket" @click="toggleModule('ticket')" @keydown.enter="toggleModule('ticket')" @keydown.space.prevent="toggleModule('ticket')">
-        <h3 class="guide-module-title">门票预约指南</h3>
-        <div class="module-header-actions">
-          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-          <span class="guide-module-toggle" :class="{ expanded: expandedModules.ticket }">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 9l-7 7-7-7"/>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="guide-module-content">
-        <div class="guide-module-content-inner">
-          <InfoCard
-            card-id="shangri-booking"
-            card-name="香格里拉预约信息"
-            :hidden-cards="hiddenCards"
-            :closable="false"
-            @hide="(id, name) => $emit('hide-card', id, name)"
-          >
-            <div class="booking-section">
-              <div class="booking-title"><span class="emoji" aria-hidden="true">📅</span> 预约信息</div>
-              <div class="booking-list">
-                <div class="booking-item" v-for="item in data.bookingInfo" :key="item.spot">
-                  <div class="booking-spot">{{ item.spot }}</div>
-                  <div class="booking-note">{{ item.note }}</div>
-                  <div class="booking-channel" v-if="item.channel">预约渠道：{{ item.channel }}</div>
-                </div>
+            <div class="key-info-list">
+              <div class="key-info-item">
+                <span class="key-info-arrow">→</span>
+                <span><strong>必玩：</strong>独克宗古城（转经筒）、松赞林寺、纳帕海环湖</span>
               </div>
-            </div>
-          </InfoCard>
-        </div>
-      </div>
-    </div>
-
-    <!-- 区域4：交通指南区 -->
-    <div id="shangri-la-guide-area-traffic" class="guide-module" :class="{ expanded: expandedModules.traffic }" ref="module-traffic">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.traffic" @click="toggleModule('traffic')" @keydown.enter="toggleModule('traffic')" @keydown.space.prevent="toggleModule('traffic')">
-        <h3 class="guide-module-title">交通指南</h3>
-        <div class="module-header-actions">
-          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-          <span class="guide-module-toggle" :class="{ expanded: expandedModules.traffic }">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 9l-7 7-7-7"/>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="guide-module-content">
-        <div class="guide-module-content-inner">
-          <InfoCard
-            card-id="shangri-transport"
-            card-name="香格里拉交通指南"
-            :hidden-cards="hiddenCards"
-            @hide="(id, name) => $emit('hide-card', id, name)"
-          >
-            <div class="simple-info">
-              <div class="simple-info-title"><span class="emoji" aria-hidden="true">🚗</span> 交通指南</div>
-              <div class="simple-info-content">
-                <strong>丽江→香格里拉：</strong>高铁70元，1小时20分钟<br>
-                <strong>高铁站→古城：</strong>打车10元，公交1路2元<br>
-                <strong>古城→松赞林寺：</strong>公交3路2元，打车15元<br>
-                <strong>古城→纳帕海：</strong>租电动车50元/天，拼车环湖人均30-40元<br>
-                <strong>古城→普达措：</strong>景区直通车30元往返，拼车人均50元
-              </div>
-            </div>
-          </InfoCard>
-        </div>
-      </div>
-    </div>
-
-    <!-- 区域5：预算参考区 -->
-    <div id="shangri-la-guide-area-budget" class="guide-module" :class="{ expanded: expandedModules.budget }" ref="module-budget">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.budget" @click="toggleModule('budget')" @keydown.enter="toggleModule('budget')" @keydown.space.prevent="toggleModule('budget')">
-        <h3 class="guide-module-title">预算参考</h3>
-        <div class="module-header-actions">
-          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-          <span class="guide-module-toggle" :class="{ expanded: expandedModules.budget }">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 9l-7 7-7-7"/>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="guide-module-content">
-        <div class="guide-module-content-inner">
-          <InfoCard
-            card-id="shangri-budget"
-            card-name="香格里拉预算参考"
-            :hidden-cards="hiddenCards"
-            @hide="(id, name) => $emit('hide-card', id, name)"
-          >
-            <div class="simple-info">
-              <div class="simple-info-title"><span class="emoji" aria-hidden="true">💰</span> 预算参考（1-2天）</div>
-              <div class="simple-info-content">
-                <strong>常规版约350元：</strong>松赞林寺70元+住宿100元+餐饮80元+交通50元<br>
-                <strong>经济版约150元：</strong>只逛免费景点+青旅住宿+公交出行
-              </div>
-            </div>
-          </InfoCard>
-        </div>
-      </div>
-    </div>
-
-    <!-- 区域6：住宿美食推荐区 -->
-    <div id="shangri-la-guide-area-stay-food" class="guide-module" :class="{ expanded: expandedModules['stay-food'] }" ref="module-stay-food">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules['stay-food']" @click="toggleModule('stay-food')" @keydown.enter="toggleModule('stay-food')" @keydown.space.prevent="toggleModule('stay-food')">
-        <h3 class="guide-module-title">住宿 & 美食推荐</h3>
-        <div class="module-header-actions">
-          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-          <span class="guide-module-toggle" :class="{ expanded: expandedModules['stay-food'] }">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 9l-7 7-7-7"/>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="guide-module-content">
-        <div class="guide-module-content-inner">
-          <InfoCard
-            card-id="shangri-info"
-            card-name="香格里拉住宿美食"
-            :hidden-cards="hiddenCards"
-            @hide="(id, name) => $emit('hide-card', id, name)"
-          >
-            <div class="info-grid">
-              <div class="info-item">
-                <div class="info-label">🏨 住宿首选</div>
-                <div class="info-content">独克宗古城周边，双床房140-200元/晚。3月底夜间最低-5℃，优先选有地暖/供氧的民宿</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">🍜 必吃美食</div>
-                <div class="info-content">牦牛肉火锅、酥油茶（甜口10元/壶，能缓解高反）、青稞饼、藏式酸奶</div>
-              </div>
-            </div>
-          </InfoCard>
-        </div>
-      </div>
-    </div>
-
-    <!-- 区域7：高原出行提醒与避坑区 -->
-    <div id="shangri-la-guide-area-tips" class="guide-module" :class="{ expanded: expandedModules.tips }" ref="module-tips">
-      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.tips" @click="toggleModule('tips')" @keydown.enter="toggleModule('tips')" @keydown.space.prevent="toggleModule('tips')">
-        <h3 class="guide-module-title">高原出行提醒 & 避坑指南</h3>
-        <div class="module-header-actions">
-          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-          <span class="guide-module-toggle" :class="{ expanded: expandedModules.tips }">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 9l-7 7-7-7"/>
-            </svg>
-          </span>
-        </div>
-      </div>
-      <div class="guide-module-content">
-        <div class="guide-module-content-inner">
-          <div class="altitude-warning">
-            <div class="altitude-warning-title">🏔️ 高原出行提醒</div>
-            <div class="altitude-warning-list">
-              <div class="altitude-warning-item">
-                <span class="altitude-warning-icon">⚠️</span>
-                <span><strong>刚到别剧烈运动</strong>，放慢走路节奏，不跑不跳</span>
-              </div>
-              <div class="altitude-warning-item">
-                <span class="altitude-warning-icon">⚠️</span>
-                <span><strong>当天别洗澡</strong>，避免着凉加重高反</span>
-              </div>
-              <div class="altitude-warning-item">
-                <span class="altitude-warning-icon">⚠️</span>
-                <span><strong>别喝酒</strong>，酒精会加重高原反应</span>
-              </div>
-              <div class="altitude-warning-item">
-                <span class="altitude-warning-icon">💊</span>
-                <span><strong>氧气瓶提前买</strong>，古城药店15-20元，景区60元</span>
+              <div class="key-info-item">
+                <span class="key-info-arrow">→</span>
+                <span><strong>高原适应：</strong>第一天放慢节奏，不跑不跳，当天别洗澡</span>
               </div>
             </div>
           </div>
 
-          <div class="warning-box">
-            <strong>避坑：</strong>别信路边"100元骑马环湖"，容易被宰。纳帕海环湖免费，导航"环湖西路"即可。
+          <div class="spot-group">
+            <div
+              class="spot-card"
+              v-for="(venue, idx) in data.venues"
+              :key="venue.name"
+              :style="{ '--spot-index': idx }"
+              :class="{ 'spot-card-optional': venue.optional }"
+            >
+              <div class="spot-header">
+                <div class="spot-title-row">
+                  <h4 class="spot-name">{{ venue.name }}</h4>
+                  <span class="spot-tag" :class="{ 'spot-tag-optional': venue.optional }">{{ venue.tag }}</span>
+                  <button
+                    class="spot-map-btn"
+                    @click.stop="$emit('open-map', venue.name)"
+                    :aria-label="'在地图上查看' + venue.name"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                  </button>
+                </div>
+                <p class="spot-desc">{{ venue.desc }}</p>
+                <div class="spot-meta" v-if="venue.openTime || venue.booking">
+                  <span class="spot-meta-item" v-if="venue.openTime">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                    {{ venue.openTime }}
+                  </span>
+                  <span class="spot-meta-item spot-booking" v-if="venue.booking">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                      <polyline points="22,4 12,14.01 9,11.01"/>
+                    </svg>
+                    {{ venue.booking }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="shangri-la-guide-area-stay" class="guide-module" :class="{ expanded: expandedModules.stay }" ref="module-stay">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.stay" @click="toggleModule('stay')" @keydown.enter="toggleModule('stay')" @keydown.space.prevent="toggleModule('stay')">
+        <div class="module-header-left">
+          <span class="module-header-icon">🏨</span>
+          <h3 class="guide-module-title">住宿美食 & 交通</h3>
+        </div>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.stay }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div class="guide-module-content">
+        <div class="guide-module-content-inner">
+          <div class="stay-section">
+            <div class="section-label">
+              <span class="section-label-icon">🛏️</span>
+              <span>住宿推荐</span>
+            </div>
+            <div class="stay-cards">
+              <div class="stay-card">
+                <div class="stay-card-header">
+                  <span class="stay-card-name">独克宗古城周边</span>
+                  <span class="stay-card-price">140-200元/晚</span>
+                </div>
+                <div class="stay-card-desc">3月底夜间最低-5℃，优先选有地暖/供氧的民宿</div>
+                <div class="stay-card-tags">
+                  <span class="stay-tag stay-tag-gold">地暖</span>
+                  <span class="stay-tag stay-tag-gold">供氧</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="food-section">
+            <div class="section-label">
+              <span class="section-label-icon">🍜</span>
+              <span>必吃美食</span>
+            </div>
+            <div class="food-grid">
+              <div class="food-item" v-for="food in foods" :key="food.name">
+                <div class="food-item-header">
+                  <span class="food-item-name">{{ food.name }}</span>
+                </div>
+                <div class="food-item-tip">{{ food.tip }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="transport-section">
+            <div class="section-label">
+              <span class="section-label-icon">🚗</span>
+              <span>交通指南</span>
+            </div>
+            <div class="transport-list">
+              <div class="transport-item" v-for="t in transports" :key="t.route">
+                <div class="transport-route">{{ t.route }}</div>
+                <div class="transport-detail">{{ t.detail }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="shangri-la-guide-area-info" class="guide-module" :class="{ expanded: expandedModules.info }" ref="module-info">
+      <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.info" @click="toggleModule('info')" @keydown.enter="toggleModule('info')" @keydown.space.prevent="toggleModule('info')">
+        <div class="module-header-left">
+          <span class="module-header-icon">🎫</span>
+          <h3 class="guide-module-title">门票预算 & 高原提醒</h3>
+        </div>
+        <div class="module-header-actions">
+          <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            </svg>
+          </button>
+          <span class="guide-module-toggle" :class="{ expanded: expandedModules.info }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div class="guide-module-content">
+        <div class="guide-module-content-inner">
+          <div class="altitude-warning-section">
+            <div class="altitude-warning-header">
+              <div class="prayer-wheel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 6v6l4 2"/>
+                </svg>
+              </div>
+              <span>高原出行提醒</span>
+            </div>
+            <div class="altitude-warning-list">
+              <div class="altitude-item" v-for="item in altitudeTips" :key="item.text">
+                <span class="altitude-icon">{{ item.icon }}</span>
+                <span class="altitude-text"><strong>{{ item.highlight }}</strong>{{ item.text }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="booking-section">
+            <div class="section-label">
+              <span class="section-label-icon">📅</span>
+              <span>预约信息</span>
+            </div>
+            <div class="booking-list">
+              <div class="booking-item" v-for="item in data.bookingInfo" :key="item.spot">
+                <div class="booking-spot">{{ item.spot }}</div>
+                <div class="booking-note">{{ item.note }}</div>
+                <div class="booking-channel" v-if="item.channel">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                  </svg>
+                  {{ item.channel }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="budget-section">
+            <div class="section-label">
+              <span class="section-label-icon">💰</span>
+              <span>预算参考（1-2天）</span>
+            </div>
+            <div class="budget-compare">
+              <div class="budget-option">
+                <div class="budget-option-header">
+                  <span class="budget-option-name">常规版</span>
+                  <span class="budget-option-price">约350元</span>
+                </div>
+                <div class="budget-option-breakdown">
+                  松赞林寺70元 + 住宿100元 + 餐饮80元 + 交通50元
+                </div>
+              </div>
+              <div class="budget-option budget-option-economy">
+                <div class="budget-option-header">
+                  <span class="budget-option-name">经济版</span>
+                  <span class="budget-option-price">约150元</span>
+                </div>
+                <div class="budget-option-breakdown">
+                  只逛免费景点 + 青旅住宿 + 公交出行
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pitfall-section">
+            <div class="pitfall-header">
+              <svg class="pitfall-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+              <span>避坑指南</span>
+            </div>
+            <div class="pitfall-items">
+              <div class="pitfall-item" v-for="item in pitfalls" :key="item">
+                <span class="pitfall-x">✕</span>
+                <span>{{ item }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -343,7 +387,6 @@
 
 <script setup>
 import { ref, reactive, onMounted, nextTick } from 'vue'
-import InfoCard from '../InfoCard.vue'
 
 defineProps({
   data: Object,
@@ -355,35 +398,52 @@ const emit = defineEmits(['hide-card', 'open-lightbox', 'open-map', 'module-togg
 const modules = [
   { id: 'overview', title: '香格里拉·藏地风光', shortTitle: '总览' },
   { id: 'scenic', title: '核心景点详解', shortTitle: '景点详解' },
-  { id: 'ticket', title: '门票预约指南', shortTitle: '门票预约' },
-  { id: 'traffic', title: '交通指南', shortTitle: '交通' },
-  { id: 'budget', title: '预算参考', shortTitle: '预算' },
-  { id: 'stay-food', title: '住宿 & 美食推荐', shortTitle: '住宿美食' },
-  { id: 'tips', title: '高原出行提醒 & 避坑指南', shortTitle: '高原提醒' }
+  { id: 'stay', title: '住宿美食 & 交通', shortTitle: '住宿美食' },
+  { id: 'info', title: '门票预算 & 高原提醒', shortTitle: '门票预算' }
 ]
 
 const jumpSections = [
   { id: 'overview', title: '总览', icon: '🏔️' },
   { id: 'scenic', title: '核心景点详解', icon: '🏛️' },
-  { id: 'ticket', title: '门票预约指南', icon: '🎫' },
-  { id: 'traffic', title: '交通指南', icon: '🚗' },
-  { id: 'budget', title: '预算参考', icon: '💰' },
-  { id: 'stay-food', title: '住宿 & 美食推荐', icon: '🍜' },
-  { id: 'tips', title: '高原出行提醒 & 避坑指南', icon: '⚠️' }
+  { id: 'stay', title: '住宿美食 & 交通', icon: '🏨' },
+  { id: 'info', title: '门票预算 & 高原提醒', icon: '🎫' }
 ]
 
 const expandedModules = reactive({
   scenic: false,
-  ticket: false,
-  traffic: false,
-  budget: false,
-  'stay-food': false,
-  tips: false
+  stay: false,
+  info: false
 })
 
 const activeModule = ref('overview')
 const quickNavBar = ref(null)
 const showJumpPanel = ref(false)
+
+const foods = [
+  { name: '牦牛肉火锅', tip: '人均70元，古城内多家可选' },
+  { name: '酥油茶', tip: '甜口10元/壶，能缓解高反' },
+  { name: '青稞饼', tip: '配酥油茶更香' },
+  { name: '藏式酸奶', tip: '口感醇厚，偏酸' }
+]
+
+const transports = [
+  { route: '丽江→香格里拉', detail: '高铁70元，1小时20分钟' },
+  { route: '高铁站→古城', detail: '打车10元，公交1路2元' },
+  { route: '古城→松赞林寺', detail: '公交3路2元，打车15元' },
+  { route: '古城→纳帕海', detail: '租电动车50元/天' }
+]
+
+const altitudeTips = [
+  { icon: '⚠️', highlight: '刚到别剧烈运动', text: '，放慢走路节奏，不跑不跳' },
+  { icon: '⚠️', highlight: '当天别洗澡', text: '，避免着凉加重高反' },
+  { icon: '⚠️', highlight: '别喝酒', text: '，酒精会加重高原反应' },
+  { icon: '💊', highlight: '氧气瓶提前买', text: '，古城药店15-20元，景区60元' }
+]
+
+const pitfalls = [
+  '别信路边"100元骑马环湖"，容易被宰',
+  '纳帕海环湖免费，导航"环湖西路"即可'
+]
 
 const toggleModule = (moduleId) => {
   expandedModules[moduleId] = !expandedModules[moduleId]
@@ -504,6 +564,16 @@ onMounted(() => {
   transform: scale(0.99);
 }
 
+.module-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.module-header-icon {
+  font-size: 1.25rem;
+}
+
 .guide-module-title {
   font-family: 'LXGW WenKai', serif;
   font-size: var(--text-lg);
@@ -515,6 +585,95 @@ onMounted(() => {
 
 .guide-module-title-large {
   font-size: clamp(1.25rem, 5vw, 1.5rem);
+  background: linear-gradient(135deg,
+    #dc2626 0%,
+    #fbbf24 30%,
+    #f59e0b 50%,
+    #1e40af 80%,
+    #dc2626 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: tibetReveal 1.2s var(--ease-out-quart) forwards,
+             tibetFlow 5s ease-in-out infinite;
+  opacity: 0;
+  margin-left: 3rem;
+  position: relative;
+}
+
+.guide-module-title-large::before {
+  content: '☸';
+  position: absolute;
+  left: -3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #dc2626;
+  opacity: 0;
+  animation: prayerWheelSpin 0.8s var(--ease-out-quart) 0.3s forwards;
+}
+
+.guide-module-title-large::after {
+  content: '';
+  position: absolute;
+  left: -1.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: #fbbf24;
+  border-radius: 50%;
+  opacity: 0;
+  animation: goldenDotFade 0.5s var(--ease-out-quart) 0.6s forwards;
+}
+
+@keyframes tibetReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+    letter-spacing: 0.12em;
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.05em;
+    filter: blur(0);
+  }
+}
+
+@keyframes tibetFlow {
+  0%, 100% {
+    background-position: 0% 50%;
+    filter: brightness(1);
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: brightness(1.05);
+  }
+}
+
+@keyframes prayerWheelSpin {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) rotate(-180deg) scale(0.5);
+  }
+  100% {
+    opacity: 0.85;
+    transform: translateY(-50%) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes goldenDotFade {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) scale(0);
+  }
+  100% {
+    opacity: 0.7;
+    transform: translateY(-50%) scale(1);
+  }
 }
 
 .guide-module-toggle {
@@ -537,18 +696,17 @@ onMounted(() => {
 }
 
 .guide-module-content {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.35s var(--ease-out-quart);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s var(--ease-out-quart);
 }
 
 .guide-module-content-wrapper {
-  min-height: 0;
+  padding: 0 var(--space-md);
 }
 
 .guide-module-content-inner {
-  min-height: 0;
-  overflow: hidden;
+  padding-bottom: var(--space-md);
 }
 
 .guide-module-expanded .guide-module-content-wrapper {
@@ -556,13 +714,13 @@ onMounted(() => {
 }
 
 .guide-module.expanded .guide-module-content {
-  grid-template-rows: 1fr;
+  max-height: 5000px;
 }
 
 .section-number {
   font-family: 'LXGW WenKai', serif;
   font-size: 0.75rem;
-  color: var(--sunset);
+  color: #dc2626;
   letter-spacing: 0.1em;
   margin-bottom: var(--space-xs);
 }
@@ -582,8 +740,8 @@ onMounted(() => {
 }
 
 .quick-tip {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+  border: 1px solid #fcd34d;
   border-radius: var(--space-sm);
   padding: var(--space-sm);
   text-align: center;
@@ -603,7 +761,123 @@ onMounted(() => {
 .quick-tip-value {
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--forest);
+  color: #b45309;
+}
+
+.plateau-preview {
+  background: linear-gradient(135deg, #fef3c7 0%, #fee2e2 50%, #dbeafe 100%);
+  border: 2px solid #fbbf24;
+  border-radius: var(--space-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.plateau-preview-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.plateau-icon-wrap {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plateau-icon {
+  width: 22px;
+  height: 22px;
+  color: white;
+}
+
+.plateau-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.plateau-title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: #991b1b;
+}
+
+.plateau-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.plateau-badge {
+  margin-left: auto;
+  font-size: 0.65rem;
+  padding: 4px 10px;
+  background: #dc2626;
+  color: white;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.plateau-highlights {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.plateau-highlight {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  background: white;
+  border-radius: var(--space-sm);
+  border-left: 3px solid #dc2626;
+}
+
+.plateau-highlight:last-child {
+  border-left-color: #fbbf24;
+}
+
+.highlight-icon {
+  font-size: 1.5rem;
+}
+
+.highlight-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.highlight-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.highlight-tag {
+  font-size: 0.65rem;
+  color: #991b1b;
+}
+
+.plateau-warning {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  background: #fee2e2;
+  border-radius: var(--space-sm);
+  font-size: 0.8rem;
+  color: #991b1b;
+}
+
+.plateau-warning svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #dc2626;
 }
 
 .section-cover {
@@ -639,59 +913,123 @@ onMounted(() => {
   text-align: right;
 }
 
-.venue-section {
+.key-info-box {
+  background: linear-gradient(135deg, #fef3c7 0%, #fee2e2 100%);
+  border: 2px solid #fbbf24;
+  border-radius: var(--space-md);
   padding: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.key-info-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.key-info-icon {
+  font-size: 1rem;
+}
+
+.key-info-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: #991b1b;
+}
+
+.key-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.key-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.key-info-arrow {
+  color: #dc2626;
+  flex-shrink: 0;
+}
+
+.key-info-item strong {
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.spot-group {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
 }
 
-.venue-item {
-  background: var(--forest-light);
-  border-radius: var(--space-sm);
-  padding: var(--space-sm);
+.spot-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--space-md);
+  padding: var(--space-md);
+  opacity: 0;
+  transform: translateY(16px);
+  animation: spotReveal 0.5s var(--ease-out-quart) forwards;
+  animation-delay: calc(var(--spot-index, 0) * 80ms);
 }
 
-.venue-header {
+.spot-card-optional {
+  border: 1px dashed var(--border);
+  background: var(--earth-light);
+}
+
+@keyframes spotReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.spot-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: var(--space-xs);
-  margin-bottom: var(--space-xs);
 }
 
-.venue-name {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--forest);
-}
-
-.venue-tag {
-  display: inline-block;
-  font-size: 0.65rem;
-  padding: 2px 6px;
-  background: var(--sunset);
-  color: white;
-  border-radius: var(--space-xs);
-  margin-left: var(--space-xs);
-  font-weight: 600;
-}
-
-.venue-tag.optional {
-  background: var(--text-muted);
-}
-
-.venue-actions {
+.spot-title-row {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-xs);
 }
 
-.venue-map-btn {
-  width: 28px;
-  height: 28px;
+.spot-name {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.spot-tag {
+  display: inline-block;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.spot-tag-optional {
+  background: var(--earth-light);
+  color: var(--text-muted);
+}
+
+.spot-map-btn {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
   border: 1px solid var(--forest);
   background: var(--forest-light);
   border-radius: var(--space-xs);
@@ -700,63 +1038,264 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   transition: all var(--duration-fast) var(--ease-out-quart);
-  padding: 0;
+  flex-shrink: 0;
 }
 
-.venue-map-btn:hover {
+.spot-map-btn:hover {
   background: var(--forest);
 }
 
-.venue-map-btn:hover svg {
+.spot-map-btn:hover svg {
   color: white;
 }
 
-.venue-map-btn:active {
-  transform: scale(0.9);
+.spot-map-btn:active {
+  transform: scale(0.92);
 }
 
-.venue-map-btn svg {
-  width: 14px;
-  height: 14px;
+.spot-map-btn svg {
+  width: 16px;
+  height: 16px;
   color: var(--forest);
   transition: color var(--duration-fast) var(--ease-out-quart);
 }
 
-.venue-time {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  background: var(--earth-light);
-  padding: 2px 6px;
-  border-radius: var(--space-2xs);
-}
-
-.venue-booking {
-  font-size: 0.7rem;
-  color: var(--forest);
-  background: var(--forest-light);
-  padding: 2px 6px;
-  border-radius: var(--space-2xs);
-}
-
-.venue-desc {
-  font-size: 0.75rem;
+.spot-desc {
+  font-size: calc(var(--text-sm) * var(--text-scale, 1));
   color: var(--text);
   line-height: 1.6;
+  margin: 0;
 }
 
-.booking-section {
-  background: var(--card);
-  border: 2px solid var(--forest);
-  border-radius: var(--space-md);
-  padding: var(--space-md);
+.spot-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
 }
 
-.booking-title {
-  font-size: var(--text-sm);
-  font-weight: 700;
+.spot-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: var(--earth-light);
+  padding: var(--space-2xs) var(--space-xs);
+  border-radius: var(--space-2xs);
+}
+
+.spot-meta-item svg {
+  width: 12px;
+  height: 12px;
+}
+
+.spot-booking {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.section-label-icon {
+  font-size: 1.25rem;
+}
+
+.section-label span:last-child {
+  font-size: var(--text-base);
+  font-weight: 600;
   color: var(--forest);
-  margin-bottom: var(--space-sm);
-  text-align: center;
+}
+
+.stay-section,
+.food-section,
+.transport-section,
+.booking-section,
+.budget-section,
+.pitfall-section {
+  padding: var(--space-md);
+  border-bottom: 1px dashed var(--border);
+}
+
+.stay-section:last-child,
+.food-section:last-child,
+.transport-section:last-child,
+.booking-section:last-child,
+.budget-section:last-child,
+.pitfall-section:last-child {
+  border-bottom: none;
+}
+
+.stay-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.stay-card {
+  background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+  border-radius: var(--space-sm);
+  padding: var(--space-sm);
+  border-left: 3px solid #fbbf24;
+}
+
+.stay-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.stay-card-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #92400e;
+}
+
+.stay-card-price {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.stay-card-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.stay-card-tags {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.stay-tag {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  background: var(--earth-light);
+  color: var(--text-muted);
+  border-radius: var(--space-xs);
+}
+
+.stay-tag-gold {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.food-grid {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.food-item {
+  background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+  border-radius: var(--space-sm);
+  padding: var(--space-sm);
+  border-left: 3px solid #dc2626;
+}
+
+.food-item-header {
+  margin-bottom: 2px;
+}
+
+.food-item-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #991b1b;
+}
+
+.food-item-tip {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.transport-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.transport-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--earth-light);
+  border-radius: var(--space-xs);
+  font-size: 0.8rem;
+}
+
+.transport-route {
+  font-weight: 600;
+  color: var(--forest);
+}
+
+.transport-detail {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.altitude-warning-section {
+  margin: var(--space-md);
+  padding: var(--space-md);
+  background: linear-gradient(135deg, #dbeafe 0%, #fef3c7 50%, #fee2e2 100%);
+  border: 2px solid #1e40af;
+  border-radius: var(--space-md);
+}
+
+.altitude-warning-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: #1e40af;
+}
+
+.prayer-wheel {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prayer-wheel svg {
+  width: 18px;
+  height: 18px;
+  color: white;
+}
+
+.altitude-warning-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.altitude-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.altitude-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.altitude-text strong {
+  color: #991b1b;
 }
 
 .booking-list {
@@ -766,15 +1305,16 @@ onMounted(() => {
 }
 
 .booking-item {
-  background: var(--forest-light);
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: var(--space-sm);
   padding: var(--space-sm);
 }
 
 .booking-spot {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: var(--forest);
+  color: var(--text);
 }
 
 .booking-note {
@@ -784,135 +1324,149 @@ onMounted(() => {
 }
 
 .booking-channel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 0.7rem;
-  color: var(--text);
-  margin-top: 2px;
+  color: #1e40af;
+  margin-top: 4px;
 }
 
-.simple-info {
-  padding: var(--space-md);
+.booking-channel svg {
+  width: 12px;
+  height: 12px;
 }
 
-.simple-info-title {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--forest);
-  margin-bottom: var(--space-sm);
-}
-
-.simple-info-content {
-  font-size: 0.8rem;
-  line-height: 1.8;
-  color: var(--text);
-}
-
-.info-grid {
-  padding: var(--space-md);
-  display: grid;
-  gap: var(--space-md);
-}
-
-.info-item {
-  background: var(--forest-light);
-  border-radius: var(--space-sm);
-  padding: var(--space-sm);
-}
-
-.info-label {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--forest);
-  margin-bottom: var(--space-xs);
-}
-
-.info-content {
-  font-size: 0.8rem;
-  color: var(--text);
-  line-height: 1.6;
-}
-
-.altitude-warning {
-  margin: var(--space-md);
-  padding: var(--space-md);
-  background: linear-gradient(135deg, var(--sky-light) 0%, var(--forest-light) 100%);
-  border: 2px solid var(--sky);
-  border-radius: var(--space-md);
-}
-
-.altitude-warning-title {
-  font-size: var(--text-base);
-  font-weight: 700;
-  color: var(--sky);
-  margin-bottom: var(--space-sm);
-  text-align: center;
-}
-
-.altitude-warning-list {
+.budget-compare {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
 }
 
-.altitude-warning-item {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-xs);
-  font-size: 0.8rem;
-  color: var(--text);
-  line-height: 1.5;
+.budget-option {
+  background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+  border-radius: var(--space-sm);
+  padding: var(--space-sm);
 }
 
-.altitude-warning-icon {
+.budget-option-economy {
+  background: var(--earth-light);
+}
+
+.budget-option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-xs);
+}
+
+.budget-option-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.budget-option-price {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #92400e;
+}
+
+.budget-option-breakdown {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.pitfall-section {
+  background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+  border-radius: var(--space-md);
+  margin: var(--space-md);
+  padding: var(--space-md);
+}
+
+.pitfall-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.pitfall-icon {
+  width: 20px;
+  height: 20px;
+  color: #dc2626;
+}
+
+.pitfall-header span {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: #991b1b;
+}
+
+.pitfall-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.pitfall-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.pitfall-x {
+  width: 20px;
+  height: 20px;
+  background: #dc2626;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
   flex-shrink: 0;
 }
 
-.altitude-warning-item strong {
-  color: var(--sky);
-}
-
-.warning-box {
-  margin: var(--space-md);
-  margin-top: 0;
-  padding: var(--space-md);
-  background: var(--sunset-soft);
-  border-radius: var(--space-md);
-  font-size: var(--text-sm);
-  color: var(--text);
-  line-height: 1.6;
-}
-
-.warning-box strong {
-  color: var(--sunset);
-}
-
 @media (max-width: 480px) {
-  .quick-nav-btn {
-    font-size: 0.7rem;
-    padding: var(--space-xs) var(--space-sm);
-    min-height: 40px;
-  }
   .quick-tips {
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-2xs);
   }
+
   .quick-tip {
     padding: var(--space-xs);
   }
+
   .quick-tip-icon {
     font-size: 1rem;
   }
+
   .quick-tip-value {
     font-size: 0.7rem;
   }
+
+  .plateau-highlights {
+    flex-direction: column;
+  }
+
   .section-cover {
     aspect-ratio: 16 / 9;
+  }
+
+  .food-grid {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (min-width: 480px) {
-  .info-grid {
+  .food-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .section-cover {
     aspect-ratio: 2 / 1;
     border-radius: var(--space-lg);
@@ -927,11 +1481,20 @@ onMounted(() => {
 
 @media (prefers-reduced-motion: reduce) {
   .guide-module-content,
-  .guide-module-toggle {
+  .guide-module-toggle,
+  .spot-card,
+  .guide-module-title-large,
+  .guide-module-title-large::before,
+  .guide-module-title-large::after {
+    animation: none;
     transition: none;
+    opacity: 1;
+    transform: none;
+    letter-spacing: 0.05em;
   }
-  .section-cover img {
-    transition: none;
+
+  .guide-module.expanded .guide-module-content {
+    max-height: none;
   }
 }
 </style>

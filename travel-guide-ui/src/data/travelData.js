@@ -366,24 +366,41 @@ export const daliData = {
   },
   accommodations: [
     {
-      category: '平价青旅',
-      items: [
-        { name: '欢雀青旅', location: '古城南门文献路', price: '床位35元起', highlights: '24h前台、夜间门禁、带锁储物柜' },
-        { name: '桃溪青舍', location: '古城苍山门旁', price: '床位38元起', highlights: '男女分层、临近派出所、安静安全' }
-      ]
+      name: '大理云汐境遇民宿',
+      price: '大床129元起',
+      location: '古城东门 · 洪武路162号',
+      phone: '13988591978',
+      tags: ['古城核心', '美团4.8分', '5000+好评'],
+      highlights: '步行5分钟到洱海门，独栋白族民居，24h前台+免费停车',
+      bookingUrl: 'http://dpurl.cn/oifCacsz'
     },
     {
-      category: '平价民宿',
-      items: [
-        { name: '自在文旅民宿', location: '古城南门旁', price: '大床128元起', highlights: '独栋白族小院、24h门禁、洗衣房' },
-        { name: '风禾里民宿', location: '才村码头主街', price: '园景118元起', highlights: '步行2分钟到洱海、可规划骑行路线' }
-      ]
+      name: '9号轻奢小院',
+      price: '大床80元起',
+      location: '古城北门 · 洪家村',
+      phone: '19187745597',
+      tags: ['闹中取静', '美团4.7分', '学生首选'],
+      highlights: '步行3分钟到古城入口，无酒吧噪音，隔音好',
+      bookingUrl: 'http://dpurl.cn/UunvuM5z'
+    },
+    {
+      name: '大理星悦客栈',
+      price: '大床110元起',
+      location: '洱海门 · 果子园',
+      phone: '13320558860',
+      tags: ['公交便利', '采光通透', '无推销'],
+      highlights: '步行8分钟到古城核心，可帮忙预约电动车/拼车',
+      bookingUrl: 'http://dpurl.cn/uSf2HSMz'
+    },
+    {
+      name: '大理和韵院酒店',
+      price: '大床108元起',
+      location: '古城东门 · 果子园',
+      phone: '19995928962',
+      tags: ['酒店式管理', '24h安保', '配套齐全'],
+      highlights: '步行6分钟到洱海门，生活配套齐全，适配多种出行需求',
+      bookingUrl: 'http://dpurl.cn/QEgXAnlz'
     }
-  ],
-  accommodationTips: [
-    '选址优先古城出入口、才村主街等核心区域',
-    '青旅优先选带锁储物柜、可反锁房门的房型',
-    '平季可到店看房后订房，节假日提前1-2周预订'
   ],
   foods: [
     { name: '白族酸辣鱼', price: '人均40-70元', shops: '丽芳饭店、石井私房菜', tip: '点单前确认按条/按斤计价' },

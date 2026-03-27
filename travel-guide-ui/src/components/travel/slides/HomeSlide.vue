@@ -49,11 +49,8 @@
         </div>
       </div>
       <div class="dest-mini dest-mini-map" @click="$emit('navigate', 5)">
-        <div class="dest-mini-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-            <circle cx="12" cy="10" r="3"/>
-          </svg>
+        <div class="dest-mini-icon dest-mini-icon-image">
+          <img src="/images/icons/map-nav-cute.jpg" alt="地图">
         </div>
         <div class="dest-mini-content">
           <span class="dest-mini-name">地图</span>
@@ -64,15 +61,10 @@
 
     <!-- 快捷信息条 -->
     <div class="quick-info-bar">
-      <div class="quick-info-item">
+      <div class="quick-info-item" @click.stop="$emit('navigate', { index: 2, expandModule: 'info' })">
         <span class="quick-info-icon">🎓</span>
-        <span class="quick-info-text">学生证享半价</span>
-        <span class="quick-info-action" @click.stop="$emit('navigate', { index: 2, scrollTo: 'dali-ticket' })">查看</span>
-      </div>
-      <div class="quick-info-divider"></div>
-      <div class="quick-info-item">
-        <span class="quick-info-icon">🚄</span>
-        <span class="quick-info-text">昆明→大理 145元</span>
+        <span class="quick-info-text">大理景点学生证享半价</span>
+        <span class="quick-info-action">查看优惠</span>
       </div>
     </div>
 
@@ -134,32 +126,66 @@
         <div v-if="currentItineraryDetail" class="itinerary-detail">
           <p class="itinerary-detail-desc">{{ currentItineraryDetail.desc }}</p>
 
-          <div v-for="(dayKey, index) in currentItineraryDayKeys" :key="dayKey" class="itinerary-day-detail">
-            <div class="itinerary-day-header">
-              <span class="itinerary-day-badge">{{ currentItineraryDetail[dayKey][0]?.dayBadge || `D${index + 1}` }}</span>
-              <span class="itinerary-day-title">{{ currentItineraryDetail.days?.[index]?.title || itineraryOptions[activeItinerary].days[index]?.place }}</span>
-            </div>
-            <div class="itinerary-timeline">
-              <div v-for="(item, idx) in currentItineraryDetail[dayKey]" :key="idx" class="timeline-item">
-                <span class="timeline-time">{{ item.time }}</span>
-                <div class="timeline-content">
-                  <span class="timeline-place">{{ item.place }}</span>
-                  <span class="timeline-event">{{ item.event }}</span>
+          <!-- 每日行程卡片 -->
+          <div class="itinerary-days">
+            <div
+              v-for="(dayKey, index) in currentItineraryDayKeys"
+              :key="dayKey"
+              class="itinerary-day-card"
+              :class="{ expanded: expandedDays[dayKey] }"
+            >
+              <div class="itinerary-day-header" @click="toggleDay(dayKey)">
+                <div class="itinerary-day-left">
+                  <span class="itinerary-day-num">{{ index + 1 }}</span>
+                  <div class="itinerary-day-info">
+                    <span class="itinerary-day-badge">{{ currentItineraryDetail[dayKey][0]?.dayBadge || `D${index + 1}` }}</span>
+                    <span class="itinerary-day-title">{{ currentItineraryDetail.days?.[index]?.title || itineraryOptions[activeItinerary].days[index]?.place }}</span>
+                  </div>
+                </div>
+                <div class="itinerary-day-right">
+                  <span class="itinerary-day-places">{{ getDayPlacesBrief(currentItineraryDetail[dayKey]) }}</span>
+                  <svg class="itinerary-day-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="itinerary-day-content">
+                <div class="itinerary-timeline">
+                  <div v-for="(item, idx) in currentItineraryDetail[dayKey]" :key="idx" class="timeline-item" :style="{ '--item-index': idx }">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-time">{{ item.time }}</span>
+                    <div class="timeline-content">
+                      <span class="timeline-place">{{ item.place }}</span>
+                      <span class="timeline-event">{{ item.event }}</span>
+                      <span v-if="item.tip" class="timeline-tip">{{ item.tip }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
+          <!-- 贴士区域 -->
           <div class="itinerary-tips" v-if="currentItineraryDetail.tips">
-            <div v-for="(tip, idx) in currentItineraryDetail.tips" :key="idx" class="itinerary-tip-item">
-              <span class="tip-icon">{{ tip.icon }}</span>
-              <span class="tip-text">{{ tip.text }}</span>
+            <div class="itinerary-tips-header">
+              <span class="tips-header-icon">💡</span>
+              <span class="tips-header-title">实用贴士</span>
+            </div>
+            <div class="itinerary-tips-list">
+              <div v-for="(tip, idx) in currentItineraryDetail.tips" :key="idx" class="itinerary-tip-item">
+                <span class="tip-icon">{{ tip.icon }}</span>
+                <span class="tip-text">{{ tip.text }}</span>
+              </div>
             </div>
           </div>
 
+          <!-- 可选延申 -->
           <div class="itinerary-extend" v-if="currentItineraryDetail.extend">
-            <span class="extend-badge">可选延申</span>
-            <span class="extend-text">{{ currentItineraryDetail.extend.desc }}</span>
+            <div class="extend-header">
+              <span class="extend-icon">➕</span>
+              <span class="extend-title">{{ currentItineraryDetail.extend.title || '可选延申' }}</span>
+            </div>
+            <p class="extend-text">{{ currentItineraryDetail.extend.desc }}</p>
           </div>
         </div>
 
@@ -185,7 +211,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed, reactive } from 'vue'
 import { checklistItems, itineraryOptions } from '@/data/travelData'
 
 const props = defineProps({
@@ -197,8 +223,22 @@ const emit = defineEmits(['navigate', 'hide-card'])
 const activeItinerary = ref('weekend')
 const checkedItems = ref([])
 const hasAnimatedCompletion = ref(false)
+const expandedDays = reactive({})
 
 const CHECKLIST_CARD_ID = 'home-departure-checklist'
+
+const toggleDay = (dayKey) => {
+  expandedDays[dayKey] = !expandedDays[dayKey]
+  setTimeout(() => {
+    emit('module-toggle')
+  }, 350)
+}
+
+const getDayPlacesBrief = (items) => {
+  if (!items || items.length === 0) return ''
+  const places = items.slice(0, 3).map(item => item.place.replace(/[→→]/g, '').trim())
+  return places.join(' → ')
+}
 
 const safeStorage = {
   getItem (key) {
@@ -467,12 +507,12 @@ onMounted(() => {
 }
 
 .dest-mini-map {
-  background: linear-gradient(135deg, var(--forest-light) 0%, var(--sky-light) 100%);
-  border-color: var(--forest);
+  background: linear-gradient(135deg, #fef3e2 0%, #fce7d6 100%);
+  border-color: #f5c6a5;
 }
 
 .dest-mini-map .dest-mini-name {
-  color: var(--forest);
+  color: #d4845f;
 }
 
 .dest-mini-icon {
@@ -481,12 +521,25 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   background: var(--forest);
+  overflow: hidden;
 }
 
 .dest-mini-icon svg {
   width: 32px;
   height: 32px;
   color: white;
+}
+
+.dest-mini-icon-image {
+  background: transparent;
+  padding: 4px;
+}
+
+.dest-mini-icon-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 /* ===== 快捷信息条 ===== */
@@ -505,6 +558,7 @@ onMounted(() => {
   align-items: center;
   gap: var(--space-xs);
   flex: 1;
+  cursor: pointer;
 }
 
 .quick-info-icon {
@@ -517,11 +571,11 @@ onMounted(() => {
 }
 
 .quick-info-action {
+  margin-left: auto;
   font-size: 0.75rem;
   color: var(--forest);
   font-weight: 600;
-  cursor: pointer;
-  padding: 2px 8px;
+  padding: 4px 10px;
   background: var(--forest-light);
   border-radius: 6px;
   transition: all var(--duration-fast) var(--ease-out-quart);
@@ -530,13 +584,6 @@ onMounted(() => {
 .quick-info-action:hover {
   background: var(--forest);
   color: white;
-}
-
-.quick-info-divider {
-  width: 1px;
-  height: 24px;
-  background: var(--border);
-  margin: 0 var(--space-md);
 }
 
 /* ===== 模块通用 ===== */
@@ -869,47 +916,141 @@ onMounted(() => {
 }
 
 .itinerary-detail {
-  margin-top: var(--space-sm);
+  margin-top: var(--space-md);
 }
 
 .itinerary-detail-desc {
-  font-size: calc(0.85rem * var(--text-scale, 1));
+  font-size: calc(0.8rem * var(--text-scale, 1));
   color: var(--text-muted);
-  margin-bottom: var(--space-md);
-  padding-left: var(--space-xs);
-  border-left: 3px solid var(--sunset);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-sm);
+  background: var(--earth-light);
+  border-radius: var(--space-sm);
+  line-height: 1.6;
 }
 
-.itinerary-day-detail {
-  margin-bottom: var(--space-md);
+/* 每日行程卡片 */
+.itinerary-days {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.itinerary-day-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--space-md);
+  overflow: hidden;
+  transition: border-color var(--duration-fast) var(--ease-out-quart);
+}
+
+.itinerary-day-card:hover {
+  border-color: var(--forest);
 }
 
 .itinerary-day-header {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--duration-fast) var(--ease-out-quart);
+}
+
+.itinerary-day-header:hover {
+  background: var(--forest-light);
+}
+
+.itinerary-day-left {
+  display: flex;
   align-items: center;
   gap: var(--space-sm);
-  margin-bottom: var(--space-sm);
+}
+
+.itinerary-day-num {
+  width: 28px;
+  height: 28px;
+  background: var(--forest);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.itinerary-day-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .itinerary-day-badge {
-  background: var(--forest);
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--forest);
+  background: var(--forest-light);
+  padding: 1px 6px;
+  border-radius: 4px;
+  width: fit-content;
 }
 
 .itinerary-day-title {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--text);
 }
 
+.itinerary-day-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.itinerary-day-places {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: none;
+}
+
+@media (min-width: 400px) {
+  .itinerary-day-places {
+    display: inline;
+  }
+}
+
+.itinerary-day-toggle {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  transition: transform 0.3s var(--ease-out-quart);
+  flex-shrink: 0;
+}
+
+.itinerary-day-card.expanded .itinerary-day-toggle {
+  transform: rotate(180deg);
+}
+
+.itinerary-day-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s var(--ease-out-quart);
+}
+
+.itinerary-day-card.expanded .itinerary-day-content {
+  max-height: 1000px;
+}
+
 .itinerary-timeline {
-  padding-left: var(--space-sm);
-  border-left: 2px solid var(--border);
-  margin-left: 12px;
+  padding: var(--space-sm) var(--space-md);
+  border-top: 1px solid var(--border);
 }
 
 .timeline-item {
@@ -917,32 +1058,42 @@ onMounted(() => {
   gap: var(--space-sm);
   padding: var(--space-xs) 0;
   position: relative;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: timelineReveal 0.3s var(--ease-out-quart) forwards;
+  animation-delay: calc(var(--item-index, 0) * 50ms);
 }
 
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  left: calc(-1 * var(--space-sm) - 5px);
-  top: 50%;
-  transform: translateY(-50%);
+@keyframes timelineReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.timeline-dot {
   width: 8px;
   height: 8px;
   background: var(--forest);
   border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
 }
 
 .timeline-time {
   font-size: 0.7rem;
-  color: var(--text-muted);
-  min-width: 65px;
+  color: var(--sunset);
+  min-width: 60px;
   flex-shrink: 0;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .timeline-content {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1;
+  min-width: 0;
 }
 
 .timeline-place {
@@ -952,28 +1103,61 @@ onMounted(() => {
 }
 
 .timeline-event {
-  font-size: calc(0.75rem * var(--text-scale, 1));
+  font-size: calc(0.72rem * var(--text-scale, 1));
   color: var(--text);
   line-height: 1.5;
 }
 
+.timeline-tip {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  padding-left: var(--space-xs);
+  border-left: 2px solid var(--border);
+}
+
+/* 贴士区域 */
 .itinerary-tips {
+  margin-top: var(--space-lg);
   background: var(--forest-light);
-  border-radius: 10px;
-  padding: var(--space-sm);
-  margin-top: var(--space-md);
+  border-radius: var(--space-md);
+  overflow: hidden;
+}
+
+.itinerary-tips-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.tips-header-icon {
+  font-size: 1rem;
+}
+
+.tips-header-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--forest);
+}
+
+.itinerary-tips-list {
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
 }
 
 .itinerary-tip-item {
   display: flex;
   align-items: flex-start;
   gap: var(--space-xs);
-  padding: var(--space-2xs) 0;
 }
 
 .itinerary-tip-item .tip-icon {
   flex-shrink: 0;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .itinerary-tip-item .tip-text {
@@ -982,30 +1166,37 @@ onMounted(() => {
   line-height: 1.5;
 }
 
+/* 可选延申 */
 .itinerary-extend {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  margin-top: var(--space-sm);
-  padding: var(--space-sm);
+  margin-top: var(--space-md);
+  padding: var(--space-md);
   background: var(--earth-light);
-  border-radius: 8px;
+  border-radius: var(--space-md);
   border: 1px dashed var(--border);
 }
 
-.extend-badge {
-  font-size: 0.7rem;
+.extend-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.extend-icon {
+  font-size: 0.85rem;
+}
+
+.extend-title {
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--sunset);
-  background: var(--sunset-soft);
-  padding: 2px 6px;
-  border-radius: 4px;
-  flex-shrink: 0;
 }
 
 .extend-text {
   font-size: calc(0.75rem * var(--text-scale, 1));
   color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
 }
 
 /* ===== 响应式 ===== */
@@ -1026,29 +1217,29 @@ onMounted(() => {
     display: none;
   }
 
-  .quick-info-bar {
-    flex-direction: column;
-    gap: var(--space-sm);
+  .itinerary-day-header {
+    padding: var(--space-xs) var(--space-sm);
   }
 
-  .quick-info-divider {
-    width: 100%;
-    height: 1px;
-    margin: 0;
+  .itinerary-day-title {
+    font-size: 0.8rem;
+  }
+
+  .itinerary-day-places {
+    display: none;
+  }
+
+  .itinerary-timeline {
+    padding: var(--space-xs) var(--space-sm);
   }
 
   .timeline-item {
     flex-direction: column;
-    gap: var(--space-2xs);
+    gap: 2px;
   }
 
   .timeline-time {
     font-size: 0.65rem;
-  }
-
-  .itinerary-extend {
-    flex-direction: column;
-    align-items: flex-start;
   }
 }
 
@@ -1068,8 +1259,17 @@ onMounted(() => {
   .itinerary-tab-compact,
   .checklist-compact-item,
   .checklist-checkbox-custom,
-  .checklist-module {
+  .checklist-module,
+  .itinerary-day-card,
+  .itinerary-day-content,
+  .itinerary-day-toggle,
+  .timeline-item {
     transition: none;
+    animation: none;
+  }
+
+  .itinerary-day-card.expanded .itinerary-day-content {
+    max-height: none;
   }
 
   .featured-image img,

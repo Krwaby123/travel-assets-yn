@@ -15,8 +15,11 @@
       </div>
       <!-- 快捷跳转按钮 -->
       <button class="nav-jump-btn" @click="showJumpPanel = true" aria-label="快速跳转">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 6h16M4 12h16M4 18h16"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
         </svg>
       </button>
     </nav>
@@ -118,8 +121,11 @@
         </div>
         <div class="module-header-actions">
           <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
             </svg>
           </button>
           <span class="guide-module-toggle" :class="{ expanded: expandedModules.time }">
@@ -288,8 +294,11 @@
         </div>
         <div class="module-header-actions">
           <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
             </svg>
           </button>
           <span class="guide-module-toggle" :class="{ expanded: expandedModules.venue }">
@@ -382,8 +391,11 @@
         </div>
         <div class="module-header-actions">
           <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
             </svg>
           </button>
           <span class="guide-module-toggle" :class="{ expanded: expandedModules.logistics }">
@@ -427,8 +439,11 @@
         </div>
         <div class="module-header-actions">
           <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
             </svg>
           </button>
           <span class="guide-module-toggle" :class="{ expanded: expandedModules.skills }">
@@ -498,8 +513,11 @@
         </div>
         <div class="module-header-actions">
           <button class="module-jump-btn" @click.stop="showJumpPanel = true" aria-label="快速跳转">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
             </svg>
           </button>
           <span class="guide-module-toggle" :class="{ expanded: expandedModules.budget }">
@@ -853,43 +871,6 @@ onMounted(() => {
   font-size: 1.25rem;
   line-height: 1;
   flex-shrink: 0;
-}
-
-.module-header-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  flex-shrink: 0;
-}
-
-.module-jump-btn {
-  width: 32px;
-  height: 32px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  transition: all var(--duration-fast) var(--ease-out-quart);
-}
-
-.module-jump-btn:hover {
-  background: var(--forest);
-  border-color: var(--forest);
-  color: white;
-  transform: scale(1.05);
-}
-
-.module-jump-btn:active {
-  transform: scale(0.95);
-}
-
-.module-jump-btn svg {
-  width: 16px;
-  height: 16px;
 }
 
 .guide-module-title {
