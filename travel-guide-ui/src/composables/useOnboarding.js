@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+import { onboardingSteps, mapOnboardingSteps } from '@/components/onboarding/onboarding-steps'
 
 const STORAGE_KEY = 'yunnan_travel_guide_completed'
 const MAP_STORAGE_KEY = 'yunnan_travel_map_guide_completed'
@@ -43,8 +44,8 @@ const hiddenTabs = ref(new Set())
 const isTransitioning = ref(false)
 
 export function useOnboarding () {
-  const totalSteps = 16
-  const mapTotalSteps = 8
+  const totalSteps = onboardingSteps.length
+  const mapTotalSteps = mapOnboardingSteps.length
 
   const progress = computed(() => {
     return Math.round((currentStep.value / (totalSteps - 1)) * 100)

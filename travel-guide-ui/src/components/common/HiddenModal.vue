@@ -33,6 +33,7 @@
               v-for="(cardId, index) in hiddenCards"
               :key="cardId"
               class="hidden-modal-item"
+              :data-card-id="cardId"
               :style="{ '--item-index': index }"
             >
               <span class="hidden-modal-item-name">{{ getCardName(cardId) }}</span>

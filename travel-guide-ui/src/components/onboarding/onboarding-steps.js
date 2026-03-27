@@ -123,8 +123,11 @@ export const onboardingSteps = [
     id: 'complete',
     type: 'modal',
     title: '引导完成',
-    content: '如需重新体验引导，可在设置中找到「重新体验新手引导」按钮。祝旅途愉快！',
-    actions: ['complete']
+    content: '建议接下来查看推荐行程，规划你的云南之旅。祝旅途愉快！',
+    options: [
+      { label: '推荐行程', action: 'goToItinerary' },
+      { label: '稍后再看', action: 'complete' }
+    ]
   }
 ]
 

@@ -118,6 +118,7 @@
               @open-lightbox="openLightbox"
               @open-map="openMapSearch"
               @module-toggle="onModuleToggle"
+              @go-to-itinerary="handleGoToItineraryFromChecklist"
             />
           </template>
           <template #fallback>
@@ -448,7 +449,7 @@
               <p class="hidden-modal-empty-hint">点击卡片右上角的 × 可以隐藏不需要的内容</p>
             </div>
             <div v-else class="hidden-modal-list">
-              <div v-for="(cardId, index) in [...hiddenCards]" :key="cardId" class="hidden-modal-item" :style="{ '--item-index': index }">
+              <div v-for="(cardId, index) in [...hiddenCards]" :key="cardId" class="hidden-modal-item" :data-card-id="cardId" :style="{ '--item-index': index }">
                 <span class="hidden-modal-item-name">{{ getCardName(cardId) }}</span>
                 <button class="hidden-modal-item-restore" @click="showCard(cardId)">恢复</button>
               </div>
@@ -518,6 +519,7 @@
       :selected-tabs="selectedTabs"
       :all-tabs="allTabs"
       :settings-visible="settingsVisible"
+      :hidden-cards="hiddenCards"
       @next="onboardingNext"
       @prev="onboardingPrev"
       @skip="skipOnboarding"
@@ -530,6 +532,7 @@
       @close-nav-panel="handleCloseNavPanel"
       @go-to-map="handleGoToMap"
       @go-to-home="handleGoToHome"
+      @go-to-itinerary="handleGoToItinerary"
       @set-theme="handleOnboardingSetTheme"
       @set-font-size="handleOnboardingSetFontSize"
     />
@@ -1617,11 +1620,51 @@ const handleGoToHome = () => {
   goToSlide(0, 'left')
 }
 
+const scrollToItinerary = () => {
+  setTimeout(() => {
+    const itineraryTabs = document.getElementById('home-itinerary-tabs')
+    if (itineraryTabs) {
+      const rect = itineraryTabs.getBoundingClientRect()
+      const scrollTop = window.pageYOffset + rect.top - 80
+
+      window.scrollTo({
+        top: Math.max(0, scrollTop),
+        behavior: 'smooth'
+      })
+
+      setTimeout(() => {
+        updateSlideHeight(true)
+      }, 500)
+    }
+  }, 100)
+}
+
+const handleGoToItinerary = () => {
+  completeOnboarding()
+
+  if (currentIndex.value !== 0) {
+    goToSlide(0, 'left')
+  }
+
+  scrollToItinerary()
+
+  setTimeout(() => {
+    showConfetti.value = true
+  }, 800)
+}
+
+const handleGoToItineraryFromChecklist = () => {
+  if (currentIndex.value !== 0) {
+    goToSlide(0, 'left')
+  }
+
+  scrollToItinerary()
+}
+
 const handleOnboardingComplete = () => {
   completeOnboarding()
   setTimeout(() => {
     preloadAllSlideHeights()
-    showConfetti.value = true
   }, 300)
 }
 

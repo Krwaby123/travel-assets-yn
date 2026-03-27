@@ -97,6 +97,12 @@
                 <span class="celebration-icon">🎉</span>
                 <span class="celebration-text">准备就绪！祝你旅途愉快</span>
               </div>
+              <button class="checklist-next-btn" @click="handleGoToItinerary">
+                查看推荐行程
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 12H5M12 5l7 7-7 7"/>
+                </svg>
+              </button>
             </div>
           </Transition>
         </div>
@@ -104,12 +110,12 @@
     </Transition>
 
     <!-- 行程参考 -->
-    <div class="home-module itinerary-module">
+    <div id="home-itinerary" class="home-module itinerary-module" ref="itineraryModule">
       <div class="home-module-header">
         <h2 class="home-module-title">推荐行程</h2>
       </div>
       <div class="home-module-content">
-        <div class="itinerary-tabs-compact">
+        <div id="home-itinerary-tabs" class="itinerary-tabs-compact">
           <button
             v-for="(option, key) in itineraryOptions"
             :key="key"
@@ -215,7 +221,7 @@ const props = defineProps({
   hiddenCards: Set
 })
 
-const emit = defineEmits(['navigate', 'hide-card'])
+const emit = defineEmits(['navigate', 'hide-card', 'go-to-itinerary'])
 
 const activeItinerary = ref('weekend')
 const checkedItems = ref([])
@@ -285,13 +291,15 @@ const toggleCheckItem = (idx) => {
   safeStorage.setItem('preTripChecklist', JSON.stringify(checkedItems.value))
 }
 
+const handleGoToItinerary = () => {
+  emit('hide-card', CHECKLIST_CARD_ID, '出发前检查')
+  emit('go-to-itinerary')
+}
+
 watch(isChecklistComplete, (complete) => {
   if (complete && !checklistHidden.value && !hasAnimatedCompletion.value) {
     hasAnimatedCompletion.value = true
     safeStorage.setItem('preTripChecklistCompleted', 'true')
-    setTimeout(() => {
-      emit('hide-card', CHECKLIST_CARD_ID, '出发前检查')
-    }, 2000)
   }
 })
 
@@ -746,6 +754,45 @@ onMounted(() => {
   color: var(--forest);
   font-weight: 600;
   font-size: calc(0.9rem * var(--text-scale, 1));
+}
+
+.checklist-next-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  width: 100%;
+  margin-top: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--forest);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out-quart);
+  font-family: inherit;
+}
+
+.checklist-next-btn:hover {
+  background: var(--sunset);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.checklist-next-btn:active {
+  transform: translateY(0);
+}
+
+.checklist-next-btn svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s var(--ease-out-quart);
+}
+
+.checklist-next-btn:hover svg {
+  transform: translateX(4px);
 }
 
 /* Checklist fade transition */

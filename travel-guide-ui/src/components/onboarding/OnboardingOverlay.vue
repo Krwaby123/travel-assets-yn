@@ -221,7 +221,8 @@ const props = defineProps({
   totalSteps: Number,
   selectedTabs: Set,
   allTabs: Array,
-  settingsVisible: Boolean
+  settingsVisible: Boolean,
+  hiddenCards: Set
 })
 
 const emit = defineEmits([
@@ -237,11 +238,12 @@ const emit = defineEmits([
   'close-nav-panel',
   'go-to-map',
   'go-to-home',
+  'go-to-itinerary',
   'set-theme',
   'set-font-size',
   'trigger-global-nav',
   'expand-section',
-  'auto-search'
+  'restore-checklist'
 ])
 
 const spotlightStyle = ref({})
@@ -476,6 +478,14 @@ const handleNext = async () => {
   if (isAnimatingAction.value) return
 
   const step = currentStepData.value
+  const nextStepIndex = props.currentStep + 1
+  const nextStep = onboardingSteps[nextStepIndex]
+
+  if (nextStep?.id === 'home-checklist' && props.hiddenCards?.has('home-departure-checklist')) {
+    isAnimatingAction.value = true
+    await restoreChecklistBeforeNext()
+    return
+  }
 
   if (step?.action === 'openGlobalNav') {
     isAnimatingAction.value = true
@@ -558,6 +568,8 @@ const handleOptionClick = (option) => {
     emit('complete')
   } else if (option.action === 'next') {
     emit('next')
+  } else if (option.action === 'goToItinerary') {
+    emit('go-to-itinerary')
   }
 }
 
@@ -827,8 +839,9 @@ const autoExpandHiddenContent = async () => {
 
       await new Promise(resolve => setTimeout(resolve, 1000))
 
-      const restoreBtn = document.querySelector('.hidden-modal-item:has([data-card-id="dounan-venue"]) .hidden-modal-item-restore') ||
-                        document.querySelector('.hidden-modal-item:first-child .hidden-modal-item-restore')
+      const restoreBtn = document.querySelector('.hidden-modal-item[data-card-id="dounan-venue"] .hidden-modal-item-restore') ||
+                        document.querySelector('.hidden-modal-item:not([data-card-id="home-departure-checklist"]) .hidden-modal-item-restore') ||
+                        document.querySelector('.hidden-modal-item .hidden-modal-item-restore')
       if (restoreBtn) {
         restoreBtn.classList.add('onboarding-click-effect')
         await new Promise(resolve => setTimeout(resolve, 400))
@@ -849,6 +862,52 @@ const autoExpandHiddenContent = async () => {
       await new Promise(resolve => setTimeout(resolve, 800))
     }
   }
+
+  demoHint.value = null
+  emit('next')
+  isAnimatingAction.value = false
+}
+
+const restoreChecklistBeforeNext = async () => {
+  demoHint.value = '正在恢复「出发前检查」...'
+
+  await new Promise(resolve => setTimeout(resolve, 500))
+
+  emit('open-settings')
+  await new Promise(resolve => setTimeout(resolve, 1000))
+
+  const manageBtn = document.querySelector('.manage-hidden-btn')
+  if (manageBtn) {
+    manageBtn.classList.add('onboarding-click-effect')
+    await new Promise(resolve => setTimeout(resolve, 400))
+    manageBtn.classList.remove('onboarding-click-effect')
+    manageBtn.click()
+  }
+
+  await new Promise(resolve => setTimeout(resolve, 1500))
+
+  const restoreBtn = document.querySelector('.hidden-modal-item[data-card-id="home-departure-checklist"] .hidden-modal-item-restore')
+  if (restoreBtn) {
+    restoreBtn.classList.add('onboarding-click-effect')
+    await new Promise(resolve => setTimeout(resolve, 400))
+    restoreBtn.classList.remove('onboarding-click-effect')
+    restoreBtn.click()
+  }
+
+  await new Promise(resolve => setTimeout(resolve, 800))
+
+  const closeHiddenModal = document.querySelector('.hidden-modal-close')
+  if (closeHiddenModal) {
+    closeHiddenModal.classList.add('onboarding-click-effect')
+    await new Promise(resolve => setTimeout(resolve, 400))
+    closeHiddenModal.classList.remove('onboarding-click-effect')
+    closeHiddenModal.click()
+  }
+
+  await new Promise(resolve => setTimeout(resolve, 600))
+
+  emit('close-settings')
+  await new Promise(resolve => setTimeout(resolve, 400))
 
   demoHint.value = null
   emit('next')
