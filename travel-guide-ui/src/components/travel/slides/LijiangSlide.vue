@@ -113,7 +113,6 @@
     <div id="lijiang-guide-area-scenic" class="guide-module" :class="{ expanded: expandedModules.scenic }" ref="module-scenic">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.scenic" @click="toggleModule('scenic')" @keydown.enter="toggleModule('scenic')" @keydown.space.prevent="toggleModule('scenic')">
         <div class="module-header-left">
-          <span class="module-header-icon">🏔️</span>
           <h3 class="guide-module-title">核心景点详解</h3>
         </div>
         <div class="module-header-actions">
@@ -201,7 +200,6 @@
     <div id="lijiang-guide-area-stay" class="guide-module" :class="{ expanded: expandedModules.stay }" ref="module-stay">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.stay" @click="toggleModule('stay')" @keydown.enter="toggleModule('stay')" @keydown.space.prevent="toggleModule('stay')">
         <div class="module-header-left">
-          <span class="module-header-icon">🏨</span>
           <h3 class="guide-module-title">住宿美食 & 交通</h3>
         </div>
         <div class="module-header-actions">
@@ -276,7 +274,6 @@
     <div id="lijiang-guide-area-info" class="guide-module" :class="{ expanded: expandedModules.info }" ref="module-info">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.info" @click="toggleModule('info')" @keydown.enter="toggleModule('info')" @keydown.space.prevent="toggleModule('info')">
         <div class="module-header-left">
-          <span class="module-header-icon">🎫</span>
           <h3 class="guide-module-title">门票预算 & 实用信息</h3>
         </div>
         <div class="module-header-actions">
@@ -544,10 +541,6 @@ onMounted(() => {
   gap: var(--space-xs);
 }
 
-.module-header-icon {
-  font-size: 1.25rem;
-}
-
 .guide-module-title {
   font-family: 'LXGW WenKai', serif;
   font-size: var(--text-lg);
@@ -560,11 +553,11 @@ onMounted(() => {
 .guide-module-title-large {
   font-size: clamp(1.25rem, 5vw, 1.5rem);
   background: linear-gradient(135deg,
-    #60a5fa 0%,
-    #38bdf8 25%,
+    var(--ice) 0%,
+    var(--sky) 25%,
     var(--forest) 50%,
-    #fb923c 75%,
-    #60a5fa 100%);
+    var(--sunset) 75%,
+    var(--ice) 100%);
   background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -582,7 +575,7 @@ onMounted(() => {
   position: absolute;
   font-size: 0.7em;
   opacity: 0;
-  color: #60a5fa;
+  color: var(--ice);
 }
 
 .guide-module-title-large::before {
@@ -691,7 +684,7 @@ onMounted(() => {
 .section-number {
   font-family: 'LXGW WenKai', serif;
   font-size: 0.75rem;
-  color: #60a5fa;
+  color: var(--info);
   letter-spacing: 0.1em;
   margin-bottom: var(--space-xs);
 }
@@ -711,8 +704,8 @@ onMounted(() => {
 }
 
 .quick-tip {
-  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
-  border: 1px solid #bae6fd;
+  background: var(--info-light);
+  border: 1px solid var(--info);
   border-radius: var(--space-sm);
   padding: var(--space-sm);
   text-align: center;
@@ -732,12 +725,12 @@ onMounted(() => {
 .quick-tip-value {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #0369a1;
+  color: var(--info-muted);
 }
 
 .mountain-preview {
-  background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 50%, #fff7ed 100%);
-  border: 2px solid #7dd3fc;
+  background: var(--info-light);
+  border: 2px solid var(--info);
   border-radius: var(--space-md);
   padding: var(--space-md);
   margin-bottom: var(--space-lg);
@@ -750,20 +743,20 @@ onMounted(() => {
   margin-bottom: var(--space-sm);
   font-size: var(--text-sm);
   font-weight: 600;
-  color: #0369a1;
+  color: var(--info-muted);
 }
 
 .mountain-icon {
   width: 20px;
   height: 20px;
-  color: #0ea5e9;
+  color: var(--info);
 }
 
 .mountain-badge {
   margin-left: auto;
   font-size: 0.65rem;
   padding: 2px 8px;
-  background: #0ea5e9;
+  background: var(--info);
   color: white;
   border-radius: 999px;
   font-weight: 600;
@@ -810,17 +803,17 @@ onMounted(() => {
   align-items: center;
   gap: var(--space-xs);
   padding: var(--space-sm);
-  background: #fef3c7;
+  background: var(--warning-light);
   border-radius: var(--space-sm);
   font-size: 0.8rem;
-  color: #92400e;
+  color: var(--warning-muted);
 }
 
 .mountain-note svg {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
-  color: #f59e0b;
+  color: var(--warning);
 }
 
 .section-cover {
@@ -850,15 +843,15 @@ onMounted(() => {
   left: 0;
   right: 0;
   padding: var(--space-2xl) var(--space-md) var(--space-sm);
-  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+  background: linear-gradient(to top, var(--overlay), transparent);
   color: white;
   font-size: 0.8rem;
   text-align: right;
 }
 
 .key-info-box {
-  background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
-  border: 2px solid #7dd3fc;
+  background: var(--info-light);
+  border: 2px solid var(--info);
   border-radius: var(--space-md);
   padding: var(--space-md);
   margin-bottom: var(--space-md);
@@ -878,7 +871,7 @@ onMounted(() => {
 .key-info-title {
   font-size: var(--text-sm);
   font-weight: 700;
-  color: #0369a1;
+  color: var(--info-muted);
 }
 
 .key-info-list {
@@ -897,12 +890,12 @@ onMounted(() => {
 }
 
 .key-info-arrow {
-  color: #0ea5e9;
+  color: var(--info);
   flex-shrink: 0;
 }
 
 .key-info-item strong {
-  color: #0369a1;
+  color: var(--info-muted);
   font-weight: 600;
 }
 
@@ -924,8 +917,8 @@ onMounted(() => {
 }
 
 .spot-card-important {
-  border: 2px solid #0ea5e9;
-  background: linear-gradient(135deg, #f0f9ff 0%, white 100%);
+  border: 2px solid var(--info);
+  background: var(--info-light);
 }
 
 @keyframes spotReveal {
@@ -956,8 +949,8 @@ onMounted(() => {
 
 .spot-tag {
   display: inline-block;
-  background: #e0f2fe;
-  color: #0369a1;
+  background: var(--info-light);
+  color: var(--info-muted);
   font-size: 0.7rem;
   font-weight: 600;
   padding: 0.15rem 0.5rem;
@@ -965,7 +958,7 @@ onMounted(() => {
 }
 
 .spot-tag-important {
-  background: #0ea5e9;
+  background: var(--info);
   color: white;
 }
 
@@ -1034,13 +1027,13 @@ onMounted(() => {
 }
 
 .spot-booking {
-  background: #e0f2fe;
-  color: #0369a1;
+  background: var(--info-light);
+  color: var(--info-muted);
 }
 
 .spot-booking.warn {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--warning-light);
+  color: var(--warning-muted);
 }
 
 .section-label {
@@ -1086,7 +1079,7 @@ onMounted(() => {
 }
 
 .stay-card {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  background: var(--success-light);
   border-radius: var(--space-sm);
   padding: var(--space-sm);
   border-left: 3px solid var(--forest);
@@ -1108,7 +1101,7 @@ onMounted(() => {
 .stay-card-price {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #f59e0b;
+  color: var(--warning);
 }
 
 .stay-card-desc {
@@ -1136,10 +1129,10 @@ onMounted(() => {
 }
 
 .food-item {
-  background: linear-gradient(135deg, #fff7ed 0%, #fffbeb 100%);
+  background: var(--warning-light);
   border-radius: var(--space-sm);
   padding: var(--space-sm);
-  border-left: 3px solid #f59e0b;
+  border-left: 3px solid var(--warning);
 }
 
 .food-item-header {
@@ -1149,7 +1142,7 @@ onMounted(() => {
 .food-item-name {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #c2410c;
+  color: var(--warning-muted);
 }
 
 .food-item-tip {
@@ -1197,8 +1190,8 @@ onMounted(() => {
 }
 
 .booking-item.important {
-  border: 2px solid #0ea5e9;
-  background: linear-gradient(135deg, #f0f9ff 0%, white 100%);
+  border: 2px solid var(--info);
+  background: var(--info-light);
 }
 
 .booking-spot {
@@ -1208,7 +1201,7 @@ onMounted(() => {
 }
 
 .booking-item.important .booking-spot {
-  color: #0369a1;
+  color: var(--info-muted);
 }
 
 .booking-note {
@@ -1222,7 +1215,7 @@ onMounted(() => {
   align-items: center;
   gap: 4px;
   font-size: 0.7rem;
-  color: #0369a1;
+  color: var(--info-muted);
   margin-top: 4px;
 }
 
@@ -1233,7 +1226,7 @@ onMounted(() => {
 
 .booking-tip {
   font-size: 0.7rem;
-  color: #f59e0b;
+  color: var(--warning);
   margin-top: 4px;
   font-weight: 500;
 }
@@ -1245,7 +1238,7 @@ onMounted(() => {
 }
 
 .budget-option {
-  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+  background: var(--info-light);
   border-radius: var(--space-sm);
   padding: var(--space-sm);
 }
@@ -1270,7 +1263,7 @@ onMounted(() => {
 .budget-option-price {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #0369a1;
+  color: var(--info-muted);
 }
 
 .budget-option-breakdown {
@@ -1279,7 +1272,7 @@ onMounted(() => {
 }
 
 .pitfall-section {
-  background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+  background: var(--warning-light);
   border-radius: var(--space-md);
   margin: var(--space-md);
   padding: var(--space-md);
@@ -1295,13 +1288,13 @@ onMounted(() => {
 .pitfall-icon {
   width: 20px;
   height: 20px;
-  color: #f59e0b;
+  color: var(--warning);
 }
 
 .pitfall-header span {
   font-size: var(--text-base);
   font-weight: 600;
-  color: #92400e;
+  color: var(--warning-muted);
 }
 
 .pitfall-items {
@@ -1321,7 +1314,7 @@ onMounted(() => {
 .pitfall-x {
   width: 20px;
   height: 20px;
-  background: #f59e0b;
+  background: var(--warning);
   color: white;
   border-radius: 50%;
   display: flex;

@@ -149,7 +149,6 @@
     <div id="dali-guide-area-scenic" class="guide-module" :class="{ expanded: expandedModules.scenic }" ref="module-scenic">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.scenic" @click="toggleModule('scenic')" @keydown.enter="toggleModule('scenic')" @keydown.space.prevent="toggleModule('scenic')">
         <div class="module-header-left">
-          <span class="module-header-icon">🏔️</span>
           <h3 class="guide-module-title">核心景点详解</h3>
         </div>
         <div class="module-header-actions">
@@ -280,7 +279,6 @@
     <div id="dali-guide-area-stay" class="guide-module" :class="{ expanded: expandedModules.stay }" ref="module-stay">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.stay" @click="toggleModule('stay')" @keydown.enter="toggleModule('stay')" @keydown.space.prevent="toggleModule('stay')">
         <div class="module-header-left">
-          <span class="module-header-icon">🏨</span>
           <h3 class="guide-module-title">住宿美食推荐</h3>
         </div>
         <div class="module-header-actions">
@@ -369,7 +367,6 @@
     <div id="dali-guide-area-info" class="guide-module" :class="{ expanded: expandedModules.info }" ref="module-info">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.info" @click="toggleModule('info')" @keydown.enter="toggleModule('info')" @keydown.space.prevent="toggleModule('info')">
         <div class="module-header-left">
-          <span class="module-header-icon">🎫</span>
           <h3 class="guide-module-title">门票优惠 & 实用信息</h3>
         </div>
         <div class="module-header-actions">
@@ -670,10 +667,6 @@ onMounted(() => {
   gap: var(--space-xs);
 }
 
-.module-header-icon {
-  font-size: 1.25rem;
-}
-
 .guide-module-title {
   font-family: 'LXGW WenKai', serif;
   font-size: var(--text-lg);
@@ -687,7 +680,7 @@ onMounted(() => {
   font-size: clamp(1.25rem, 5vw, 1.5rem);
   background: linear-gradient(90deg,
     var(--sky) 0%,
-    #4a9eff 25%,
+    var(--ice) 25%,
     var(--forest) 50%,
     var(--sunset) 75%,
     var(--sky) 100%);
@@ -1198,7 +1191,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   padding: var(--space-2xl) var(--space-xs) var(--space-2xs);
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  background: linear-gradient(to top, var(--overlay), transparent);
   color: white;
   font-size: var(--text-xs);
   text-align: center;

@@ -1069,7 +1069,7 @@ onUnmounted(() => {
 .overlay-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: color-mix(in srgb, black 80%, transparent);
   transition: background 0.4s var(--ease-out-quart);
 }
 
@@ -1078,11 +1078,11 @@ onUnmounted(() => {
   background: transparent;
   border-radius: 16px;
   box-shadow:
-    0 0 0 9999px rgba(0, 0, 0, 0.8),
-    inset 0 0 0 2px rgba(34, 139, 34, 0.6),
-    0 0 0 4px rgba(255, 255, 255, 0.95),
-    0 0 30px 4px rgba(34, 139, 34, 0.5),
-    0 0 60px 8px rgba(34, 139, 34, 0.25);
+    0 0 0 9999px color-mix(in srgb, black 80%, transparent),
+    inset 0 0 0 2px color-mix(in srgb, var(--forest) 60%, transparent),
+    0 0 0 4px var(--card),
+    0 0 30px 4px color-mix(in srgb, var(--forest) 50%, transparent),
+    0 0 60px 8px color-mix(in srgb, var(--forest) 25%, transparent);
   transition: left 0.45s var(--ease-out-quart),
               top 0.45s var(--ease-out-quart),
               width 0.45s var(--ease-out-quart),
@@ -1095,19 +1095,19 @@ onUnmounted(() => {
 @keyframes spotlightPulse {
   0%, 100% {
     box-shadow:
-      0 0 0 9999px rgba(0, 0, 0, 0.8),
-      inset 0 0 0 2px rgba(34, 139, 34, 0.6),
-      0 0 0 4px rgba(255, 255, 255, 0.95),
-      0 0 30px 4px rgba(34, 139, 34, 0.5),
-      0 0 60px 8px rgba(34, 139, 34, 0.25);
+      0 0 0 9999px color-mix(in srgb, black 80%, transparent),
+      inset 0 0 0 2px color-mix(in srgb, var(--forest) 60%, transparent),
+      0 0 0 4px var(--card),
+      0 0 30px 4px color-mix(in srgb, var(--forest) 50%, transparent),
+      0 0 60px 8px color-mix(in srgb, var(--forest) 25%, transparent);
   }
   50% {
     box-shadow:
-      0 0 0 9999px rgba(0, 0, 0, 0.8),
-      inset 0 0 0 2px rgba(34, 139, 34, 0.8),
-      0 0 0 4px rgba(255, 255, 255, 1),
-      0 0 40px 6px rgba(34, 139, 34, 0.6),
-      0 0 80px 12px rgba(34, 139, 34, 0.3);
+      0 0 0 9999px color-mix(in srgb, black 80%, transparent),
+      inset 0 0 0 2px color-mix(in srgb, var(--forest) 80%, transparent),
+      0 0 0 4px var(--card),
+      0 0 40px 6px color-mix(in srgb, var(--forest) 60%, transparent),
+      0 0 80px 12px color-mix(in srgb, var(--forest) 30%, transparent);
   }
 }
 
@@ -1115,14 +1115,14 @@ onUnmounted(() => {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(34, 139, 34, 0.95);
+  background: color-mix(in srgb, var(--forest) 95%, transparent);
   color: white;
   padding: 10px 20px;
   border-radius: 24px;
   font-size: 0.9rem;
   font-weight: 600;
   white-space: nowrap;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px color-mix(in srgb, black 30%, transparent);
   z-index: 3;
 }
 
@@ -1159,14 +1159,14 @@ onUnmounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.95);
-  color: #1a1a1a;
+  background: var(--card);
+  color: var(--text);
   padding: 16px 28px;
   border-radius: 40px;
   font-size: 1rem;
   font-weight: 600;
   white-space: nowrap;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 32px color-mix(in srgb, black 25%, transparent);
   z-index: 10;
   display: flex;
   align-items: center;
@@ -1754,15 +1754,15 @@ onUnmounted(() => {
 @keyframes onboardingClickPulse {
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(34, 139, 34, 0.7);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--forest) 70%, transparent);
   }
   50% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 20px rgba(34, 139, 34, 0);
+    box-shadow: 0 0 0 20px color-mix(in srgb, var(--forest) 0%, transparent);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(34, 139, 34, 0);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--forest) 0%, transparent);
   }
 }
 
@@ -1788,10 +1788,10 @@ onUnmounted(() => {
 
 @keyframes highlightPulse {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(34, 139, 34, 0.4);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--forest) 40%, transparent);
   }
   50% {
-    box-shadow: 0 0 0 10px rgba(34, 139, 34, 0);
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--forest) 0%, transparent);
   }
 }
 

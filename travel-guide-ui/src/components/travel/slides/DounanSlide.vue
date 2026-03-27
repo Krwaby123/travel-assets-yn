@@ -116,7 +116,6 @@
     <div id="kunming-guide-area-time" class="guide-module" :class="{ expanded: expandedModules.time }" ref="module-time">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.time" @click="toggleModule('time')" @keydown.enter="toggleModule('time')" @keydown.space.prevent="toggleModule('time')">
         <div class="module-header-left">
-          <span class="module-header-icon">⏰</span>
           <h3 class="guide-module-title">营业时间 & 逛买路线</h3>
         </div>
         <div class="module-header-actions">
@@ -289,7 +288,6 @@
     <div id="kunming-guide-area-venue" class="guide-module" :class="{ expanded: expandedModules.venue }" ref="module-venue">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.venue" @click="toggleModule('venue')" @keydown.enter="toggleModule('venue')" @keydown.space.prevent="toggleModule('venue')">
         <div class="module-header-left">
-          <span class="module-header-icon">🏛️</span>
           <h3 class="guide-module-title">场馆分区详解</h3>
         </div>
         <div class="module-header-actions">
@@ -386,7 +384,6 @@
     <div id="kunming-guide-area-logistics" class="guide-module" :class="{ expanded: expandedModules.logistics }" ref="module-logistics">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.logistics" @click="toggleModule('logistics')" @keydown.enter="toggleModule('logistics')" @keydown.space.prevent="toggleModule('logistics')">
         <div class="module-header-left">
-          <span class="module-header-icon">📦</span>
           <h3 class="guide-module-title">寄花回家物流指南</h3>
         </div>
         <div class="module-header-actions">
@@ -434,7 +431,6 @@
     <div id="kunming-guide-area-skills" class="guide-module" :class="{ expanded: expandedModules.skills }" ref="module-skills">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.skills" @click="toggleModule('skills')" @keydown.enter="toggleModule('skills')" @keydown.space.prevent="toggleModule('skills')">
         <div class="module-header-left">
-          <span class="module-header-icon">🌿</span>
           <h3 class="guide-module-title">选花技巧 & 避坑指南</h3>
         </div>
         <div class="module-header-actions">
@@ -508,7 +504,6 @@
     <div id="kunming-guide-area-budget" class="guide-module" :class="{ expanded: expandedModules.budget }" ref="module-budget">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.budget" @click="toggleModule('budget')" @keydown.enter="toggleModule('budget')" @keydown.space.prevent="toggleModule('budget')">
         <div class="module-header-left">
-          <span class="module-header-icon">💰</span>
           <h3 class="guide-module-title">预算参考 & 配套服务</h3>
         </div>
         <div class="module-header-actions">
@@ -867,12 +862,6 @@ onMounted(() => {
   min-width: 0;
 }
 
-.module-header-icon {
-  font-size: 1.25rem;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
 .guide-module-title {
   font-family: 'LXGW WenKai', serif;
   font-size: var(--text-lg);
@@ -1101,7 +1090,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   padding: var(--space-xl) var(--space-2xs) var(--space-2xs);
-  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+  background: linear-gradient(to top, var(--overlay), transparent);
   color: white;
   font-size: 0.7rem;
   text-align: center;
@@ -1244,7 +1233,7 @@ onMounted(() => {
 }
 
 .timeline-detail.phase-night .detail-header {
-  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  background: var(--info-light);
 }
 
 .detail-left {
@@ -1322,8 +1311,8 @@ onMounted(() => {
 }
 
 .detail-step.highlight {
-  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-  border: 1px solid #c7d2fe;
+  background: var(--info-light);
+  border: 1px solid var(--info);
 }
 
 .detail-step-num {
@@ -1373,10 +1362,10 @@ onMounted(() => {
   gap: var(--space-xs);
   margin: 0 var(--space-md) var(--space-md);
   padding: var(--space-sm);
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  background: var(--warning-light);
   border-radius: var(--space-sm);
   font-size: calc(0.8rem * var(--text-scale, 1));
-  color: #92400e;
+  color: var(--warning-muted);
 }
 
 .detail-tip-icon {

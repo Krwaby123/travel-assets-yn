@@ -725,7 +725,8 @@
 .quick-nav-btn {
   position: relative;
   flex-shrink: 0;
-  padding: 8px 14px;
+  padding: 12px 16px;
+  min-height: 44px;
   background: transparent;
   border: none;
   border-radius: 8px;
@@ -737,6 +738,9 @@
   transition: all var(--duration-fast) var(--ease-out-quart);
   font-family: inherit;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .quick-nav-btn::before {

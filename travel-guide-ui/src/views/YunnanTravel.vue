@@ -97,16 +97,26 @@
         :class="['slide', { active: index === currentIndex }, slideDirection === 'right' ? 'slide-in-right' : 'slide-in-left']"
         :data-index="index"
       >
-        <component
-          :is="slide.component"
-          :data="slide.data"
-          :hidden-cards="hiddenCards"
-          @hide-card="hideCard"
-          @navigate="handleNavigate"
-          @open-lightbox="openLightbox"
-          @open-map="openMapSearch"
-          @module-toggle="onModuleToggle"
-        />
+        <Suspense>
+          <template #default>
+            <component
+              :is="slide.component"
+              :data="slide.data"
+              :hidden-cards="hiddenCards"
+              @hide-card="hideCard"
+              @navigate="handleNavigate"
+              @open-lightbox="openLightbox"
+              @open-map="openMapSearch"
+              @module-toggle="onModuleToggle"
+            />
+          </template>
+          <template #fallback>
+            <div class="slide-loading">
+              <div class="slide-loading-spinner"></div>
+              <span>加载中...</span>
+            </div>
+          </template>
+        </Suspense>
       </div>
     </main>
 
@@ -508,20 +518,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch, nextTick, computed, provide } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick, computed, provide, defineAsyncComponent, shallowRef } from 'vue'
 import { useResizeObserver, useWindowSize } from '@vueuse/core'
-import HomeSlide from '@/components/travel/slides/HomeSlide.vue'
-import DounanSlide from '@/components/travel/slides/DounanSlide.vue'
-import DaliSlide from '@/components/travel/slides/DaliSlide.vue'
-import LijiangSlide from '@/components/travel/slides/LijiangSlide.vue'
-import ShangriSlide from '@/components/travel/slides/ShangriSlide.vue'
-import MapSlide from '@/components/travel/slides/MapSlide.vue'
 import OnboardingOverlay from '@/components/onboarding/OnboardingOverlay.vue'
 import ConfettiEffect from '@/components/onboarding/ConfettiEffect.vue'
 import { navTabs, dounanData, daliData, lijiangData, shangriData } from '@/data/travelData'
 import { useOnboarding } from '@/composables/useOnboarding'
 
-const showConfetti = ref(false)
+const HomeSlide = defineAsyncComponent(() => import('@/components/travel/slides/HomeSlide.vue'))
+const DounanSlide = defineAsyncComponent(() => import('@/components/travel/slides/DounanSlide.vue'))
+const DaliSlide = defineAsyncComponent(() => import('@/components/travel/slides/DaliSlide.vue'))
+const LijiangSlide = defineAsyncComponent(() => import('@/components/travel/slides/LijiangSlide.vue'))
+const ShangriSlide = defineAsyncComponent(() => import('@/components/travel/slides/ShangriSlide.vue'))
+const MapSlide = defineAsyncComponent(() => import('@/components/travel/slides/MapSlide.vue'))
+
+const showConfetti = shallowRef(false)
 
 const {
   completed: onboardingCompleted,
@@ -1899,6 +1910,32 @@ const handleLightboxKeydown = (e) => {
   overflow: hidden;
 }
 
+.slide-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: var(--space-md);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.slide-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--forest);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .slide.measuring {
   height: auto !important;
   min-height: auto !important;
@@ -2619,7 +2656,7 @@ const handleLightboxKeydown = (e) => {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #1a1a1a;
+  background: var(--text);
   display: flex;
   align-items: center;
   justify-content: center;

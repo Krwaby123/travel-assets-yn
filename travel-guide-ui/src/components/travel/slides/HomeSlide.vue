@@ -50,7 +50,7 @@
       </div>
       <div class="dest-mini dest-mini-map" @click="$emit('navigate', 5)">
         <div class="dest-mini-icon dest-mini-icon-image">
-          <img src="/images/icons/map-nav-cute.jpg" alt="地图">
+          <img src="/images/icons/map-nav-cute.jpg" alt="地图" loading="lazy">
         </div>
         <div class="dest-mini-content">
           <span class="dest-mini-name">地图</span>
@@ -62,7 +62,6 @@
     <!-- 快捷信息条 -->
     <div class="quick-info-bar">
       <div class="quick-info-item" @click.stop="$emit('navigate', { index: 2, expandModule: 'info' })">
-        <span class="quick-info-icon">🎓</span>
         <span class="quick-info-text">大理景点学生证享半价</span>
         <span class="quick-info-action">查看优惠</span>
       </div>
@@ -168,7 +167,6 @@
           <!-- 贴士区域 -->
           <div class="itinerary-tips" v-if="currentItineraryDetail.tips">
             <div class="itinerary-tips-header">
-              <span class="tips-header-icon">💡</span>
               <span class="tips-header-title">实用贴士</span>
             </div>
             <div class="itinerary-tips-list">
@@ -182,7 +180,6 @@
           <!-- 可选延申 -->
           <div class="itinerary-extend" v-if="currentItineraryDetail.extend">
             <div class="extend-header">
-              <span class="extend-icon">➕</span>
               <span class="extend-title">{{ currentItineraryDetail.extend.title || '可选延申' }}</span>
             </div>
             <p class="extend-text">{{ currentItineraryDetail.extend.desc }}</p>
@@ -366,7 +363,7 @@ onMounted(() => {
 .featured-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 40%, transparent 70%);
+  background: linear-gradient(to top, var(--overlay) 0%, var(--overlay-light) 40%, transparent 70%);
 }
 
 .featured-content {
@@ -559,10 +556,6 @@ onMounted(() => {
   gap: var(--space-xs);
   flex: 1;
   cursor: pointer;
-}
-
-.quick-info-icon {
-  font-size: 1rem;
 }
 
 .quick-info-text {
@@ -1132,10 +1125,6 @@ onMounted(() => {
   background: rgba(76, 175, 80, 0.1);
 }
 
-.tips-header-icon {
-  font-size: 1rem;
-}
-
 .tips-header-title {
   font-size: 0.8rem;
   font-weight: 600;
@@ -1180,10 +1169,6 @@ onMounted(() => {
   align-items: center;
   gap: var(--space-xs);
   margin-bottom: var(--space-xs);
-}
-
-.extend-icon {
-  font-size: 0.85rem;
 }
 
 .extend-title {

@@ -116,7 +116,6 @@
     <div id="shangri-la-guide-area-scenic" class="guide-module" :class="{ expanded: expandedModules.scenic }" ref="module-scenic">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.scenic" @click="toggleModule('scenic')" @keydown.enter="toggleModule('scenic')" @keydown.space.prevent="toggleModule('scenic')">
         <div class="module-header-left">
-          <span class="module-header-icon">🏔️</span>
           <h3 class="guide-module-title">核心景点详解</h3>
         </div>
         <div class="module-header-actions">
@@ -204,7 +203,6 @@
     <div id="shangri-la-guide-area-stay" class="guide-module" :class="{ expanded: expandedModules.stay }" ref="module-stay">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.stay" @click="toggleModule('stay')" @keydown.enter="toggleModule('stay')" @keydown.space.prevent="toggleModule('stay')">
         <div class="module-header-left">
-          <span class="module-header-icon">🏨</span>
           <h3 class="guide-module-title">住宿美食 & 交通</h3>
         </div>
         <div class="module-header-actions">
@@ -279,7 +277,6 @@
     <div id="shangri-la-guide-area-info" class="guide-module" :class="{ expanded: expandedModules.info }" ref="module-info">
       <div class="guide-module-header guide-module-collapsible" tabindex="0" role="button" :aria-expanded="expandedModules.info" @click="toggleModule('info')" @keydown.enter="toggleModule('info')" @keydown.space.prevent="toggleModule('info')">
         <div class="module-header-left">
-          <span class="module-header-icon">🎫</span>
           <h3 class="guide-module-title">门票预算 & 高原提醒</h3>
         </div>
         <div class="module-header-actions">
@@ -570,10 +567,6 @@ onMounted(() => {
   gap: var(--space-xs);
 }
 
-.module-header-icon {
-  font-size: 1.25rem;
-}
-
 .guide-module-title {
   font-family: 'LXGW WenKai', serif;
   font-size: var(--text-lg);
@@ -586,11 +579,11 @@ onMounted(() => {
 .guide-module-title-large {
   font-size: clamp(1.25rem, 5vw, 1.5rem);
   background: linear-gradient(135deg,
-    #dc2626 0%,
-    #fbbf24 30%,
-    #f59e0b 50%,
-    #1e40af 80%,
-    #dc2626 100%);
+    var(--tibet-red) 0%,
+    var(--amber) 30%,
+    var(--warning) 50%,
+    var(--tibet-blue) 80%,
+    var(--tibet-red) 100%);
   background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -609,7 +602,7 @@ onMounted(() => {
   top: 50%;
   transform: translateY(-50%);
   font-size: 1.2rem;
-  color: #dc2626;
+  color: var(--tibet-red);
   opacity: 0;
   animation: prayerWheelSpin 0.8s var(--ease-out-quart) 0.3s forwards;
 }
@@ -622,7 +615,7 @@ onMounted(() => {
   transform: translateY(-50%);
   width: 8px;
   height: 8px;
-  background: #fbbf24;
+  background: var(--amber);
   border-radius: 50%;
   opacity: 0;
   animation: goldenDotFade 0.5s var(--ease-out-quart) 0.6s forwards;
@@ -720,7 +713,7 @@ onMounted(() => {
 .section-number {
   font-family: 'LXGW WenKai', serif;
   font-size: 0.75rem;
-  color: #dc2626;
+  color: var(--danger);
   letter-spacing: 0.1em;
   margin-bottom: var(--space-xs);
 }
@@ -740,8 +733,8 @@ onMounted(() => {
 }
 
 .quick-tip {
-  background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
-  border: 1px solid #fcd34d;
+  background: var(--warning-light);
+  border: 1px solid var(--warning);
   border-radius: var(--space-sm);
   padding: var(--space-sm);
   text-align: center;
@@ -761,12 +754,12 @@ onMounted(() => {
 .quick-tip-value {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #b45309;
+  color: var(--warning-muted);
 }
 
 .plateau-preview {
-  background: linear-gradient(135deg, #fef3c7 0%, #fee2e2 50%, #dbeafe 100%);
-  border: 2px solid #fbbf24;
+  background: var(--card);
+  border: 2px solid var(--warning);
   border-radius: var(--space-md);
   padding: var(--space-md);
   margin-bottom: var(--space-lg);
@@ -782,7 +775,7 @@ onMounted(() => {
 .plateau-icon-wrap {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%);
+  background: linear-gradient(135deg, var(--danger) 0%, var(--warning) 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -803,7 +796,7 @@ onMounted(() => {
 .plateau-title {
   font-size: var(--text-base);
   font-weight: 700;
-  color: #991b1b;
+  color: var(--danger-muted);
 }
 
 .plateau-subtitle {
@@ -815,7 +808,7 @@ onMounted(() => {
   margin-left: auto;
   font-size: 0.65rem;
   padding: 4px 10px;
-  background: #dc2626;
+  background: var(--danger);
   color: white;
   border-radius: 999px;
   font-weight: 600;
@@ -833,13 +826,13 @@ onMounted(() => {
   align-items: center;
   gap: var(--space-xs);
   padding: var(--space-sm);
-  background: white;
+  background: var(--card);
   border-radius: var(--space-sm);
-  border-left: 3px solid #dc2626;
+  border-left: 3px solid var(--danger);
 }
 
 .plateau-highlight:last-child {
-  border-left-color: #fbbf24;
+  border-left-color: var(--warning);
 }
 
 .highlight-icon {
@@ -859,7 +852,7 @@ onMounted(() => {
 
 .highlight-tag {
   font-size: 0.65rem;
-  color: #991b1b;
+  color: var(--danger-muted);
 }
 
 .plateau-warning {
@@ -867,17 +860,17 @@ onMounted(() => {
   align-items: center;
   gap: var(--space-xs);
   padding: var(--space-sm);
-  background: #fee2e2;
+  background: var(--danger-light);
   border-radius: var(--space-sm);
   font-size: 0.8rem;
-  color: #991b1b;
+  color: var(--danger-muted);
 }
 
 .plateau-warning svg {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .section-cover {
@@ -907,15 +900,15 @@ onMounted(() => {
   left: 0;
   right: 0;
   padding: var(--space-2xl) var(--space-md) var(--space-sm);
-  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+  background: linear-gradient(to top, var(--overlay), transparent);
   color: white;
   font-size: 0.8rem;
   text-align: right;
 }
 
 .key-info-box {
-  background: linear-gradient(135deg, #fef3c7 0%, #fee2e2 100%);
-  border: 2px solid #fbbf24;
+  background: var(--warning-light);
+  border: 2px solid var(--warning);
   border-radius: var(--space-md);
   padding: var(--space-md);
   margin-bottom: var(--space-md);
@@ -935,7 +928,7 @@ onMounted(() => {
 .key-info-title {
   font-size: var(--text-sm);
   font-weight: 700;
-  color: #991b1b;
+  color: var(--danger-muted);
 }
 
 .key-info-list {
@@ -954,8 +947,7 @@ onMounted(() => {
 }
 
 .key-info-arrow {
-  color: #dc2626;
-  flex-shrink: 0;
+  color: var(--danger);
 }
 
 .key-info-item strong {
@@ -1013,8 +1005,8 @@ onMounted(() => {
 
 .spot-tag {
   display: inline-block;
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--warning-light);
+  color: var(--warning-muted);
   font-size: 0.7rem;
   font-weight: 600;
   padding: 0.15rem 0.5rem;
@@ -1091,8 +1083,8 @@ onMounted(() => {
 }
 
 .spot-booking {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--warning-light);
+  color: var(--warning-muted);
 }
 
 .section-label {
@@ -1138,10 +1130,10 @@ onMounted(() => {
 }
 
 .stay-card {
-  background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+  background: var(--warning-light);
   border-radius: var(--space-sm);
   padding: var(--space-sm);
-  border-left: 3px solid #fbbf24;
+  border-left: 3px solid var(--warning);
 }
 
 .stay-card-header {
@@ -1154,13 +1146,13 @@ onMounted(() => {
 .stay-card-name {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #92400e;
+  color: var(--warning-muted);
 }
 
 .stay-card-price {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .stay-card-desc {
@@ -1183,8 +1175,8 @@ onMounted(() => {
 }
 
 .stay-tag-gold {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--warning-light);
+  color: var(--warning-muted);
 }
 
 .food-grid {
@@ -1193,10 +1185,10 @@ onMounted(() => {
 }
 
 .food-item {
-  background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+  background: var(--danger-light);
   border-radius: var(--space-sm);
   padding: var(--space-sm);
-  border-left: 3px solid #dc2626;
+  border-left: 3px solid var(--danger);
 }
 
 .food-item-header {
@@ -1206,7 +1198,7 @@ onMounted(() => {
 .food-item-name {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #991b1b;
+  color: var(--danger-muted);
 }
 
 .food-item-tip {
@@ -1243,8 +1235,8 @@ onMounted(() => {
 .altitude-warning-section {
   margin: var(--space-md);
   padding: var(--space-md);
-  background: linear-gradient(135deg, #dbeafe 0%, #fef3c7 50%, #fee2e2 100%);
-  border: 2px solid #1e40af;
+  background: var(--info-light);
+  border: 2px solid var(--info);
   border-radius: var(--space-md);
 }
 
@@ -1255,13 +1247,13 @@ onMounted(() => {
   margin-bottom: var(--space-md);
   font-size: var(--text-base);
   font-weight: 700;
-  color: #1e40af;
+  color: var(--info-muted);
 }
 
 .prayer-wheel {
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, #dc2626 0%, #fbbf24 100%);
+  background: linear-gradient(135deg, var(--danger) 0%, var(--warning) 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1295,7 +1287,7 @@ onMounted(() => {
 }
 
 .altitude-text strong {
-  color: #991b1b;
+  color: var(--danger-muted);
 }
 
 .booking-list {
@@ -1328,7 +1320,7 @@ onMounted(() => {
   align-items: center;
   gap: 4px;
   font-size: 0.7rem;
-  color: #1e40af;
+  color: var(--info-muted);
   margin-top: 4px;
 }
 
@@ -1344,7 +1336,7 @@ onMounted(() => {
 }
 
 .budget-option {
-  background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+  background: var(--warning-light);
   border-radius: var(--space-sm);
   padding: var(--space-sm);
 }
@@ -1369,7 +1361,7 @@ onMounted(() => {
 .budget-option-price {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #92400e;
+  color: var(--warning-muted);
 }
 
 .budget-option-breakdown {
@@ -1378,7 +1370,7 @@ onMounted(() => {
 }
 
 .pitfall-section {
-  background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+  background: var(--danger-light);
   border-radius: var(--space-md);
   margin: var(--space-md);
   padding: var(--space-md);
@@ -1394,13 +1386,13 @@ onMounted(() => {
 .pitfall-icon {
   width: 20px;
   height: 20px;
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .pitfall-header span {
   font-size: var(--text-base);
   font-weight: 600;
-  color: #991b1b;
+  color: var(--danger-muted);
 }
 
 .pitfall-items {
@@ -1420,7 +1412,7 @@ onMounted(() => {
 .pitfall-x {
   width: 20px;
   height: 20px;
-  background: #dc2626;
+  background: var(--danger);
   color: white;
   border-radius: 50%;
   display: flex;
