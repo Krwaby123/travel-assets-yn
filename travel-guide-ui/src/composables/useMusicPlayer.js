@@ -72,55 +72,55 @@ export function useMusicPlayer () {
     }
   }
 
-  const playSong = (index) => {
-    if (index === currentSongIndex.value && isMusicPlaying.value) return
+const playSong = (index, forcePlay = false) => {
+  if (!forcePlay && index === currentSongIndex.value && isMusicPlaying.value) return
 
-    currentSongIndex.value = index
+  currentSongIndex.value = index
 
-    nextTick(() => {
-      if (bgMusic.value) {
-        bgMusic.value.load()
-        bgMusic.value.play().then(() => {
-          isMusicPlaying.value = true
-        }).catch(() => {})
-      }
-    })
-  }
-
-  const prevSong = () => {
-    if (playlist.value.length <= 1) return
-
-    if (playMode.value === 'shuffle' && shuffleHistory.value.length > 0) {
-      const prevIndex = shuffleHistory.value.pop()
-      currentSongIndex.value = prevIndex
-      playSong(currentSongIndex.value)
-    } else {
-      if (currentSongIndex.value > 0) {
-        currentSongIndex.value--
-      } else {
-        currentSongIndex.value = playlist.value.length - 1
-      }
-      playSong(currentSongIndex.value)
+  nextTick(() => {
+    if (bgMusic.value) {
+      bgMusic.value.load()
+      bgMusic.value.play().then(() => {
+        isMusicPlaying.value = true
+      }).catch(() => {})
     }
-  }
+  })
+}
 
-  const nextSong = () => {
-    if (playlist.value.length <= 1) return
+const prevSong = () => {
+  if (playlist.value.length <= 1) return
 
-    if (playMode.value === 'shuffle') {
-      const nextIndex = getRandomIndex()
-      shuffleHistory.value.push(currentSongIndex.value)
-      currentSongIndex.value = nextIndex
-      playSong(currentSongIndex.value)
+  if (playMode.value === 'shuffle' && shuffleHistory.value.length > 0) {
+    const prevIndex = shuffleHistory.value.pop()
+    currentSongIndex.value = prevIndex
+    playSong(currentSongIndex.value, true)
+  } else {
+    if (currentSongIndex.value > 0) {
+      currentSongIndex.value--
     } else {
-      if (currentSongIndex.value < playlist.value.length - 1) {
-        currentSongIndex.value++
-      } else {
-        currentSongIndex.value = 0
-      }
-      playSong(currentSongIndex.value)
+      currentSongIndex.value = playlist.value.length - 1
     }
+    playSong(currentSongIndex.value, true)
   }
+}
+
+const nextSong = () => {
+  if (playlist.value.length <= 1) return
+
+  if (playMode.value === 'shuffle') {
+    const nextIndex = getRandomIndex()
+    shuffleHistory.value.push(currentSongIndex.value)
+    currentSongIndex.value = nextIndex
+    playSong(currentSongIndex.value, true)
+  } else {
+    if (currentSongIndex.value < playlist.value.length - 1) {
+      currentSongIndex.value++
+    } else {
+      currentSongIndex.value = 0
+    }
+    playSong(currentSongIndex.value, true)
+  }
+}
 
   const updateProgress = () => {
     if (bgMusic.value) {
@@ -135,32 +135,24 @@ export function useMusicPlayer () {
     }
   }
 
-  const onSongEnded = () => {
-    if (playlist.value.length === 1) {
-      bgMusic.value.currentTime = 0
-      bgMusic.value.play().catch(() => {})
-      return
-    }
-
-    if (playMode.value === 'single') {
-      bgMusic.value.currentTime = 0
-      bgMusic.value.play().catch(() => {})
-    } else if (playMode.value === 'shuffle') {
-      const nextIndex = getRandomIndex()
-      shuffleHistory.value.push(currentSongIndex.value)
-      currentSongIndex.value = nextIndex
-      nextTick(() => {
-        if (bgMusic.value) {
-          bgMusic.value.load()
-          bgMusic.value.play().then(() => {
-            isMusicPlaying.value = true
-          }).catch(() => {})
-        }
-      })
-    } else {
-      nextSong()
-    }
+const onSongEnded = () => {
+  if (playlist.value.length === 1) {
+    bgMusic.value.currentTime = 0
+    bgMusic.value.play().catch(() => {})
+    return
   }
+
+  if (playMode.value === 'single') {
+    bgMusic.value.currentTime = 0
+    bgMusic.value.play().catch(() => {})
+  } else if (playMode.value === 'shuffle') {
+    const nextIndex = getRandomIndex()
+    shuffleHistory.value.push(currentSongIndex.value)
+    playSong(nextIndex, true)
+  } else {
+    nextSong()
+  }
+}
 
   const cyclePlayMode = () => {
     const modes = ['list', 'single', 'shuffle']
