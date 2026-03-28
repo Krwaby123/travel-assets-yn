@@ -5,14 +5,14 @@
       "name": "春花",
       "artist": "やまだ豊",
       "file": "spring-flowers.mp3",
-      "cover": "https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/music-covers/spring-flowers-cover.webp"
+      "cover": "spring-flowers-cover.webp"
     },
     {
       "id": 2,
       "name": "纸飞机",
       "artist": "鸣潮",
       "file": "paper-plane.mp3",
-      "cover": "https://cdn.jsdelivr.net/gh/Krwaby123/travel-assets-yn@main/images/music-covers/paper-plane-cover.webp"
+      "cover": "paper-plane-cover.webp"
     }
   ]
 }

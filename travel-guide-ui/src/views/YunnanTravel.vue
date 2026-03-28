@@ -15,7 +15,7 @@
     <header class="hero">
       <div class="hero-content">
         <h1>云南旅行攻略</h1>
-        <p class="hero-subtitle">斗南花市 · 大理洱海</p>
+        <p class="hero-subtitle">斗南花海 · 苍山洱海 · 丽江古城 · 藏地风光</p>
       </div>
       <div class="hero-actions">
         <!-- <button class="hero-search-btn" @click="showSearchPanel = true" aria-label="搜索">
@@ -520,6 +520,7 @@
       :all-tabs="allTabs"
       :settings-visible="settingsVisible"
       :hidden-cards="hiddenCards"
+      :skip-step1-mode="skipStep1Mode"
       @next="onboardingNext"
       @prev="onboardingPrev"
       @skip="skipOnboarding"
@@ -537,6 +538,12 @@
       @set-font-size="handleOnboardingSetFontSize"
     />
 
+    <WelcomeGuide 
+      v-if="!onboardingCompleted" 
+      :onboarding-active="onboardingActive"
+      @start-guide="handleStartGuideFromWelcome" 
+    />
+
     <ConfettiEffect v-if="showConfetti" @complete="showConfetti = false" />
     </template>
   </div>
@@ -547,6 +554,7 @@ import { ref, onMounted, onUnmounted, watch, nextTick, computed, provide, define
 import { useResizeObserver, useWindowSize } from '@vueuse/core'
 import OnboardingOverlay from '@/components/onboarding/OnboardingOverlay.vue'
 import ConfettiEffect from '@/components/onboarding/ConfettiEffect.vue'
+import WelcomeGuide from '@/components/onboarding/WelcomeGuide.vue'
 import { navTabs, dounanData, daliData, lijiangData, shangriData } from '@/data/travelData'
 import { useOnboarding } from '@/composables/useOnboarding'
 import { useMusicPlayer } from '@/composables/useMusicPlayer'
@@ -619,6 +627,7 @@ const {
   mapCurrentStep,
   isActive: onboardingActive,
   isMapActive,
+  skipStep1Mode,
   selectedTabs,
   hiddenTabs,
   totalSteps,
@@ -627,6 +636,7 @@ const {
   hiddenTabList,
   initOnboarding,
   startOnboarding,
+  startOnboardingFromWelcome,
   startMapOnboarding,
   skipOnboarding,
   skipMapOnboarding,
@@ -1416,7 +1426,12 @@ const handleRestartOnboarding = () => {
   resetOnboarding()
   currentStep.value = 1
   onboardingActive.value = true
+  skipStep1Mode.value = false
   settingsVisible.value = false
+}
+
+const handleStartGuideFromWelcome = () => {
+  startOnboardingFromWelcome()
 }
 
 const handleOpenSettings = () => {
@@ -1521,14 +1536,6 @@ onMounted(() => {
   initHiddenCards()
   initOnboarding()
   loadPlaylist()
-
-  nextTick(() => {
-    if (!onboardingCompleted.value) {
-      setTimeout(() => {
-        startOnboarding()
-      }, 500)
-    }
-  })
 
   if (slidesContainer.value) {
     slidesContainer.value.style.cursor = 'grab'

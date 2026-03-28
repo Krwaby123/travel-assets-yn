@@ -49,7 +49,7 @@
               <button class="tooltip-btn skip" @click="skipOnboarding">跳过</button>
               <div class="tooltip-nav">
                 <button
-                  v-if="currentStep > 0"
+                  v-if="currentStep > 0 && !(skipStep1Mode && currentStep === 1)"
                   class="tooltip-btn prev"
                   @click="prevStep"
                   :disabled="isAnimatingAction"
@@ -117,7 +117,7 @@
                 <button class="modal-btn skip" @click="skipOnboarding" :disabled="isAnimatingAction">跳过</button>
                 <div class="modal-nav">
                   <button
-                    v-if="currentStep > 0"
+                    v-if="currentStep > 0 && !(skipStep1Mode && currentStep === 1)"
                     class="modal-btn prev"
                     @click="prevStep"
                     :disabled="isAnimatingAction"
@@ -222,7 +222,8 @@ const props = defineProps({
   selectedTabs: Set,
   allTabs: Array,
   settingsVisible: Boolean,
-  hiddenCards: Set
+  hiddenCards: Set,
+  skipStep1Mode: Boolean
 })
 
 const emit = defineEmits([

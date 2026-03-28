@@ -23,6 +23,7 @@ const isMapActive = ref(false)
 const selectedTabs = ref(new Set(['dounan', 'dali', 'lijiang', 'shangri']))
 const hiddenTabs = ref(new Set())
 const isTransitioning = ref(false)
+const skipStep1Mode = ref(false)
 
 export function useOnboarding () {
   const totalSteps = onboardingSteps.length
@@ -75,11 +76,19 @@ export function useOnboarding () {
     safeStorage.setItem(HIDDEN_TABS_KEY, JSON.stringify([...hiddenTabs.value]))
   }
 
-  const startOnboarding = () => {
-    if (completed.value) return
-    isActive.value = true
-    currentStep.value = 0
-  }
+const startOnboarding = () => {
+  if (completed.value) return
+  isActive.value = true
+  currentStep.value = 0
+  skipStep1Mode.value = false
+}
+
+const startOnboardingFromWelcome = () => {
+  if (completed.value) return
+  isActive.value = true
+  currentStep.value = 1
+  skipStep1Mode.value = true
+}
 
   const startMapOnboarding = () => {
     if (mapCompleted.value) return
@@ -95,11 +104,12 @@ export function useOnboarding () {
     completeMapOnboarding()
   }
 
-  const completeOnboarding = () => {
-    completed.value = true
-    isActive.value = false
-    safeStorage.setItem(STORAGE_KEY, 'true')
-  }
+const completeOnboarding = () => {
+  completed.value = true
+  isActive.value = false
+  skipStep1Mode.value = false
+  safeStorage.setItem(STORAGE_KEY, 'true')
+}
 
   const completeMapOnboarding = () => {
     mapCompleted.value = true
@@ -143,16 +153,17 @@ export function useOnboarding () {
     }
   }
 
-  const prevStep = () => {
-    if (isTransitioning.value) return
-    if (currentStep.value > 0) {
-      isTransitioning.value = true
-      currentStep.value--
-      setTimeout(() => {
-        isTransitioning.value = false
-      }, 400)
-    }
+const prevStep = () => {
+  if (isTransitioning.value) return
+  if (skipStep1Mode.value && currentStep.value === 1) return
+  if (currentStep.value > 0) {
+    isTransitioning.value = true
+    currentStep.value--
+    setTimeout(() => {
+      isTransitioning.value = false
+    }, 400)
   }
+}
 
   const prevMapStep = () => {
     if (isTransitioning.value) return
@@ -228,6 +239,7 @@ export function useOnboarding () {
     isActive,
     isMapActive,
     isTransitioning,
+    skipStep1Mode,
     selectedTabs,
     hiddenTabs,
     progress,
@@ -238,6 +250,7 @@ export function useOnboarding () {
     hiddenTabList,
     initOnboarding,
     startOnboarding,
+    startOnboardingFromWelcome,
     startMapOnboarding,
     skipOnboarding,
     skipMapOnboarding,
