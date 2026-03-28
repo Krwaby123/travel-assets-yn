@@ -13,6 +13,90 @@
       "artist": "鸣潮",
       "file": "paper-plane.mp3",
       "cover": "paper-plane-cover.webp"
+    },
+    {
+      "id": 3,
+      "name": "卡农",
+      "artist": "dylanf",
+      "file": "canon.mp3",
+      "cover": "canon-cover.webp"
+    },
+    {
+      "id": 4,
+      "name": "正因为是无法成为他人的我",
+      "artist": "トゲナシトゲアリ",
+      "file": "cannot-be-anyone-else.mp3",
+      "cover": "cannot-be-anyone-else-cover.webp"
+    },
+    {
+      "id": 5,
+      "name": "老人与海",
+      "artist": "ヨルシカ",
+      "file": "old-man-and-the-sea.mp3",
+      "cover": "old-man-and-the-sea-cover.webp"
+    },
+    {
+      "id": 6,
+      "name": "海愿",
+      "artist": "塞壬唱片-MSR",
+      "file": "sea-wish.mp3",
+      "cover": "sea-wish-cover.webp"
+    },
+    {
+      "id": 7,
+      "name": "相见欢",
+      "artist": "塞壬唱片-MSR",
+      "file": "meeting-joy.mp3",
+      "cover": "meeting-joy-cover.webp"
+    },
+    {
+      "id": 8,
+      "name": "春弦",
+      "artist": "塞壬唱片-MSR",
+      "file": "spring-string.mp3",
+      "cover": "spring-string-cover.webp"
+    },
+    {
+      "id": 9,
+      "name": "Ahead of Us",
+      "artist": "小瀬村晶",
+      "file": "ahead-of-us.mp3",
+      "cover": "ahead-of-us-cover.webp"
+    },
+    {
+      "id": 10,
+      "name": "星辉抵达之日",
+      "artist": "鸣潮先约电台",
+      "file": "starlight-arrival.mp3",
+      "cover": "starlight-arrival-cover.webp"
+    },
+    {
+      "id": 11,
+      "name": "那颗星梦见的春日",
+      "artist": "鸣潮先约电台",
+      "file": "spring-in-stars-dream.mp3",
+      "cover": "spring-in-stars-dream-cover.webp"
+    },
+    {
+      "id": 12,
+      "name": "星辉的安眠曲",
+      "artist": "鸣潮先约电台",
+      "file": "starlight-lullaby.mp3",
+      "cover": "starlight-lullaby-cover.webp"
+    },
+    {
+      "id": 13,
+      "name": "小小奇迹",
+      "artist": "鸣潮先约电台",
+      "file": "little-miracle.mp3",
+      "cover": "little-miracle-cover.webp"
+    },
+    {
+      "id": 14,
+      "name": "星炬不熄",
+      "artist": "鸣潮先约电台",
+      "file": "star-torch-forever.mp3",
+      "cover": "star-torch-forever-cover.webp"
     }
   ]
 }
