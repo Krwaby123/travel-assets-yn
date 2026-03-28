@@ -351,13 +351,28 @@
               </div>
 
               <div class="music-drawer-progress" role="slider" :aria-label="'播放进度: ' + formatTime(currentTime) + ' / ' + formatTime(duration)" :aria-valuemin="0" :aria-valuemax="Math.round(duration)" :aria-valuenow="Math.round(currentTime)" tabindex="0" @click="seekProgress" @keydown.left="seekProgressByKey(-5)" @keydown.right="seekProgressByKey(5)">
-                <div class="progress-bar-bg">
+                <div class="progress-bar-bg" :class="{ 'progress-clicked': progressClicked }" @animationend="progressClicked = false">
                   <div class="progress-bar-fill" :style="{ width: musicProgress + '%' }"></div>
                 </div>
                 <div class="progress-time">
                   <span>{{ formatTime(currentTime) }}</span>
                   <span>{{ formatTime(duration) }}</span>
                 </div>
+              </div>
+
+              <div class="music-seek-buttons">
+                <button class="seek-btn seek-backward" @click="handleSeekBackward" :disabled="currentTime < 5" aria-label="后退5秒">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/>
+                  </svg>
+                  <span class="seek-label">5</span>
+                </button>
+                <button class="seek-btn seek-forward" @click="handleSeekForward" :disabled="currentTime + 5 > duration" aria-label="前进5秒">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>
+                  </svg>
+                  <span class="seek-label">5</span>
+                </button>
               </div>
 
               <div class="music-drawer-controls">
@@ -809,6 +824,7 @@ const settingsVisible = ref(false)
 const settingsBtnSpinning = ref(false)
 const hiddenModalVisible = ref(false)
 const showBackToTop = ref(false)
+const progressClicked = ref(false)
 
 const currentSlideHeight = ref(0)
 const slideHeights = ref([0, 0, 0, 0, 0, 0])
@@ -1452,6 +1468,16 @@ const handleGoToMap = () => {
 
 const handleGoToHome = () => {
   goToSlide(0, 'left')
+}
+
+const handleSeekBackward = () => {
+  seekProgressByKey(-5)
+  progressClicked.value = true
+}
+
+const handleSeekForward = () => {
+  seekProgressByKey(5)
+  progressClicked.value = true
 }
 
 const scrollToItinerary = () => {
@@ -2810,6 +2836,119 @@ const handleLightboxKeydown = (e) => {
   margin-top: 6px;
 }
 
+.progress-bar-bg.progress-clicked {
+  animation: progressPulse 0.3s var(--ease-out-quart);
+}
+
+@keyframes progressPulse {
+  0% { transform: scaleY(1); }
+  50% { transform: scaleY(1.5); }
+  100% { transform: scaleY(1); }
+}
+
+.music-seek-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+
+.seek-btn {
+  width: auto;
+  height: 36px;
+  padding: 0 12px;
+  gap: 4px;
+  border: none;
+  border-radius: 18px;
+  background: var(--earth-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s var(--ease-out-quart);
+  position: relative;
+  overflow: hidden;
+}
+
+.seek-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--forest);
+  border-radius: 18px;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s var(--ease-out-quart);
+}
+
+.seek-btn:hover {
+  background: var(--forest-light);
+  transform: scale(1.05);
+}
+
+.seek-btn:active {
+  transform: scale(0.95);
+}
+
+.seek-btn:active::after {
+  opacity: 0.15;
+  transform: scale(1);
+}
+
+.seek-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.seek-btn:disabled:hover {
+  background: var(--earth-light);
+  transform: none;
+}
+
+.seek-btn svg {
+  width: 16px;
+  height: 16px;
+  color: var(--forest);
+  position: relative;
+  z-index: 1;
+  transition: transform 0.2s var(--ease-out-quart);
+}
+
+.seek-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--forest);
+  position: relative;
+  z-index: 1;
+}
+
+.seek-btn:hover svg {
+  transform: scale(1.1);
+}
+
+.seek-btn.seek-backward:hover svg {
+  animation: seekBackwardHint 0.4s var(--ease-out-quart);
+}
+
+.seek-btn.seek-forward:hover svg {
+  animation: seekForwardHint 0.4s var(--ease-out-quart);
+}
+
+@keyframes seekBackwardHint {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(-3px); }
+  60% { transform: translateX(1px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes seekForwardHint {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(3px); }
+  60% { transform: translateX(-1px); }
+  100% { transform: translateX(0); }
+}
+
 .music-drawer-volume {
   display: flex;
   align-items: center;
@@ -3425,6 +3564,20 @@ const handleLightboxKeydown = (e) => {
     left: var(--space-sm);
     text-align: center;
     bottom: 120px;
+  }
+
+  .seek-btn {
+    height: 40px;
+    padding: 0 14px;
+  }
+
+  .seek-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .seek-label {
+    font-size: 0.85rem;
   }
 }
 

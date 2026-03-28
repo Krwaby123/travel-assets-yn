@@ -25,11 +25,26 @@ const hiddenTabs = ref(new Set())
 const isTransitioning = ref(false)
 const skipStep1Mode = ref(false)
 
+let transitionTimer = null
+let mapTransitionTimer = null
+
+const clearTransitionTimers = () => {
+  if (transitionTimer) {
+    clearTimeout(transitionTimer)
+    transitionTimer = null
+  }
+  if (mapTransitionTimer) {
+    clearTimeout(mapTransitionTimer)
+    mapTransitionTimer = null
+  }
+}
+
 export function useOnboarding () {
   const totalSteps = onboardingSteps.length
   const mapTotalSteps = mapOnboardingSteps.length
 
   const progress = computed(() => {
+    if (totalSteps <= 1) return 0
     return Math.round((currentStep.value / (totalSteps - 1)) * 100)
   })
 
@@ -76,19 +91,19 @@ export function useOnboarding () {
     safeStorage.setItem(HIDDEN_TABS_KEY, JSON.stringify([...hiddenTabs.value]))
   }
 
-const startOnboarding = () => {
-  if (completed.value) return
-  isActive.value = true
-  currentStep.value = 0
-  skipStep1Mode.value = false
-}
+  const startOnboarding = () => {
+    if (completed.value) return
+    isActive.value = true
+    currentStep.value = 0
+    skipStep1Mode.value = false
+  }
 
-const startOnboardingFromWelcome = () => {
-  if (completed.value) return
-  isActive.value = true
-  currentStep.value = 1
-  skipStep1Mode.value = true
-}
+  const startOnboardingFromWelcome = () => {
+    if (completed.value) return
+    isActive.value = true
+    currentStep.value = 1
+    skipStep1Mode.value = true
+  }
 
   const startMapOnboarding = () => {
     if (mapCompleted.value) return
@@ -104,16 +119,18 @@ const startOnboardingFromWelcome = () => {
     completeMapOnboarding()
   }
 
-const completeOnboarding = () => {
-  completed.value = true
-  isActive.value = false
-  skipStep1Mode.value = false
-  safeStorage.setItem(STORAGE_KEY, 'true')
-}
+  const completeOnboarding = () => {
+    completed.value = true
+    isActive.value = false
+    skipStep1Mode.value = false
+    clearTransitionTimers()
+    safeStorage.setItem(STORAGE_KEY, 'true')
+  }
 
   const completeMapOnboarding = () => {
     mapCompleted.value = true
     isMapActive.value = false
+    clearTransitionTimers()
     safeStorage.setItem(MAP_STORAGE_KEY, 'true')
   }
 
@@ -121,12 +138,14 @@ const completeOnboarding = () => {
     completed.value = false
     safeStorage.removeItem(STORAGE_KEY)
     currentStep.value = 0
+    clearTransitionTimers()
   }
 
   const resetMapOnboarding = () => {
     mapCompleted.value = false
     safeStorage.removeItem(MAP_STORAGE_KEY)
     mapCurrentStep.value = 0
+    clearTransitionTimers()
   }
 
   const nextStep = () => {
@@ -134,8 +153,10 @@ const completeOnboarding = () => {
     if (currentStep.value < totalSteps - 1) {
       isTransitioning.value = true
       currentStep.value++
-      setTimeout(() => {
+      clearTransitionTimers()
+      transitionTimer = setTimeout(() => {
         isTransitioning.value = false
+        transitionTimer = null
       }, 400)
     }
   }
@@ -145,80 +166,97 @@ const completeOnboarding = () => {
     if (mapCurrentStep.value < mapTotalSteps - 1) {
       isTransitioning.value = true
       mapCurrentStep.value++
-      setTimeout(() => {
+      clearTransitionTimers()
+      mapTransitionTimer = setTimeout(() => {
         isTransitioning.value = false
+        mapTransitionTimer = null
       }, 400)
     } else {
       completeMapOnboarding()
     }
   }
 
-const prevStep = () => {
-  if (isTransitioning.value) return
-  if (skipStep1Mode.value && currentStep.value === 1) return
-  if (currentStep.value > 0) {
-    isTransitioning.value = true
-    currentStep.value--
-    setTimeout(() => {
-      isTransitioning.value = false
-    }, 400)
+  const prevStep = () => {
+    if (isTransitioning.value) return
+    if (skipStep1Mode.value && currentStep.value === 1) return
+    if (currentStep.value > 0) {
+      isTransitioning.value = true
+      currentStep.value--
+      clearTransitionTimers()
+      transitionTimer = setTimeout(() => {
+        isTransitioning.value = false
+        transitionTimer = null
+      }, 400)
+    }
   }
-}
 
   const prevMapStep = () => {
     if (isTransitioning.value) return
     if (mapCurrentStep.value > 0) {
       isTransitioning.value = true
       mapCurrentStep.value--
-      setTimeout(() => {
+      clearTransitionTimers()
+      mapTransitionTimer = setTimeout(() => {
         isTransitioning.value = false
+        mapTransitionTimer = null
       }, 400)
     }
   }
 
   const goToStep = (stepIndex) => {
     if (isTransitioning.value) return
-    if (stepIndex >= 0 && stepIndex < totalSteps) {
-      isTransitioning.value = true
-      currentStep.value = stepIndex
-      setTimeout(() => {
-        isTransitioning.value = false
-      }, 400)
-    }
+    if (typeof stepIndex !== 'number' || stepIndex < 0 || stepIndex >= totalSteps) return
+    isTransitioning.value = true
+    currentStep.value = stepIndex
+    clearTransitionTimers()
+    transitionTimer = setTimeout(() => {
+      isTransitioning.value = false
+      transitionTimer = null
+    }, 400)
   }
 
   const toggleTab = (tabId) => {
-    if (selectedTabs.value.has(tabId)) {
-      selectedTabs.value.delete(tabId)
+    const newSet = new Set(selectedTabs.value)
+    if (newSet.has(tabId)) {
+      newSet.delete(tabId)
     } else {
-      selectedTabs.value.add(tabId)
+      newSet.add(tabId)
     }
+    selectedTabs.value = newSet
     safeStorage.setItem(SELECTED_TABS_KEY, JSON.stringify([...selectedTabs.value]))
     updateHiddenTabsFromSelection()
   }
 
   const selectAllTabs = () => {
-    allTabs.forEach(tab => selectedTabs.value.add(tab.id))
+    selectedTabs.value = new Set(allTabs.map(tab => tab.id))
     safeStorage.setItem(SELECTED_TABS_KEY, JSON.stringify([...selectedTabs.value]))
     updateHiddenTabsFromSelection()
   }
 
   const clearAllTabs = () => {
-    selectedTabs.value.clear()
+    selectedTabs.value = new Set()
     safeStorage.setItem(SELECTED_TABS_KEY, JSON.stringify([]))
     updateHiddenTabsFromSelection()
   }
 
   const restoreTab = (tabId) => {
-    selectedTabs.value.add(tabId)
-    hiddenTabs.value.delete(tabId)
+    const newSelectedSet = new Set(selectedTabs.value)
+    const newHiddenSet = new Set(hiddenTabs.value)
+    newSelectedSet.add(tabId)
+    newHiddenSet.delete(tabId)
+    selectedTabs.value = newSelectedSet
+    hiddenTabs.value = newHiddenSet
     safeStorage.setItem(SELECTED_TABS_KEY, JSON.stringify([...selectedTabs.value]))
     safeStorage.setItem(HIDDEN_TABS_KEY, JSON.stringify([...hiddenTabs.value]))
   }
 
   const hideTab = (tabId) => {
-    selectedTabs.value.delete(tabId)
-    hiddenTabs.value.add(tabId)
+    const newSelectedSet = new Set(selectedTabs.value)
+    const newHiddenSet = new Set(hiddenTabs.value)
+    newSelectedSet.delete(tabId)
+    newHiddenSet.add(tabId)
+    selectedTabs.value = newSelectedSet
+    hiddenTabs.value = newHiddenSet
     safeStorage.setItem(SELECTED_TABS_KEY, JSON.stringify([...selectedTabs.value]))
     safeStorage.setItem(HIDDEN_TABS_KEY, JSON.stringify([...hiddenTabs.value]))
   }

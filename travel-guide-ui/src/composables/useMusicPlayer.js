@@ -14,6 +14,8 @@ export function useMusicPlayer () {
   const playMode = ref('list')
   const shuffleHistory = ref([])
 
+  let pausingTimer = null
+
   const currentSong = computed(() => playlist.value[currentSongIndex.value] || null)
 
   const musicProgress = computed(() => {
@@ -28,11 +30,19 @@ export function useMusicPlayer () {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`
   }
 
+  const getEventClientX = (e) => {
+    if (e.clientX !== undefined) return e.clientX
+    if (e.touches && e.touches[0]) return e.touches[0].clientX
+    if (e.changedTouches && e.changedTouches[0]) return e.changedTouches[0].clientX
+    return 0
+  }
+
   const seekProgress = (e) => {
     if (!bgMusic.value || duration.value === 0) return
     const bar = e.currentTarget
     const rect = bar.getBoundingClientRect()
-    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
+    const clientX = getEventClientX(e)
+    const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
     bgMusic.value.currentTime = percent * duration.value
   }
 
@@ -55,6 +65,13 @@ export function useMusicPlayer () {
     }
   }
 
+  const clearPausingTimer = () => {
+    if (pausingTimer) {
+      clearTimeout(pausingTimer)
+      pausingTimer = null
+    }
+  }
+
   const togglePlay = () => {
     if (!bgMusic.value || !currentSong.value) return
 
@@ -62,8 +79,10 @@ export function useMusicPlayer () {
       bgMusic.value.pause()
       isMusicPausing.value = true
       isMusicPlaying.value = false
-      setTimeout(() => {
+      clearPausingTimer()
+      pausingTimer = setTimeout(() => {
         isMusicPausing.value = false
+        pausingTimer = null
       }, 800)
     } else {
       bgMusic.value.play().then(() => {
@@ -72,55 +91,57 @@ export function useMusicPlayer () {
     }
   }
 
-const playSong = (index, forcePlay = false) => {
-  if (!forcePlay && index === currentSongIndex.value && isMusicPlaying.value) return
+  const playSong = (index, forcePlay = false) => {
+    if (!forcePlay && index === currentSongIndex.value && isMusicPlaying.value) return
 
-  currentSongIndex.value = index
+    currentSongIndex.value = index
+    clearPausingTimer()
+    isMusicPausing.value = false
 
-  nextTick(() => {
-    if (bgMusic.value) {
-      bgMusic.value.load()
-      bgMusic.value.play().then(() => {
-        isMusicPlaying.value = true
-      }).catch(() => {})
-    }
-  })
-}
-
-const prevSong = () => {
-  if (playlist.value.length <= 1) return
-
-  if (playMode.value === 'shuffle' && shuffleHistory.value.length > 0) {
-    const prevIndex = shuffleHistory.value.pop()
-    currentSongIndex.value = prevIndex
-    playSong(currentSongIndex.value, true)
-  } else {
-    if (currentSongIndex.value > 0) {
-      currentSongIndex.value--
-    } else {
-      currentSongIndex.value = playlist.value.length - 1
-    }
-    playSong(currentSongIndex.value, true)
+    nextTick(() => {
+      if (bgMusic.value) {
+        bgMusic.value.load()
+        bgMusic.value.play().then(() => {
+          isMusicPlaying.value = true
+        }).catch(() => {})
+      }
+    })
   }
-}
 
-const nextSong = () => {
-  if (playlist.value.length <= 1) return
+  const prevSong = () => {
+    if (playlist.value.length <= 1) return
 
-  if (playMode.value === 'shuffle') {
-    const nextIndex = getRandomIndex()
-    shuffleHistory.value.push(currentSongIndex.value)
-    currentSongIndex.value = nextIndex
-    playSong(currentSongIndex.value, true)
-  } else {
-    if (currentSongIndex.value < playlist.value.length - 1) {
-      currentSongIndex.value++
+    if (playMode.value === 'shuffle' && shuffleHistory.value.length > 0) {
+      const prevIndex = shuffleHistory.value.pop()
+      currentSongIndex.value = prevIndex
+      playSong(currentSongIndex.value, true)
     } else {
-      currentSongIndex.value = 0
+      if (currentSongIndex.value > 0) {
+        currentSongIndex.value--
+      } else {
+        currentSongIndex.value = playlist.value.length - 1
+      }
+      playSong(currentSongIndex.value, true)
     }
-    playSong(currentSongIndex.value, true)
   }
-}
+
+  const nextSong = () => {
+    if (playlist.value.length <= 1) return
+
+    if (playMode.value === 'shuffle') {
+      const nextIndex = getRandomIndex()
+      shuffleHistory.value.push(currentSongIndex.value)
+      currentSongIndex.value = nextIndex
+      playSong(currentSongIndex.value, true)
+    } else {
+      if (currentSongIndex.value < playlist.value.length - 1) {
+        currentSongIndex.value++
+      } else {
+        currentSongIndex.value = 0
+      }
+      playSong(currentSongIndex.value, true)
+    }
+  }
 
   const updateProgress = () => {
     if (bgMusic.value) {
@@ -135,24 +156,28 @@ const nextSong = () => {
     }
   }
 
-const onSongEnded = () => {
-  if (playlist.value.length === 1) {
-    bgMusic.value.currentTime = 0
-    bgMusic.value.play().catch(() => {})
-    return
-  }
+  const onSongEnded = () => {
+    if (playlist.value.length === 1) {
+      if (bgMusic.value) {
+        bgMusic.value.currentTime = 0
+        bgMusic.value.play().catch(() => {})
+      }
+      return
+    }
 
-  if (playMode.value === 'single') {
-    bgMusic.value.currentTime = 0
-    bgMusic.value.play().catch(() => {})
-  } else if (playMode.value === 'shuffle') {
-    const nextIndex = getRandomIndex()
-    shuffleHistory.value.push(currentSongIndex.value)
-    playSong(nextIndex, true)
-  } else {
-    nextSong()
+    if (playMode.value === 'single') {
+      if (bgMusic.value) {
+        bgMusic.value.currentTime = 0
+        bgMusic.value.play().catch(() => {})
+      }
+    } else if (playMode.value === 'shuffle') {
+      const nextIndex = getRandomIndex()
+      shuffleHistory.value.push(currentSongIndex.value)
+      playSong(nextIndex, true)
+    } else {
+      nextSong()
+    }
   }
-}
 
   const cyclePlayMode = () => {
     const modes = ['list', 'single', 'shuffle']
@@ -195,6 +220,10 @@ const onSongEnded = () => {
     }
   }
 
+  const cleanup = () => {
+    clearPausingTimer()
+  }
+
   return {
     bgMusic,
     isMusicPlaying,
@@ -222,6 +251,7 @@ const onSongEnded = () => {
     onSongEnded,
     cyclePlayMode,
     setVolume,
-    handleDiscClick
+    handleDiscClick,
+    cleanup
   }
 }

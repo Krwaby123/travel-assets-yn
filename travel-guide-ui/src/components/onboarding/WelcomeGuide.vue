@@ -372,7 +372,7 @@ const handleFloatingClick = () => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 10px 16px 10px 12px;
+  padding: 12px 18px 12px 14px;
   background: linear-gradient(135deg, var(--sunset) 0%, #ff6b6b 100%);
   color: white;
   border: none;
@@ -385,6 +385,16 @@ const handleFloatingClick = () => {
   box-shadow: 0 4px 16px rgba(204, 85, 51, 0.4);
   transition: transform 0.2s var(--ease-out-quart),
               box-shadow 0.2s var(--ease-out-quart);
+  min-height: 44px;
+}
+
+.floating-guide-btn::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
 }
 
 .floating-guide-btn:hover {
@@ -459,6 +469,7 @@ const handleFloatingClick = () => {
   .welcome-guide-card {
     max-width: 100%;
     border-radius: 20px;
+    overflow: hidden;
   }
   
   .welcome-card-decoration {
@@ -486,8 +497,9 @@ const handleFloatingClick = () => {
   .floating-guide-btn {
     bottom: 24px;
     left: 12px;
-    padding: 8px 14px 8px 10px;
+    padding: 10px 16px 10px 12px;
     font-size: 0.8rem;
+    min-height: 44px;
   }
   
   .floating-guide-btn svg {
